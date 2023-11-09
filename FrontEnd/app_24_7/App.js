@@ -16,6 +16,9 @@ import FindPw from './App/screens/FindPw';
 import Alarm from './App/screens/Alarm';
 import Feedback from './App/screens/Feedback';
 import Category from './App/screens/Category';
+import CategoryAi from './App/screens/CategoryAi';
+import CategoryNoAi from './App/screens/CategoryNoAi'
+import RecordVideo from './App/screens/RecordVideo';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -49,6 +52,8 @@ const App = () => {
           options={{
             headerTitle: '회원가입',
             headerTitleAlign: 'center',
+            headerTitleStyle: { fontWeight: 'bold' },
+            
           }}
         />
         <Stack.Screen
@@ -57,6 +62,7 @@ const App = () => {
           options={{
             headerTitle: '비밀번호 찾기',
             headerTitleAlign: 'center',
+            headerTitleStyle: { fontWeight: 'bold' },
           }}
         />
         <Stack.Screen
@@ -91,12 +97,30 @@ const App = () => {
           name="Category"
           component={Category}
           options={{
-            headerTitle: 'Category',
+          }}
+        />
+        <Stack.Screen
+          name="CategoryAi"
+          component={CategoryAi}
+          options={{
+          }}
+        />
+        <Stack.Screen
+          name="CategoryNoAi"
+          component={CategoryNoAi}
+          options={{
+          }}
+        />
+        <Stack.Screen
+          name="RecordVideo"
+          component={RecordVideo}
+          options={{
             headerTitleAlign: 'center',
-            header: () => null,
+            headerTitleStyle: { fontWeight: 'bold' },
           }}
         />
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 };

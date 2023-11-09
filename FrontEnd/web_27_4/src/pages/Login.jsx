@@ -5,7 +5,7 @@ const Login = () => {
   return (
     <div className='login'>
         <img src="./loginLogo.png" alt="" style={{maxHeight: '25vh'}}/>
-        <form action="" method="POST">
+        <form action="/trainer/login" method="POST">
             <input type="text" name="" id="" placeholder='Email'className='login-input'/>
             <input type="password" name="" id="" placeholder='Password'className='login-input'/>
             <input type="submit" value="로그인" id='login-btn' className='login-input'/>

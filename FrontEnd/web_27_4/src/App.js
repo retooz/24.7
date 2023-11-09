@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './reset.css';
 import './App.css';
 import Login from './pages/Login';

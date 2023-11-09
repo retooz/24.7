@@ -3,9 +3,9 @@ const router = express.Router()
 const axios = require("axios");
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const passport = require('../passport.js');
-const queries = require('../config/queries');
-const conn = require('../config/database');
+const passport = require('../../passport.js');
+const queries = require('../../config/queries.js');
+const conn = require('../../config/database.js');
 
 router.get('/',(req,res)=>{
     res.render('trainer');

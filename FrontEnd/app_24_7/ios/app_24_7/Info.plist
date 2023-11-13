@@ -70,5 +70,7 @@
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>$(app_24_7) needs access to your Camera.</string>
 </dict>
 </plist>

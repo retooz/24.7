@@ -13,7 +13,7 @@ const homeService = {
         }
     },
 
-    emailCheck: async (email) => {
+    duplicateCheck : async (email) => {
         try {
             const [results] = await conn.query(userQueries.duplicateCheck, email);
             return results

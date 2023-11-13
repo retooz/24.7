@@ -3,16 +3,10 @@ const router = express.Router()
 const axios = require("axios");
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const passport = require('../../passport.js');
+const passport = require('../passport/passport.js');
 const queries = require('../queries/userQueries.js');
 const conn = require('../../config/database.js');
 const homeService = require('../services/homeService.js')
-
-router.post('/login',passport.authenticate('local-login',{
-    successRedirect : '/loginSuccess',
-    failureRedirect : '/loginFail',
-    failureFlash : true
-}))
 
 router.post('/join', async (req,res)=>{
     console.log('user join Router')

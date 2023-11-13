@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ImageBackground,
   View,
@@ -10,33 +10,55 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-function Join({navigation}) {
+function Join({ navigation }) {
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      //  headerTitle: ' ',
+      headerLeft: ({ onPress }) => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Login');
+          }}>
+          <Icon name="chevron-left" size={40} />
+        </TouchableOpacity>
+      ),
+      contentStyle: {
+        backgroundColor: '#F6F6F6',
+      },
+    });
+  }, [navigation]);
+
+
+
+
   return (
     <KeyboardAwareScrollView
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       showsVerticalScrollIndicator={false}
-      resetScrollToCoords={{x: 0, y: 0}}
+      resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}>
       <ImageBackground
         source={require('../assets/image/backColor2.png')}
         style={styles.container}>
-        <Text style={{...styles.text, marginLeft: 28}}>이메일 입력</Text>
+        <Text style={{ ...styles.text, marginLeft: 28 }}>이메일 입력</Text>
         <View style={styles.inputContainer}>
           <TextInput style={styles.emailInputText} />
-          <TouchableOpacity style={styles.btn} onPress={() => {}}>
+          <TouchableOpacity style={styles.btn} onPress={() => { }}>
             <Text style={styles.emailBtnText}>확인</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{...styles.text, marginLeft: 10}}>비밀번호</Text>
+        <Text style={{ ...styles.text, marginLeft: 10 }}>비밀번호</Text>
         <TextInput style={styles.inputText} />
-        <Text style={{...styles.text, marginLeft: 40}}>비밀번호 확인</Text>
+        <Text style={{ ...styles.text, marginLeft: 40 }}>비밀번호 확인</Text>
         <TextInput style={styles.inputText} />
-        <Text style={{...styles.text, marginLeft: 1}}>닉네임</Text>
+        <Text style={{ ...styles.text, marginLeft: 1 }}>닉네임</Text>
         <TextInput style={styles.inputText} />
         <TouchableOpacity
           style={styles.JoinButton}

@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -19,6 +20,27 @@ function FindPw({navigation}) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      //  headerTitle: ' ',
+      headerLeft: ({ onPress }) => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Login');
+          }}>
+          <Icon name="chevron-left" size={40} />
+        </TouchableOpacity>
+      ),
+      contentStyle: {
+        backgroundColor: '#F6F6F6',
+      },
+    });
+  }, [navigation]);
+
+
+
 
   const handleCheckEmail = () => {
     if (email === 'abc') {

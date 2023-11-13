@@ -7,8 +7,9 @@ import {
     Text,
 } from 'react-native';
 
-// ---------------------------------------------------------
-import Icon from 'react-native-vector-icons/Feather';
+
+import Icon from 'react-native-vector-icons/EvilIcons';
+
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,9 +24,11 @@ const categoriesData = [
 
 const CategoryAi = ({ navigation }) => {
 
+
+    // 뒤로가기 (CategoryAi -> Category)
     React.useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: ' ',
+            headerTitle: 'AI 분석 운동',
             headerLeft: ({ onPress }) => (
                 <TouchableOpacity
                     onPress={() => {
@@ -68,10 +71,10 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     touchContainer: {
-        backgroundColor: "#D6CCED",
+        backgroundColor: "#F9F7FE",
         width: windowWidth * 0.85,
         height: windowHeight * 0.24,
-        borderRadius: 10,
+        borderRadius: 50,
         alignItems: "center",
         justifyContent: "center",
         marginVertical: 20,
@@ -86,3 +89,4 @@ const styles = StyleSheet.create({
 });
 
 export default CategoryAi;
+

@@ -10,7 +10,8 @@ import { useRoute } from '@react-navigation/native';
 import Video from 'react-native-video';
 // import { RNCamera } from 'react-native-camera';
 // ---------------------------------------------------------
-import Icon from 'react-native-vector-icons/Feather';
+
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -41,12 +42,15 @@ const RecordVideo = ({ navigation }) => {
 
     return (
         <View style={styles.Container}>
-            <Video
+             <Video
+
                 source={require('../assets/video/squat.mp4')}
                 style={{ width: windowWidth * 0.85, height: windowHeight * 0.4 }}
                 controls={true} // 플레이어 컨트롤 보이기
                 resizeMode="cover" // 동영상 크기 조절
-            />
+
+            /> 
+
             
 
         </View>
@@ -86,4 +90,6 @@ const styles = StyleSheet.create({
     },
 });
 
+
 export default RecordVideo;
+

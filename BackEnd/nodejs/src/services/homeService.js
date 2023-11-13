@@ -6,14 +6,14 @@ const homeService = {
 
     join : async (data, cryptedPW) => {
         try {
-            const [results] = await conn.query(userQueries.userSignUp, data.userEmail, cryptedPW, data.userNickName);
+            const [results] = await conn.query(userQueries.userJoin, data.userEmail, cryptedPW, data.userNickName);
             return results
         } catch (err) {
             throw err;
         }
     },
 
-    emailCheck : async (email) => {
+    duplicateCheck : async (email) => {
         try {
             const [results] = await conn.query(userQueries.duplicateCheck, email);
             return results

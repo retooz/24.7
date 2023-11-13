@@ -7,11 +7,16 @@ const cors = require("cors");
 const session = require('express-session');
 const fileStore = require('session-file-store')(session);
 
-const indexRouter = require('./routes/index');
-const userRouter = require('./routes/user');
-const trainerRouter = require('./routes/trainer');
+const indexRouter = require('./src/routes/index');
+const userRouter = require('./src/routes/user');
+const trainerRouter = require('./src/routes/trainer');
+const authRouter = require('./src/routes/auth');
+const uploadRouter = require('./src/routes/upload')
 
-const passport = require('./passport.js');
+
+// const passport = require('./passport.js');
+const passport = require('passport');
+const passportConfig = require('./src/passport/passport')
 const flash = require('connect-flash');
 
 
@@ -42,6 +47,8 @@ app.use(passport.session());
 app.use('/',indexRouter);
 app.use('/user',userRouter);
 app.use('/trainer',trainerRouter);
+app.use('/auth',authRouter);
+app.use('/upload',uploadRouter)
 
 app.listen(3000, () => {
   console.log("Node.js server is running on port 3000");

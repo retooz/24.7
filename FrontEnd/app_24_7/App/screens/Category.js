@@ -43,7 +43,7 @@ const Category = ({navigation}) => {
         }}>
         <ImageBackground
           source={require('../assets/image/aiCoach.png')}
-          style={{width: '100%', height: '100%'}}>
+          style={styles.image}>
           <View style={styles.textContainer}>
             <Text style={styles.headText}>AI 코치와 함께!</Text>
             <Text style={styles.text}>
@@ -62,7 +62,7 @@ const Category = ({navigation}) => {
         }}>
         <ImageBackground
           source={require('../assets/image/humanCoach.png')}
-          style={{width: '100%', height: '100%'}}>
+          style={styles.image}>
           <View style={styles.textContainer}>
             <Text style={styles.headText}>부위별 운동</Text>
             <Text style={styles.text}>
@@ -96,6 +96,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 15,
   },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 10,
+  },
   textContainer: {
     marginTop: windowHeight * 0.08,
   },
@@ -112,12 +118,12 @@ const styles = StyleSheet.create({
     fontWeight: 'thin',
     fontSize: 20,
     color: 'black',
-    marginVertical: 20,
+    marginVertical: windowHeight * 0.02,
     alignSelf: 'center',
   },
   startExercise: {
-    width: 155,
-    height: 65,
+    width: windowWidth * 0.35,
+    height: windowHeight * 0.085,
     backgroundColor: 'rgba(249, 247, 254, 0.50)',
     borderRadius: 50,
     justifyContent: 'center',

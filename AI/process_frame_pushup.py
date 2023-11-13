@@ -11,10 +11,9 @@ from utils import find_angle, get_landmark_features, draw_text, draw_dotted_line
 class ProcessFrame:
     def __init__(self, thresholds, flip_frame = False):
         
-        
         # Set if frame should be flipped or not. 매개변수 값
         self.flip_frame = flip_frame
-        
+
         # self.thresholds 매개변수 값.
         self.thresholds = thresholds
 
@@ -77,9 +76,6 @@ class ProcessFrame:
         # 이 딕셔너리에는 상태 시퀀스, 비활성 시간, 텍스트 표시 여부, 프레임 카운트 등이 포함됨
         self.state_tracker = {
             'state_seq': [],
-            'temp': [],
-            'min_list': [],
-            'rec': False,
 
             'start_inactive_time': time.perf_counter(),
             'start_inactive_time_front': time.perf_counter(),
@@ -102,10 +98,7 @@ class ProcessFrame:
 
             'SQUAT_SCORE' : 0
             
-            
         }
-        
-        
         # 자세 피드백
         # 이 딕셔너리에는 자세 ID, 표시할 텍스트, 텍스트 크기 및 색상이 포함됩니다.
         self.FEEDBACK_ID_MAP = {
@@ -176,12 +169,11 @@ class ProcessFrame:
 
 
 
-    def process(self, frame: np.array, pose, fps, frame_size):
+    def process(self, frame: np.array, pose):
        
 
         frame_height, frame_width, _ = frame.shape
-        
-        
+
         # Process the image.
         keypoints = pose.process(frame)
         # 포즈 랜드마크가 존재하는 경우, 해당 랜드마크를 기반으로 코, 어깨, 팔꿈치, 손목, 엉덩이, 무릎, 발목, 발의 좌표를 가져온다.
@@ -255,8 +247,6 @@ class ProcessFrame:
             # Camera is aligned properly.
             # 오프셋 각도가 임계값보다 작은 경우
             else:
-                ex_count = 0
-                out = cv2.VideoWriter(f'C:\\Users\\gjaischool\\Desktop\\output{ex_count}.mp4', cv2.VideoWriter_fourcc(*"mp4v"),fps, frame_size)
                 # 휴식시간과 임계값 초기화
                 self.state_tracker['INACTIVE_TIME_FRONT'] = 0.0
                 self.state_tracker['start_inactive_time_front'] = time.perf_counter()
@@ -366,7 +356,6 @@ class ProcessFrame:
                 # -------------------------------------- COMPUTE COUNTERS --------------------------------------
                 # 현재 상태가 s1인 경우
                 if current_state == 's1':
-                    self.state_tracker['rec'] = False
                     # 올바른 스쿼트 카운트
                     if len(self.state_tracker['state_seq']) == 3 and not self.state_tracker['INCORRECT_POSTURE']:
                         self.state_tracker['SQUAT_COUNT']+=1
@@ -378,24 +367,15 @@ class ProcessFrame:
                         self.state_tracker['IMPROPER_SQUAT']+=1
                         
                     # 변수 초기화
-                    ex_count += 1
-                    out = cv2.VideoWriter(f'C:\\Users\\gjaischool\\Desktop\\output{ex_count}.mp4', cv2.VideoWriter_fourcc(*'mp4v'),fps, frame_size)
-                    # self.state_tracker['min_list'].append(min(self.state_tracker['temp']))
-                    # self.state_tracker['temp'] = []
                     self.state_tracker['state_seq'] = []
                     self.state_tracker['INCORRECT_POSTURE'] = False
-                
+
 
                 # ----------------------------------------------------------------------------------------------------
 
                 # -------------------------------------- PERFORM FEEDBACK ACTIONS --------------------------------------
                 # 현재 상태가 s1이 아닌 경우
                 else:
-                    self.state_tracker['rec'] = True
-                    
-                    if self.state_tracker['rec'] == True:
-                        out.write(frame)
-                    
                 ## 엉덩이 각도 계산
                     # 엉덩이 수직 각도가 범위 임계값 상한값보다 큰 경우 텍스트 리스트의 첫번째 텍스트가 표시되게 설정.
                     if hip_vertical_angle > self.thresholds['HIP_THRESH'][1]:

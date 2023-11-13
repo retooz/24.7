@@ -13,7 +13,8 @@ sys.path.append(BASE_DIR)
 from utils import get_mediapipe_pose
 from process_frame_squat import ProcessFrame as ProcessFrameSquat
 from process_frame_lunge import ProcessFrame as ProcessFrameLunge
-from thresholds import thresholds_squat, thresholds_lunge
+from process_frame_pushup import ProcessFrame as ProcessFramePushup
+from thresholds import thresholds_squat, thresholds_lunge, thresholds_pushup
 
 
 
@@ -31,7 +32,9 @@ if type == 'Squat':
 elif type == 'Lunge':
     thresholds = thresholds_lunge()
     upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
-
+# elif type == 'Lunge':
+#     thresholds = thresholds_lunge()
+#     upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
 
 # Initialize face mesh solution
 pose = get_mediapipe_pose()
@@ -94,7 +97,7 @@ if up_file and uploaded:
 
             # convert frame from BGR to RGB before processing it.
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            out_frame = upload_process_frame.process(frame, pose)
+            out_frame = upload_process_frame.process(frame, pose, fps, frame_size)
             stframe.image(out_frame)
             video_output.write(out_frame[...,::-1])
 

@@ -26,15 +26,6 @@ type = st.radio('Type of exercise', ['Squat', 'Lunge', 'Pushup'], horizontal=Tru
 
 thresholds = None 
 
-if type == 'Squat':
-    thresholds = thresholds_squat()
-    upload_process_frame = ProcessFrameSquat(thresholds=thresholds)
-elif type == 'Lunge':
-    thresholds = thresholds_lunge()
-    upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
-# elif type == 'Lunge':
-#     thresholds = thresholds_lunge()
-#     upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
 
 # Initialize face mesh solution
 pose = get_mediapipe_pose()
@@ -86,6 +77,15 @@ if up_file and uploaded:
         video_output = cv2.VideoWriter(output_video_file, fourcc, fps, frame_size)
         # -----------------------------------------------------------------------------
 
+        if type == 'Squat':
+            thresholds = thresholds_squat()
+            upload_process_frame = ProcessFrameSquat(thresholds=thresholds, fps=fps, frame_size=frame_size)
+        elif type == 'Lunge':
+            thresholds = thresholds_lunge()
+            upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
+        elif type == 'Pushup':
+            thresholds = thresholds_pushup()
+            upload_process_frame = ProcessFramePushup(thresholds=thresholds)
         
         txt = st.sidebar.markdown(ip_vid_str, unsafe_allow_html=True)   
         ip_video = st.sidebar.video(tfile.name) 
@@ -97,7 +97,7 @@ if up_file and uploaded:
 
             # convert frame from BGR to RGB before processing it.
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            out_frame = upload_process_frame.process(frame, pose, fps, frame_size)
+            out_frame = upload_process_frame.process(frame, pose)
             stframe.image(out_frame)
             video_output.write(out_frame[...,::-1])
 

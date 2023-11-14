@@ -13,8 +13,6 @@ fs.readdir('./public/uploads',(error)=>{
     }
 })
 
-
-
 const uploadImg = multer({
     storage:multer.diskStorage({
         destination:function(req,file,cb){
@@ -25,12 +23,35 @@ const uploadImg = multer({
         }
     })
 })
+//http://10.0.2.2:3000/upload/uploadVideo
+const uploadVideo= multer({
+    storage:multer.diskStorage({
+        destination:function(req,file,cb){
+            cb(null,'./public/uploads/video');
+        },
+        filename:function(req,file,cb){
+            cb(null,`${req.session.userId}_${Date.now()}`);
+        }
+    })
+})
+
+// const upload = multer({
+//     storage: multer.diskStorage({
+//         destination: function (req, file, cb) {
+//             cb(null, './public/uploads'); // uploads 폴더에 파일 저장
+//         },
+//         filename: function (req, file, cb) {
+//             cb(null, `${req.session.userId}_${Date.now()}_${file.originalname}`);
+//         },
+//     })
+// })
 
 router.post('/uploadImg',uploadImg.single('profilePic'),(req,res)=>{
     console.log('uploadImg router');
     console.log('req',req.body)
     console.log(req.file)
-    
 })
+
+router.post('/uploadVideo',uploadVideo.single())
 
 module.exports = router;

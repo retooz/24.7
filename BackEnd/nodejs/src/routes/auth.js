@@ -27,13 +27,10 @@ function(req,res,next) {
 // }))
 
 router.get('/loginSuccess',(req,res)=>{
-    console.log('여기까지 왔나?')
     res.send({result:0})
 })
 
 router.get('/loginFail',(req,res)=>{
-    console.log('여기까지 왔나?')
-
     res.send({result:1})
 })
 

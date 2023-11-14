@@ -9,13 +9,23 @@ from utils import find_angle, get_landmark_features, draw_text, draw_dotted_line
 
 
 class ProcessFrame:
-    def __init__(self, thresholds, flip_frame = False):
+    def __init__(self, thresholds, fps, frame_size, flip_frame = False):
+        
+        self.ex_count = 1
+        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\test\\output{self.ex_count}.mp4'
         
         # Set if frame should be flipped or not. 매개변수 값
         self.flip_frame = flip_frame
-
+        
         # self.thresholds 매개변수 값.
         self.thresholds = thresholds
+        
+        self.fps = fps
+        
+        self.frame_size = frame_size
+        
+        self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, self.frame_size)
+        
 
         # opencv 폰트 타입
         self.font = cv2.FONT_HERSHEY_SIMPLEX
@@ -76,15 +86,17 @@ class ProcessFrame:
         # 이 딕셔너리에는 상태 시퀀스, 비활성 시간, 텍스트 표시 여부, 프레임 카운트 등이 포함됨
         self.state_tracker = {
             'state_seq': [],
+            'temp': [],
+            'min_list': [],
+            'rec': False,
 
-            'start_inactive_time': time.perf_counter(),
-            'start_inactive_time_front': time.perf_counter(),
-            'INACTIVE_TIME': 0.0,
-            'INACTIVE_TIME_FRONT': 0.0,
+            # 'start_inactive_time': time.perf_counter(),
+            # 'start_inactive_time_front': time.perf_counter(),
+            # 'INACTIVE_TIME': 0.0,
+            # 'INACTIVE_TIME_FRONT': 0.0,
 
             # 0 --> Bend Backwards, 1 --> Bend Forward, 2 --> Keep shin straight, 3 --> Deep squat
             'DISPLAY_TEXT' : np.full((4,), False),
-            'COUNT_FRAMES' : np.zeros((4,), dtype=np.int64),
 
             'LOWER_HIPS': False,
 
@@ -98,7 +110,10 @@ class ProcessFrame:
 
             'SQUAT_SCORE' : 0
             
+            
         }
+        
+        
         # 자세 피드백
         # 이 딕셔너리에는 자세 ID, 표시할 텍스트, 텍스트 크기 및 색상이 포함됩니다.
         self.FEEDBACK_ID_MAP = {
@@ -117,10 +132,10 @@ class ProcessFrame:
 
         if self.thresholds['HIP_KNEE_VERT']['NORMAL'][0] <= knee_angle <= self.thresholds['HIP_KNEE_VERT']['NORMAL'][1]:
             knee = 1
-        elif self.thresholds['HIP_KNEE_VERT']['TRANS'][0] <= knee_angle <= self.thresholds['HIP_KNEE_VERT']['TRANS'][1]:
+        elif self.thresholds['HIP_KNEE_VERT']['PASS'][0] <= knee_angle <= self.thresholds['HIP_KNEE_VERT']['TRANS'][1]:
             knee = 2
-        elif self.thresholds['HIP_KNEE_VERT']['PASS'][0] <= knee_angle <= self.thresholds['HIP_KNEE_VERT']['PASS'][1]:
-            knee = 3
+        # elif self.thresholds['HIP_KNEE_VERT']['PASS'][0] <= knee_angle <= self.thresholds['HIP_KNEE_VERT']['PASS'][1]:
+        #     knee = 3
 
         return f's{knee}' if knee else None
 
@@ -170,10 +185,11 @@ class ProcessFrame:
 
 
     def process(self, frame: np.array, pose):
-       
+        
 
         frame_height, frame_width, _ = frame.shape
-
+        
+        
         # Process the image.
         keypoints = pose.process(frame)
         # 포즈 랜드마크가 존재하는 경우, 해당 랜드마크를 기반으로 코, 어깨, 팔꿈치, 손목, 엉덩이, 무릎, 발목, 발의 좌표를 가져온다.
@@ -247,9 +263,10 @@ class ProcessFrame:
             # Camera is aligned properly.
             # 오프셋 각도가 임계값보다 작은 경우
             else:
+                
                 # 휴식시간과 임계값 초기화
-                self.state_tracker['INACTIVE_TIME_FRONT'] = 0.0
-                self.state_tracker['start_inactive_time_front'] = time.perf_counter()
+                # self.state_tracker['INACTIVE_TIME_FRONT'] = 0.0
+                # self.state_tracker['start_inactive_time_front'] = time.perf_counter()
 
                 # 왼쪽 어깨와 오른쪽 엉덩이 사이 거리 계산
                 dist_l_sh_hip = abs(left_foot_coord[1]- left_shldr_coord[1])
@@ -291,13 +308,13 @@ class ProcessFrame:
                     
 
                 # ------------------- Verical Angle calculation --------------
-                # 엉덩이 수직 각도 계산/ 기준 : 어깨 좌표, 엉덩이 좌표
-                hip_vertical_angle = find_angle(shldr_coord, np.array([hip_coord[0], 0]), hip_coord)
-                cv2.ellipse(frame, hip_coord, (30, 30), 
-                            angle = 0, startAngle = -90, endAngle = -90+multiplier*hip_vertical_angle, 
+                # 어깨 수직 각도 계산/ 기준 : 어깨 좌표 -> 팔꿈치 좌표
+                shldr_vertical_angle = find_angle(shldr_coord, np.array([elbow_coord[0], 0]), elbow_coord)
+                cv2.ellipse(frame, elbow_coord, (30, 30), 
+                            angle = 0, startAngle = -90, endAngle = -90+multiplier*shldr_vertical_angle, 
                             color = self.COLORS['white'], thickness = 2, lineType = self.linetype)
 
-                draw_dotted_line(frame, hip_coord, start=hip_coord[1]-40, end=hip_coord[1], line_color=self.COLORS['white'])
+                draw_dotted_line(frame, elbow_coord, start=elbow_coord[1]-40, end=elbow_coord[1], line_color=self.COLORS['white'])
 
 
 
@@ -356,26 +373,48 @@ class ProcessFrame:
                 # -------------------------------------- COMPUTE COUNTERS --------------------------------------
                 # 현재 상태가 s1인 경우
                 if current_state == 's1':
+                    if self.state_tracker['rec'] == True:
+                        self.state_tracker['rec'] = False
+                        self.out.release()
+                        self.ex_count += 1
+                        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\test\\output{self.ex_count}.mp4'
+                        self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, self.frame_size)
+                        # self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                        
                     # 올바른 스쿼트 카운트
                     if len(self.state_tracker['state_seq']) == 3 and not self.state_tracker['INCORRECT_POSTURE']:
                         self.state_tracker['SQUAT_COUNT']+=1
+                        
                     # 잘못된 스쿼트 카운트    
                     elif 's2' in self.state_tracker['state_seq'] and len(self.state_tracker['state_seq'])==1:
                         self.state_tracker['IMPROPER_SQUAT']+=1
-
+ 
                     elif self.state_tracker['INCORRECT_POSTURE']:
                         self.state_tracker['IMPROPER_SQUAT']+=1
+                    
+                    
+                    
                         
                     # 변수 초기화
+                    self.frame_count = 0
                     self.state_tracker['state_seq'] = []
                     self.state_tracker['INCORRECT_POSTURE'] = False
-
+                
 
                 # ----------------------------------------------------------------------------------------------------
+
 
                 # -------------------------------------- PERFORM FEEDBACK ACTIONS --------------------------------------
                 # 현재 상태가 s1이 아닌 경우
                 else:
+                    self.state_tracker['rec'] = True
+                    
+                    if self.state_tracker['rec'] == True:
+                        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                        self.out.write(frame)
+
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                        
                 ## 엉덩이 각도 계산
                     # 엉덩이 수직 각도가 범위 임계값 상한값보다 큰 경우 텍스트 리스트의 첫번째 텍스트가 표시되게 설정.
                     if hip_vertical_angle > self.thresholds['HIP_THRESH'][1]:
@@ -454,10 +493,9 @@ class ProcessFrame:
                 if 's3' in self.state_tracker['state_seq'] or current_state == 's1':
                     self.state_tracker['LOWER_HIPS'] = False
 
-                self.state_tracker['COUNT_FRAMES'][self.state_tracker['DISPLAY_TEXT']]+=1
 
                 # 피드백 시각화
-                frame = self._show_feedback(frame, self.state_tracker['COUNT_FRAMES'], self.FEEDBACK_ID_MAP, self.state_tracker['LOWER_HIPS'])
+                # frame = self._show_feedback(frame, self.state_tracker['COUNT_FRAMES'], self.FEEDBACK_ID_MAP, self.state_tracker['LOWER_HIPS'])
 
 
                 # 비활동 시간에 대한 처리
@@ -494,9 +532,9 @@ class ProcessFrame:
 
                 
                 # 초기화
-                self.state_tracker['DISPLAY_TEXT'][self.state_tracker['COUNT_FRAMES'] > self.thresholds['CNT_FRAME_THRESH']] = False
-                self.state_tracker['COUNT_FRAMES'][self.state_tracker['COUNT_FRAMES'] > self.thresholds['CNT_FRAME_THRESH']] = 0    
-                self.state_tracker['prev_state'] = current_state
+                # self.state_tracker['DISPLAY_TEXT'][self.state_tracker['COUNT_FRAMES'] > self.thresholds['CNT_FRAME_THRESH']] = False
+                # self.state_tracker['COUNT_FRAMES'][self.state_tracker['COUNT_FRAMES'] > self.thresholds['CNT_FRAME_THRESH']] = 0    
+                # self.state_tracker['prev_state'] = current_state
                                   
 
        

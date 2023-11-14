@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const passport = require('../passport/passport.js');
 const queries = require('../queries/userQueries.js');
 const conn = require('../../config/database.js');
-const homeService = require('../services/homeService.js')
+const homeService = require('../services/homeService.js');
 const userQueries = require('../queries/userQueries.js');
 
 router.post('/join', (req, res) => {
@@ -44,10 +44,10 @@ router.post('/emailCheck', (req, res) => {
     }
 });
 
-router.post('/find_password',(req,res)=>{
+router.post('/find_password', (req, res) => {
     console.log('find_password router')
     console.log(req.body)
-    let {userEmail,password,checkPassword} = req.body
+    let { userEmail, password, checkPassword } = req.body
     // conn.query(queries.searchPassword,[userEmail],(err,idResult)=>{
     //     console.log('id query',idResult)
     // })

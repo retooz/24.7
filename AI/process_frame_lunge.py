@@ -249,6 +249,7 @@ class ProcessFrame:
                     # foot_coord = left_foot_coord
 
                     multiplier = -1
+                    side = -90
                                      
                 # 반대의 경우, 오른쪽 어깨 관련 좌표 변수 할당
                 else:
@@ -261,6 +262,7 @@ class ProcessFrame:
                     # foot_coord = right_foot_coord
 
                     multiplier = 1
+                        
                     
 
                 # ------------------- Verical Angle calculation --------------
@@ -276,8 +278,10 @@ class ProcessFrame:
                 # (왼쪽 무릎) 엉덩이와 무릎 사이의 수직 각도 계산/ 기준 : 엉덩이 좌표, 무릎 좌표
                 left_knee_vertical_angle = find_angle(hip_coord, np.array([left_knee_coord[0], 0]), left_knee_coord)
                 cv2.ellipse(frame, left_knee_coord, (20, 20), 
-                            angle = 0, startAngle = -90, endAngle = -90-multiplier*left_knee_vertical_angle, 
+                            angle = 0, startAngle = -90, endAngle = -90-left_knee_vertical_angle, 
                             color = self.COLORS['white'], thickness = 2,  lineType = self.linetype)
+                # angle = find_angle(hip_coord, np.array([left_knee_coord[0], 0]), left_knee_coord)
+                
 
                 draw_dotted_line(frame, left_knee_coord, start=left_knee_coord[1]-40, end=left_knee_coord[1], line_color=self.COLORS['white'])
                 
@@ -285,7 +289,7 @@ class ProcessFrame:
                 # (오른쪽 무릎) 엉덩이와 무릎 사이의 수직 각도 계산/ 기준 : 엉덩이 좌표, 무릎 좌표
                 right_knee_vertical_angle = find_angle(hip_coord, np.array([right_knee_coord[0], 0]), right_knee_coord)
                 cv2.ellipse(frame, right_knee_coord, (20, 20), 
-                            angle = 0, startAngle = -90, endAngle = multiplier*right_knee_vertical_angle-90, 
+                            angle = 0, startAngle = -90, endAngle = right_knee_vertical_angle-90, 
                             color = self.COLORS['white'], thickness = 2,  lineType = self.linetype)
 
                 draw_dotted_line(frame, right_knee_coord, start=right_knee_coord[1]-40, end=right_knee_coord[1], line_color=self.COLORS['white'])

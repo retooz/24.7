@@ -7,13 +7,14 @@ const userQueries = require('../queries/userQueries')
 const trainerQueries = require('../queries/trainerQueries')
 
 passport.use('local-login-user', new local({
-    usernameField: 'userId',
-    passwordField: 'password',
+    usernameField: 'email',
+    passwordField: 'pw',
     session:true,
-}, (userId, password, done) => {
-    conn.query(userQueries.signInCheck,[userId],(err,result)=>{
+}, (email, pw, done) => {
+    console.log("벡으로 넘어오나?",email)
+    conn.query(userQueries.signInCheck,[email],(err,result)=>{
         if(result.length > 0){
-            const same = bcrypt.compareSync(password, result[0].pw);
+            const same = bcrypt.compareSync(pw, result[0].pw);
             if(same){
                 console.log('로그인 성공')
                 return done(null,result)

@@ -7,24 +7,42 @@ const passport = require('../passport/passport.js');
 const queries = require('../queries/userQueries.js');
 const conn = require('../../config/database.js');
 const homeService = require('../services/homeService.js')
+const userQueries = require('../queries/userQueries.js');
 
-router.post('/join', async (req,res)=>{
+router.post('/join', (req, res) => {
     console.log('user join Router')
     const data = req.body;
-
-    const dupCheckRes = await homeService.duplicateCheck(data.userEmail);
-    if (dupCheckRes.length > 0) {
-        res.send(`<script>alert('이미 존재하는 이메일입니다.');location.href='http://1.226.185.17:3000';</script>`);
-    } else {
-
-        const cryptedPW = bcrypt.hashSync(userPw,10);
-        const joinResult = await homeService.join(data, cryptedPW)
-
-        if (joinResult.affectedRows > 0) {
-            res.send(`<script>alert('회원가입에 성공하였습니다');location.href='http://1.226.185.17:3000;</script>`);
-        }
+    try {
+        const cryptedPW = bcrypt.hashSync(data.pw, 10);
+        conn.query(userQueries.signUp, [data.email, cryptedPW, data.nick], (err, rows) => {
+            if (rows.affectedRows > 0) {
+                res.send({ result: 0 })
+            } else {
+                res.send({ result: 1 })
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ result: -1, error: "Internal Server Error" });
     }
 })
+
+router.post('/emailCheck', (req, res) => {
+    try {
+        const userEmail = req.body.email; // 수정된 부분
+        console.log(userEmail);
+        conn.query(userQueries.duplicateCheck, [userEmail], (err, rows) => {
+            if (rows.length > 0) {
+                res.json({ result: 1 })
+            } else {
+                res.json({ result: 0 })
+            }
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ result: -1, error: "Internal Server Error" });
+    }
+});
 
 router.post('/find_password',(req,res)=>{
     console.log('find_password router')

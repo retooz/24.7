@@ -4,3 +4,4 @@
 .DS_Store
 /BackEnd/nodejs/sessions
 /BackEnd/nodejs/node_modules
+/AI/__pycache__

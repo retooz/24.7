@@ -9,7 +9,7 @@ import {
   ImageBackground,
 } from 'react-native';
 
-
+// ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
@@ -45,7 +45,7 @@ const CategoryAi = ({navigation}) => {
         </TouchableOpacity>
       ),
       contentStyle: {
-        backgroundColor: '#FAFAFA',
+        backgroundColor: '#fff',
       },
     });
   }, [navigation]);

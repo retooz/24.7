@@ -12,16 +12,29 @@ const Join = () => {
             <input type='button' value='중복확인' id='dup-check-btn' />
           </div>
           <p>비밀번호</p>
-          <input type="password" name="" id="" className='join-input'/>
+          <input type='password' name='' id='' className='join-input' />
           <p>비밀번호 확인</p>
-          <input type="password" name="" id="" className='join-input'/>
+          <input type='password' name='' id='' className='join-input' />
           <p>이름</p>
-          <input type="text" name="" id="" className='join-input'/>
+          <input type='text' name='' id='' className='join-input' />
           <p>프로필 사진</p>
-          <input type="file" name="" id="" />
+          <div id='join-upload-form'>
+            <input
+              className='join-input'
+              value='첨부파일'
+              placeholder='첨부파일'
+            />
+            <label for='profile_pic'>파일찾기</label>
+            <input type='file' id='profile_pic' />
+          </div>
           <p>경력사항</p>
-          <textarea name="" id="join-career"></textarea>
-          <input type="submit" value="가입하기" id='join-btn' className='join-input'/>
+          <textarea name='' id='join-career'></textarea>
+          <input
+            type='submit'
+            value='가입하기'
+            id='join-btn'
+            className='join-input'
+          />
         </div>
       </form>
     </div>

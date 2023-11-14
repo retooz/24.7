@@ -16,6 +16,7 @@ import {
 } from 'react-native-vision-camera';
 // import { RNCamera } from 'react-native-camera';
 // ---------------------------------------------------------
+
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
@@ -97,5 +98,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 });
+
 
 export default RecordVideo;

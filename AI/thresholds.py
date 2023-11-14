@@ -13,14 +13,13 @@ def thresholds_squat():
     thresholds = {
                     'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT,
 
-                    'HIP_THRESH'   : [10, 50],
-                    'ANKLE_THRESH' : 45,
-                    'KNEE_THRESH'  : [50, 70, 95],
+                    # 'HIP_THRESH'   : [10, 50],
+                    # 'ANKLE_THRESH' : 45,
+                    # 'KNEE_THRESH'  : [50, 70, 95],
 
-                    'OFFSET_THRESH'    : 35.0,
-                    'INACTIVE_THRESH'  : 15.0,
+                    'OFFSET_THRESH'    : 35.0
 
-                    'CNT_FRAME_THRESH' : 50
+                    # 'CNT_FRAME_THRESH' : 50
                 }
 
     return thresholds
@@ -39,6 +38,33 @@ def thresholds_lunge():
         
     thresholds = {
                     'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT,
+
+                    'HIP_THRESH'   : [15, 50],
+                    'ANKLE_THRESH' : 30,
+                    'KNEE_THRESH'  : [50, 80, 95],
+
+                    'OFFSET_THRESH'    : 35.0,
+                    'INACTIVE_THRESH'  : 15.0,
+
+                    'CNT_FRAME_THRESH' : 50
+                            
+                 }
+                 
+    return thresholds
+
+
+
+# 푸쉬업 자세 범위
+def thresholds_pushup():
+
+    _ANGLE_SHIDR_ELBOW_VERT = {
+                            'NORMAL' : (0,  32),
+                            'PASS'  : (35, 65)
+                           }    
+
+        
+    thresholds = {
+                    'SHIDR_ELBOW_VERT': _ANGLE_SHIDR_ELBOW_VERT,
 
                     'HIP_THRESH'   : [15, 50],
                     'ANKLE_THRESH' : 30,

@@ -7,7 +7,7 @@ const passport = require('../passport/passport');
 
 router.post('/userLogin',passport.authenticate('local-login-user',{
     successRedirect:'/loginSuccess',
-    failureRedirect:'/loginFail',
+    failureRedirect:'http://10.0.2.2:3000/Login',
     failureFlash:true
 }))
 
@@ -18,11 +18,11 @@ router.post('/userLogin',passport.authenticate('local-login-user',{
 // }))
 
 router.get('/loginSuccess',(req,res)=>{
-    res.render('loginSuccess')
+    res.send({result:0})
 })
 
 router.get('/loginFail',(req,res)=>{
-    res.render('loginFail')
+    res.send({result:1})
 })
 
 module.exports = router;

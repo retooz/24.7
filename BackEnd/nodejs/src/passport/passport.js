@@ -6,14 +6,16 @@ const homeService = require('../services/homeService')
 const userQueries = require('../queries/userQueries')
 const trainerQueries = require('../queries/trainerQueries')
 
+
+//로그인 성공 0 아니면 1
 passport.use('local-login-user', new local({
-    usernameField: 'userId',
-    passwordField: 'password',
+    usernameField: 'email',
+    passwordField: 'pw',
     session:true,
-}, (userId, password, done) => {
-    conn.query(userQueries.signInCheck,[userId],(err,result)=>{
+}, (email, pw, done) => {
+    conn.query(userQueries.signInCheck,[email],(err,result)=>{
         if(result.length > 0){
-            const same = bcrypt.compareSync(password, result[0].pw);
+            const same = bcrypt.compareSync(pw, result[0].pw);
             if(same){
                 console.log('로그인 성공')
                 return done(null,result)

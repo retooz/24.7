@@ -1,14 +1,14 @@
 use Insa4_JSB_final_4;
 
-DROP SEQUENCE user_code;
-DROP SEQUENCE trainer_code;
-DROP SEQUENCE connection_code;
+# DROP SEQUENCE user_code;
+# DROP SEQUENCE trainer_code;
+# DROP SEQUENCE connection_code;
 
 CREATE SEQUENCE user_code START WITH 10000001 INCREMENT BY 1 MAXVALUE 19999999;
 CREATE SEQUENCE trainer_code START WITH 20000001 INCREMENT BY 1 MAXVALUE 29999999;
 CREATE SEQUENCE connection_code START WITH 30000001 INCREMENT BY 1 MAXVALUE 49999999;
 
-DROP TABLE user;
+# DROP TABLE user;
 CREATE TABLE user(
     email VARCHAR(50) NOT NULL,
     pw VARCHAR(100) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE user(
     PRIMARY KEY (user_code)
 );
 
-DROP TABLE trainer;
+# DROP TABLE trainer;
 CREATE TABLE trainer(
     email VARCHAR(50) NOT NULL,
     pw VARCHAR(100) NOT NULL,
@@ -30,12 +30,13 @@ CREATE TABLE trainer(
     PRIMARY KEY (trainer_code)
 );
 
-DROP TABLE connection;
+# DROP TABLE connection;
 CREATE TABLE connection (
     user_code INT NOT NULL,
     trainer_code INT NOT NULL,
     connection_code INT NOT NULL PRIMARY KEY,
     exercise_category VARCHAR(20),
+    user_comment VARCHAR(1024),
     accuracy FLOAT,
     accuracy_list VARCHAR(512),
     user_video_url VARCHAR(512),
@@ -44,7 +45,7 @@ CREATE TABLE connection (
     CONSTRAINT FK_trainer_connection FOREIGN KEY(trainer_code) REFERENCES trainer(trainer_code)
 );
 
-DROP TABLE feedback_list_user;
+# DROP TABLE feedback_list_user;
 CREATE TABLE feedback_list_user (
     connection_code INT NOT NULL,
     feedback_content VARCHAR(1024),
@@ -55,15 +56,7 @@ CREATE TABLE feedback_list_user (
     CONSTRAINT FK_connection_feedback_user FOREIGN KEY(connection_code) REFERENCES connection(connection_code)
 );
 
-DROP TABLE feedback_list_trainer;
-CREATE TABLE feedback_list_trainer(
-    connection_code INT NOT NULL,
-    user_comment VARCHAR(1024),
-    feedback_date TIMESTAMP,
-    CONSTRAINT FK_connection_feedback_trainer FOREIGN KEY(connection_code) REFERENCES connection(connection_code)
-);
-
-DROP TABLE reference_video;
+# DROP TABLE reference_video;
 CREATE TABLE reference_video(
     exercise_category VARCHAR(20),
     video_url VARCHAR(512)

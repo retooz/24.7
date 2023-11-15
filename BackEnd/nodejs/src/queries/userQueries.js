@@ -13,4 +13,7 @@ module.exports = {
     /** 비밀번호 변경 */
     updatePassword : `update user set pw = ? where email = ?`,
 
+    /** 닉네임 변경 */
+    updateNickname : `update user set nickname = ? where email = ?`,
+
 }

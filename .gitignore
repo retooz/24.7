@@ -7,21 +7,21 @@
 # FE-Web Ignore List
 
 # Dependencies
-/FrontEnd/web_27_4/node_modules
-/FrontEnd/web_27_4/.pnp
-/FrontEnd/web_27_4/.pnp.js
+/FrontEnd/web_24_7/node_modules
+/FrontEnd/web_24_7/.pnp
+/FrontEnd/web_24_7/.pnp.js
 
 # testing, production
-/FrontEnd/web_27_4/coverage
-/FrontEnd/web_27_4/build
+/FrontEnd/web_24_7/coverage
+/FrontEnd/web_24_7/build
 
-# misc
-/FrontEnd/web_27_4/.DS_Store
-/FrontEnd/web_27_4/.vscode
-/FrontEnd/web_27_4/.env.*
-/FrontEnd/web_27_4/npm-debug.log*
-/FrontEnd/web_27_4/yarn-debug.log*
-/FrontEnd/web_27_4/yarn-error.log*
+# misc7
+/FrontEnd/web_24_7/.DS_Store
+/FrontEnd/web_24_7/.vscode
+/FrontEnd/web_24_7/.env.*
+/FrontEnd/web_24_7/npm-debug.log*
+/FrontEnd/web_24_7yarn-debug.log*
+/FrontEnd/web_24_7/yarn-error.log*
 
 
 # FE-App Ignore List

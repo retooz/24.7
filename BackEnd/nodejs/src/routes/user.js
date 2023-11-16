@@ -65,6 +65,7 @@ router.post('/findPassword', async (req, res) => {
 router.post('/passwordCheck', async (req, res) => {
     try {
         const userEmail = req.body.email;
+        console.log("1", req.body)
         const result = await homeService.signInCheck(userEmail)
         if (result.length > 0) {
             const same = bcrypt.compareSync(req.body.pw, result[0].pw)

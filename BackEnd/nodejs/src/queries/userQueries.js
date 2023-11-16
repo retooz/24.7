@@ -5,7 +5,7 @@ module.exports = {
     signUp: `insert into user (email, pw, nickname) values (?,?,?)`,
 
     /** email 확인 */
-    duplicateCheck: `select email,user_code from user where email = ?`,
+    duplicateCheck : `select email from user where email = ?`,
 
     /** 로그인(이메일) */
     signInCheck: `select email,pw from user where email = ?`,

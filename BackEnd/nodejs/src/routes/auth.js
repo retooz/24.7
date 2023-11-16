@@ -1,8 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const axios = require("axios");
-const multer = require('multer');
-const bcrypt = require('bcrypt');
 const passport = require('../passport/passport');
 
 router.post('/userLogin', passport.authenticate('local-login-user', { failWithError: true }),

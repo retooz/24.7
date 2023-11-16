@@ -18,7 +18,7 @@ const uploadImg = multer({
             cb(null,'./public/uploads/img');
         },
         filename:function(req,file,cb){
-            cb(null,`${req.session.userId}_${Date.now()}`);
+            cb(null,`${req.session.userEmail}_${Date.now()}`);
         }
     })
 })
@@ -29,7 +29,7 @@ const uploadVideo= multer({
             cb(null,'./public/uploads/video');
         },
         filename:function(req,file,cb){
-            cb(null,`${req.session.userId}_${Date.now()}`);
+            cb(null,`${req.session.userEmail}_${Date.now()}`);
         }
     })
 })

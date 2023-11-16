@@ -1,21 +1,24 @@
 const express = require('express')
 const router = express.Router()
-const axios = require("axios");
-const multer = require('multer');
 const bcrypt = require('bcrypt');
-const passport = require('../passport/passport.js');
-const queries = require('../queries/userQueries.js');
-const conn = require('../../config/database.js');
 const homeService = require('../services/homeService.js');
-const userQueries = require('../queries/userQueries.js');
+const multer = require('multer');
+const fs = require('fs');
+
+fs.readdir('./public/uploads',(error)=>{
+    if(error){
+        fs.mkdirSync('./public')
+        fs.mkdirSync('./public/uploads');
+        fs.mkdirSync('./public/uploads/img');
+        fs.mkdirSync('./public/uploads/video');
+    }
+})
 
 router.post('/join', async (req, res) => {
-    console.log('user join Router')
     const data = req.body;
-    console.log('data', data)
     try {
         const cryptedPW = bcrypt.hashSync(data.pw, 10);
-        const result = await homeService.join(data, cryptedPW)
+        const result = await homeService.join(data, cryptedPW);
         if (result.affectedRows > 0) {
             res.send({ result: 0 })
         } else {
@@ -28,13 +31,12 @@ router.post('/join', async (req, res) => {
 
 router.post('/emailCheck', async (req, res) => {
     try {
-        const userEmail = req.body.email; // 수정된 부분
-        const result = await homeService.duplicateCheck(userEmail)
-        console.log(result)
+        const userEmail = req.body.email;
+        const result = await homeService.duplicateCheck(userEmail);
         if (result.length > 0) {
-            res.json({ result: 1 })
+            res.json({ result: 1 });
         } else {
-            res.json({ result: 0 })
+            res.json({ result: 0 });
         }
 
     } catch (error) {
@@ -67,33 +69,54 @@ router.post('/passwordCheck', async (req, res) => {
         if (result.length > 0) {
             const same = bcrypt.compareSync(req.body.pw, result[0].pw)
             if (same) {
-                res.json({ result: 1 })
+                res.json({ result: 1 });
             }
         } else {
-            res.json({ result: 0 })
+            res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 })
 
 router.post('/modify', async (req, res) => {
     try {
         const userEmail = req.body.email;
-        console.log("213", req.body)
         const nickname = req.body.nickname;
         const cryptedPW = bcrypt.hashSync(req.body.pw, 10);
         const result = await homeService.updatePassword(userEmail, cryptedPW);
         if (result.affectedRows > 0) {
             const nickResult = await homeService.updateNickname(userEmail, nickname);
             if (nickResult.affectedRows > 0) {
-                res.json({ result: 1 })
+                res.json({ result: 1 });
             }
         } else {
-            res.json({ result: 0 })
+            res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+    }
+});
+
+const uploadVideo = multer({
+    storage:multer.diskStorage({
+        destination:function(req,file,cb){
+            cb(null,'./public/uploads/video');
+        },
+        filename:function(req,file,cb){
+            cb(null,`${req.session.userEmail}_${Date.now()}`);
+        }
+    })
+})
+
+
+router.post('/sandTrainer',uploadVideo.single('video'),async(req,res)=>{
+    try{
+        const trainer = await homeService.searchTrainer();
+        const matchNum = Math.floor(Math.random()*trainer.length)
+
+    }catch(err){
+        console.log(err)
     }
 })
 

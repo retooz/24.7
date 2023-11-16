@@ -40,7 +40,11 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async (user, done) => {
     console.log('deserializeUser() 호출');
-    done(null, null)
+    console.log(user);
+    conn.query(userQueries.duplicateCheck,[user],(err,result)=>{
+        done(null,result);
+    })
+    // done(null, user);
 })
 
 module.exports = passport

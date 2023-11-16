@@ -59,7 +59,7 @@ const Main = ({navigation}) => {
             style={{width: 40, height: 40}}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.userBtn}>
+        <TouchableOpacity style={styles.userBtn} onPress={()=>{navigation.navigate("Mypage")}}>
           <View style={styles.userCircle}>
             {/* <Icon name="user" size={35} color="#AB9EF4" /> */}
             <Image

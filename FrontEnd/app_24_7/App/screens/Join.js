@@ -52,12 +52,23 @@ function Join({ navigation }) {
     });
   }, [navigation]);
 
+  const isValidEmail = (email) => {
+    // 이메일 유효성 검사 정규식
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
   const emailCheck = () => {
     console.log("sdadsasad", email);
     if (email === "" || email === undefined) {
       // alert("이메일을 입력하세요!!!");
       alarmRef.current.setNativeProps({ style: { display: 'block', color : 'red' } });
       setAlarmText("이메일을 입력하세요")
+      return false;
+    }
+    if (!isValidEmail(email)){
+      setAlarmText("이메일을 확인해 주세요")
+      alarmRef.current.setNativeProps({ style: { color: 'red', display : 'block' } });
       return false;
     }
     axios
@@ -130,8 +141,10 @@ function Join({ navigation }) {
           console.log("handleMember =>", res.data.result);
           // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
           if (res.data.result === 0) {
-            alert("회원가입 성공!!!")
+            // alert("회원가입 성공!!!")
             navigation.navigate('Login')
+            console.log("회원가입성공")
+            return ;
           }
           else alert("회원가입 실패!!!");
           navigation.navigate("Join");
@@ -160,7 +173,7 @@ function Join({ navigation }) {
         <Text style={{ ...styles.text, marginLeft: 28 }}>이메일 입력</Text>
         <View style={styles.inputContainer}>
           <TextInput style={styles.emailInputText} ref={ref => (this.emailRef = ref)} onChangeText={(text) => temp(text)} />
-          <TouchableOpacity style={styles.btn} onPress={emailCheck} >
+          <TouchableOpacity style={styles.btn} onPress={emailCheck} disabled={email === ''}>
             <Text style={styles.emailBtnText}>확인</Text>
           </TouchableOpacity>
         </View>
@@ -175,7 +188,8 @@ function Join({ navigation }) {
         <Text style={{ display: 'none', color: 'red', fontWeight: "bold", marginTop: windowHeight * -0.018, marginBottom: windowHeight * 0.025 }} ref={nickAlarmRef}>{nickText}</Text>
         <TouchableOpacity
           style={styles.JoinButton}
-          onPress={handleMember}>
+          onPress={handleMember}
+          disabled={email === '' || pw == "" || checkPw == "" || nick == ""}>
           <Text style={styles.JoinButtonText}>회원가입</Text>
         </TouchableOpacity>
       </ImageBackground>

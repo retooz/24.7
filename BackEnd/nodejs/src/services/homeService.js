@@ -59,6 +59,17 @@ const homeService = {
         }
     },
 
+    sandFeedback : async (userEmail,trainerCode,exerciseCategory,userComment,accuracy,accuracyList,userVideoUrl) =>{
+        try{
+            const [userResult] = await conn.query(userQueries.duplicateCheck,[userEmail]);
+            const userCode = userResult[0].user_code
+            const [results] = await conn.query(userQueries.sandFeedback,[userConse,trainerCode,exerciseCategory,userComment])
+        } catch(err){
+            throw err;
+        }
+
+    }
+
 }
 
 module.exports = homeService;

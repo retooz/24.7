@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretendard',
     fontSize: 20,
     fontStyle: 'normal',
-    fontWeight: 300,
+    fontWeight: "bold",
   },
 });
 

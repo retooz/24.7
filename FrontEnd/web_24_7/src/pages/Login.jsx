@@ -20,13 +20,14 @@ const Login = () => {
     const inputPw = inputPwRef.current.value;
     if (regex.test(inputEmail)) {
       axios
-        .post('/auth/trainerLogin', {
+        .post('/auth/login', {
           email: inputEmail,
           pw: inputPw,
+          type: 't'
         })
         .then((res) => {
           console.log('success', res.data);
-          if (res.data.result === 'ok') {
+          if (res.data.result === 0) {
             navigate('/main');
           }
         })

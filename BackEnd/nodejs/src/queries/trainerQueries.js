@@ -1,8 +1,8 @@
 module.exports = {
 
-    join : `insert into trainer (email, pw, trainer_name, profile_pic, career) values (?,?,?,?,?)`,
+    signUp : `insert into trainer (email, pw, trainer_name, profile_pic, career) values (?,?,?,?,?)`,
 
-    login : `select * from trainer where email = ? and pw = ?`,
+    signIn : `select * from trainer where email = ?`,
 
     duplicateCheck : `select * from trainer where email = ?`,
 

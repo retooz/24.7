@@ -34,11 +34,22 @@ passport.use('local-login-user', new local({
 }));
 
 passport.use('local-login-trainer', new local({
-    usernameField: 'userId',
-    passwordField: 'password',
+    usernameField: 'email',
+    passwordField: 'pw',
     session: true,
-}, (userId, password, done) => {
-    console.log('passport의 trainer login :', userId, password)
+}, async (email, pw, done) => {
+    try {
+        const [trainerRows] = await conn.query(trainerQueries.signIn, [email], (err,rows) => {})
+        const user = trainerRows[0]
+        const same = bcrypt.compareSync(pw, user.pw)
+        if (same) {
+            return done(null, user)
+        }
+        return done(null, false, { message: 'login failed' })
+    } catch (err) {
+        console.log(err)
+        return done(err)
+    }
 }))
 
 passport.serializeUser(function (user, done) {

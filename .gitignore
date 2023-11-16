@@ -93,6 +93,7 @@
 /BackEnd/nodejs/node_modules
 /BackEnd/nodejs/config
 /BackEnd/nodejs/server.txt
+/BackEnd/nodejs/public/uploads
 
 
 # AI Ignore List

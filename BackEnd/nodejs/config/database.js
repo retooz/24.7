@@ -1,6 +1,6 @@
-const maria = require('mysql2');
+const mysql = require('mysql2');
 
-let conn = maria.createConnection({
+const pool = mysql.createPool({
     host : 'project-db-stu3.smhrd.com',
     user : 'Insa4_JSB_final_4',
     password : 'aishcool4',
@@ -9,6 +9,6 @@ let conn = maria.createConnection({
     dateStrings : 'date'
 })
 
-conn.connect()
+const conn = pool.promise();
 
 module.exports = conn;

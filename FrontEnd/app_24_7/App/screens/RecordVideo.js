@@ -142,10 +142,10 @@ const RecordVideo = ({navigation}) => {
         </TouchableOpacity>
       )}
       {/* <Video
-        source={{uri: 'file:///private/var/mobile/Containers/Data/Application/34C1FF2F-A75C-4E94-BCA0-5388D6E23772/tmp/ReactNative/38F83E88-2ED4-4F60-A44C-28966A6A8AE3.mov'}}
+        source={{uri: 'file:///data/user/0/com.app_24_7/cache/mrousavy3447176662132122093.mp4'}}
         style={styles.videoPlayer}
         controls={true}
-      /> */}
+      />  */}
       <View style={{position: 'absolute', bottom: 0}}>
         <Camera
           style={{
@@ -156,7 +156,7 @@ const RecordVideo = ({navigation}) => {
           device={device}
           isActive={true}
           video={true}
-          audio={true}
+          audio={false}
           ref={camera}
           // format={format}
           // fps={fps}

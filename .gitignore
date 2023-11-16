@@ -1,6 +1,102 @@
 /docs
+/Temp
 /.idea
 /.vscode
 .DS_Store
+
+# FE-Web Ignore List
+
+# Dependencies
+/FrontEnd/web_27_4/node_modules
+/FrontEnd/web_27_4/.pnp
+/FrontEnd/web_27_4/.pnp.js
+
+# testing, production
+/FrontEnd/web_27_4/coverage
+/FrontEnd/web_27_4/build
+
+# misc
+/FrontEnd/web_27_4/.DS_Store
+/FrontEnd/web_27_4/.vscode
+/FrontEnd/web_27_4/.env.*
+/FrontEnd/web_27_4/npm-debug.log*
+/FrontEnd/web_27_4/yarn-debug.log*
+/FrontEnd/web_27_4/yarn-error.log*
+
+
+# FE-App Ignore List
+
+/FrontEnd/app_24_7/.vscode
+
+# macOS
+/FrontEnd/app_24_7/.DS_Store
+
+# Xcode
+/FrontEnd/app_24_7/build/
+/FrontEnd/app_24_7/*.pbxuser
+/FrontEnd/app_24_7/!default.pbxuser
+/FrontEnd/app_24_7/*.mode1v3
+/FrontEnd/app_24_7/!default.mode1v3
+/FrontEnd/app_24_7/*.mode2v3
+/FrontEnd/app_24_7/!default.mode2v3
+/FrontEnd/app_24_7/*.perspectivev3
+/FrontEnd/app_24_7/!default.perspectivev3
+/FrontEnd/app_24_7/xcuserdata
+/FrontEnd/app_24_7/*.xccheckout
+/FrontEnd/app_24_7/*.moved-aside
+/FrontEnd/app_24_7/DerivedData
+/FrontEnd/app_24_7/*.hmap
+/FrontEnd/app_24_7/*.ipa
+/FrontEnd/app_24_7/*.xcuserstate
+/FrontEnd/app_24_7/ios/.xcode.env.local
+
+# Android/IntelliJ
+/FrontEnd/app_24_7/.idea
+/FrontEnd/app_24_7/.gradle
+/FrontEnd/app_24_7/local.properties
+/FrontEnd/app_24_7/*.iml
+/FrontEnd/app_24_7/*.hprof
+/FrontEnd/app_24_7/.cxx/
+/FrontEnd/app_24_7/*.keystore
+/FrontEnd/app_24_7/!debug.keystore
+
+# node.js
+/FrontEnd/app_24_7/node_modules/
+/FrontEnd/app_24_7/npm-debug.log
+/FrontEnd/app_24_7/yarn-error.log
+
+# fastlane
+/FrontEnd/app_24_7/**/fastlane/report.xml
+/FrontEnd/app_24_7/**/fastlane/Preview.html
+/FrontEnd/app_24_7/**/fastlane/screenshots
+/FrontEnd/app_24_7/**/fastlane/test_output
+
+# Bundle artifact
+/FrontEnd/app_24_7/*.jsbundle
+
+# Ruby / CocoaPods
+/FrontEnd/app_24_7/ios/Pods/
+/FrontEnd/app_24_7/vendor/bundle
+
+# Temp File by Metro
+/FrontEnd/app_24_7/.metro-health-check*
+
+# Testing
+/FrontEnd/app_24_7/coverage
+
+
+# BE-node.js Ignore List
+
+/BackEnd/.idea
+/BackEnd/.vscode
 /BackEnd/nodejs/sessions
 /BackEnd/nodejs/node_modules
+/BackEnd/nodejs/config
+/BackEnd/nodejs/server.txt
+
+
+# AI Ignore List
+
+/AI/.idea
+/AI/.vscode
+/AI/__pycache__

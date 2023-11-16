@@ -19,6 +19,8 @@ import Category from './App/screens/Category';
 import CategoryAi from './App/screens/CategoryAi';
 import CategoryNoAi from './App/screens/CategoryNoAi'
 import RecordVideo from './App/screens/RecordVideo';
+import Mypage from './App/screens/Mypage';
+import Changeinfo from './App/screens/Changeinfo';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -114,6 +116,22 @@ const App = () => {
         <Stack.Screen
           name="RecordVideo"
           component={RecordVideo}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <Stack.Screen
+          name="Mypage"
+          component={Mypage}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <Stack.Screen
+          name="Changeinfo"
+          component={Changeinfo}
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: { fontWeight: 'bold' },

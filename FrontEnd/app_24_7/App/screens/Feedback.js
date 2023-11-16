@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import * as Progress from "react-native-progress";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -18,7 +19,7 @@ const Feedback = () => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: ' ',
-      headerLeft: ({onPress}) => (
+      headerLeft: ({ onPress }) => (
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Alarm');
@@ -53,9 +54,25 @@ const Feedback = () => {
       {/* 피드백 */}
       <View style={styles.feedback}></View>
       {/* 분석 결과 */}
-      <View style={styles.analysisResult}></View>
-      {/* 메모 */}
-      <View style={styles.memo}></View>
+      <View style={styles.analysisResult}>
+        <View style={styles.barView}>
+          <View style={styles.bar}>
+            <Progress.Bar
+              progress={0.3} // 임시로 30%로 설정
+              width={null}
+              height={16}
+              color={'#FF0044'}
+              animated = {true}
+            />
+
+          </View>
+          <Text style={styles.barText}>
+            30/100
+          </Text>
+          <Progress.Pie progress={0.4} size={50} />
+        </View>
+        {/* 메모 */}
+      </View>
     </View>
   );
 };
@@ -76,6 +93,22 @@ const styles = StyleSheet.create({
   feedback: {},
   analysisResult: {},
   memo: {},
+  barview: {
+    width: "100%",
+    padding: 50,
+    flexDirection: "row",
+    marginTop: 50
+  },
+  bar: {
+    flex: 1
+  },
+  bartext: {
+    width: 40,
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: "bold",
+
+  }
 });
 
 export default Feedback;

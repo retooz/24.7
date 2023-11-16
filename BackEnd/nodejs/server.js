@@ -27,7 +27,7 @@ nunjucks.configure('views',{
 });
 
 app.use(cors());
-app.use(bodyParser.json()); //요청 본문을 json 형태로 파싱
+app.use(express.json()); //요청 본문을 json 형태로 파싱
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname+'/public'));

@@ -11,41 +11,54 @@ const trainerQueries = require('../queries/trainerQueries')
 passport.use('local-login-user', new local({
     usernameField: 'email',
     passwordField: 'pw',
-    session:true,
-}, (email, pw, done) => {
-    conn.query(userQueries.signInCheck,[email],(err,result)=>{
-        if(result.length > 0){
-            const same = bcrypt.compareSync(pw, result[0].pw);
-            if(same){
-                console.log('로그인 성공')
-                return done(null,result)
-            }
+    session: true,
+}, async (email, pw, done) => {
+    try {
+
+        const [userRows] = await conn.query(userQueries.signInCheck, [email], (err,rows) => {
+        })
+        const user = userRows[0]
+        console.log('user', user)
+        const same = bcrypt.compareSync(pw, user.pw)
+        if (same) {
+            console.log('success')
+            return done(null, user)
         }
-        console.log('로그인 실패')
+        console.log('fail')
         return done(null, false, { message: '로그인에 실패하였습니다.' })
-    })
+
+    } catch (err) {
+        console.log(err)
+        return done(err)
+    }
 }));
 
-passport.use('local-login-trainer',new local({
-    usernameField : 'userId',
-    passwordField : 'password',
-    session:true,
-},(userId,password,done)=>{
-    console.log('passport의 trainer login :',userId,password)
+passport.use('local-login-trainer', new local({
+    usernameField: 'userId',
+    passwordField: 'password',
+    session: true,
+}, (userId, password, done) => {
+    console.log('passport의 trainer login :', userId, password)
 }))
 
 passport.serializeUser(function (user, done) {
     console.log('serializeUser() 호출');
-    console.log( user[0].email);
-    done(null, user[0].email)
+    console.log(user.email);
+    done(null, user.email)
 })
 
-passport.deserializeUser(function (user, done) {
+passport.deserializeUser(async (user, done) => {
     console.log('deserializeUser() 호출');
-    console.log(user);
-    conn.query(userQueries.duplicateCheck,[user],(err,result)=>{
-        done(null,result);
-    })
+    done(null, null)
+    // try {
+    //     const user1 = { user : user }
+    //     done(null, user1)
+    // } catch (err) {
+    //     done(err, null)
+    // }
+    // conn.query(userQueries.duplicateCheck,[user],(err,result)=>{
+    //     done(null,result);
+    // })
     // done(null, user);
 })
 

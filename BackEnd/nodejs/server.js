@@ -14,7 +14,6 @@ const authRouter = require('./src/routes/auth');
 const uploadRouter = require('./src/routes/upload')
 
 
-// const passport = require('./passport.js');
 const passport = require('passport');
 const passportConfig = require('./src/passport/passport')
 const flash = require('connect-flash');
@@ -27,7 +26,7 @@ nunjucks.configure('views',{
 });
 
 app.use(cors());
-app.use(express.json()); //요청 본문을 json 형태로 파싱
+app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname+'/public'));

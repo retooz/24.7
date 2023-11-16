@@ -4,7 +4,6 @@ const multer = require('multer');
 const fs = require('fs');
 
 fs.readdir('./public/uploads',(error)=>{
-    // uploads 폴더 없으면 생성
     if(error){
         fs.mkdirSync('./public')
         fs.mkdirSync('./public/uploads');
@@ -19,7 +18,7 @@ const uploadImg = multer({
             cb(null,'./public/uploads/img');
         },
         filename:function(req,file,cb){
-            cb(null,`${req.session.userId}_${Date.now()}`);
+            cb(null,`${req.session.userEmail}_${Date.now()}`);
         }
     })
 })
@@ -30,21 +29,10 @@ const uploadVideo= multer({
             cb(null,'./public/uploads/video');
         },
         filename:function(req,file,cb){
-            cb(null,`${req.session.userId}_${Date.now()}`);
+            cb(null,`${req.session.userEmail}_${Date.now()}`);
         }
     })
 })
-
-// const upload = multer({
-//     storage: multer.diskStorage({
-//         destination: function (req, file, cb) {
-//             cb(null, './public/uploads'); // uploads 폴더에 파일 저장
-//         },
-//         filename: function (req, file, cb) {
-//             cb(null, `${req.session.userId}_${Date.now()}_${file.originalname}`);
-//         },
-//     })
-// })
 
 router.post('/uploadImg',uploadImg.single('profilePic'),(req,res)=>{
     console.log('uploadImg router');
@@ -52,6 +40,8 @@ router.post('/uploadImg',uploadImg.single('profilePic'),(req,res)=>{
     console.log(req.file)
 })
 
-router.post('/uploadVideo',uploadVideo.single())
+router.post('/uploadVideo',uploadVideo.single(),(req,res)=>{
+    console.log('UploadVideo Check')
+})
 
 module.exports = router;

@@ -14,7 +14,7 @@ const homeService = {
         }
     },
 
-    duplicateCheck : async (userEmail) => {
+    duplicateCheck : async (email) => {
         try {
             const [results] = await conn.query(userQueries.duplicateCheck, userEmail);
             return results
@@ -44,6 +44,42 @@ const homeService = {
     updateNickname : async (userEmail,nickname) =>{
         try{
             const[results] = await conn.query(userQueries.updateNickname,[nickname,userEmail]);
+            return results;
+        }catch(err){
+            throw err;
+        }
+    },
+
+    updatePassword: async (userEmail, cryptedPW) => {
+        try {
+            const [results] = await conn.query(userQueries.updatePassword, [cryptedPW, userEmail]);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    signInCheck: async (userEmail) => {
+        try {
+            const [results] = await conn.query(userQueries.signInCheck, [userEmail]);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    updateNickname: async (userEmail, nickname) => {
+        try {
+            const [results] = await conn.query(userQueries.updateNickname, [nickname, userEmail]);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    searchTrainer: async () => {
+        try{
+            const [results] = await conn.query(userQueries.searchTrainer);
             return results;
         }catch(err){
             throw err;

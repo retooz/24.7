@@ -20,6 +20,6 @@ module.exports = {
     searchTrainer: `select email,trainer_code from trainer`,
 
     //** feedback 트레이너에게 보내기 */
-    sandFeedback: `insert into connection (user_code,trainer_code, exercise_category, user_comment,accuracy,accuracy_list,user_video_url)`,
+    sandFeedback: `insert into connection (user_code,trainer_code, exercise_category, user_comment,accuracy,accuracy_list,user_video_url) values (?,?,?,?,?,?,?)`,
 
 }

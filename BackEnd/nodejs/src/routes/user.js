@@ -120,4 +120,12 @@ router.post('/sandTrainer',uploadVideo.single('video'),async(req,res)=>{
     }
 })
 
+router.post('/getFeedback',(req,res)=>{
+    try{
+
+    }catch(err){
+        console.log(err)
+    }
+})
+
 module.exports = router;

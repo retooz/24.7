@@ -51,13 +51,26 @@ const homeService = {
     },
 
     searchTrainer: async () => {
-        try{
+        try {
             const [results] = await conn.query(userQueries.searchTrainer);
             return results;
-        }catch(err){
+        } catch (err) {
             throw err;
         }
     },
+
+    sandFeedback: async (userEmail, trainerCode, exerciseCategory, userComment, accuracy, accuracyList, userVideoUrl) => {
+        try {
+            const [userResult] = await conn.query(userQueries.duplicateCheck, [userEmail]);
+            const userCode = userResult[0].user_code
+            const [results] = await conn.query(userQueries.sandFeedback, [userCode, trainerCode, exerciseCategory, userComment, accuracy, accuracyList, userVideoUrl]);
+
+            return results
+        } catch (err) {
+            throw err;
+        }
+
+    }
 
 }
 

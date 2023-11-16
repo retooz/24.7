@@ -141,8 +141,10 @@ function Join({ navigation }) {
           console.log("handleMember =>", res.data.result);
           // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
           if (res.data.result === 0) {
-            alert("회원가입 성공!!!")
+            // alert("회원가입 성공!!!")
             navigation.navigate('Login')
+            console.log("회원가입성공")
+            return ;
           }
           else alert("회원가입 실패!!!");
           navigation.navigate("Join");

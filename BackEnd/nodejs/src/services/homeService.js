@@ -14,38 +14,11 @@ const homeService = {
         }
     },
 
-    duplicateCheck : async (email) => {
+    duplicateCheck: async (userEmail) => {
         try {
             const [results] = await conn.query(userQueries.duplicateCheck, userEmail);
             return results
         } catch (err) {
-            throw err;
-        }
-    },
-    
-    updatePassword : async (userEmail,cryptedPW) =>{
-        try{
-            const [results] = await conn.query(userQueries.updatePassword,[cryptedPW,userEmail]);
-            return results;
-        }catch(err){
-            throw err;
-        }
-    },
-
-    signInCheck : async (userEmail) =>{
-        try{
-            const [results] = await conn.query(userQueries.signInCheck,[userEmail]);
-            return results;
-        }catch(err){
-            throw err;
-        }
-    },
-
-    updateNickname : async (userEmail,nickname) =>{
-        try{
-            const[results] = await conn.query(userQueries.updateNickname,[nickname,userEmail]);
-            return results;
-        }catch(err){
             throw err;
         }
     },
@@ -85,6 +58,17 @@ const homeService = {
             throw err;
         }
     },
+
+    sandFeedback : async (userEmail,trainerCode,exerciseCategory,userComment,accuracy,accuracyList,userVideoUrl) =>{
+        try{
+            const [userResult] = await conn.query(userQueries.duplicateCheck,[userEmail]);
+            const userCode = userResult[0].user_code
+            const [results] = await conn.query(userQueries.sandFeedback,[userConse,trainerCode,exerciseCategory,userComment])
+        } catch(err){
+            throw err;
+        }
+
+    }
 
 }
 

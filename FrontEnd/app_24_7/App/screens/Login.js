@@ -44,9 +44,10 @@ function Login({ navigation }) {
       return;
     } else {
       axios
-        .post("http://10.0.2.2:3000/auth/userLogin", {
+        .post("http://10.0.2.2:3000/auth/login", {
           email: email,
-          pw: pw
+          pw: pw,
+          type : "u"
         })
         .then((res) => {
           console.log("handleLogin =>", res.data.result);

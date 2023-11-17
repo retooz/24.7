@@ -180,7 +180,7 @@ const RecordVideo = ({navigation}) => {
           device={device}
           isActive={true}
           video={true}
-          audio={true}
+          audio={false}
           ref={camera}
           format={format}
           // fps={fps}

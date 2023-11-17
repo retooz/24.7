@@ -7,7 +7,6 @@ const trainerQueries = require('../queries/trainerQueries')
 
 let userData = ""
 
-
 //로그인 성공 0 아니면 1
 passport.use('local-login', new local({
     usernameField: 'email',
@@ -23,7 +22,7 @@ passport.use('local-login', new local({
             [userRows] = await conn.query(userQueries.signInCheck, [email], (err, rows) => { })
             
         } else if (type == 't') {
-            [userRows] = await conn.query(trainerQueries.signIn, [email], (err, rows) => { })
+            [userRows] = await conn.query(trainerQueries.signIn, [email], (err,  rows) => {  })
         }
         const user = userRows[0]
         const same = bcrypt.compareSync(pw, user.pw)
@@ -47,7 +46,7 @@ passport.serializeUser(function (user, done) {
 /** DB에 연동해서 결과를 얻어내는 함수 */
 const getUserData = async (user)=>{
     const [result] = await conn.query(userQueries.duplicateCheck,[user]);
-    console.log("adasd",result)
+
     if(result.length>0){
         userData = {email : result[0].email, user_code : result[0].user_code}
     }else{
@@ -59,8 +58,8 @@ const getUserData = async (user)=>{
 
 passport.deserializeUser(async (user, done) => {
     try{
-        const userData = await getUserData(user)
-            done(null,userData);
+        const userData = await getUserData(user);
+        done(null,userData);
     }catch(err){
         done(err)        
     }

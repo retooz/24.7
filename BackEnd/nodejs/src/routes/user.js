@@ -6,8 +6,8 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
-fs.readdir('./public/uploads',(error)=>{
-    if(error){
+fs.readdir('./public/uploads', (error) => {
+    if (error) {
         fs.mkdirSync('./public')
         fs.mkdirSync('./public/uploads');
         fs.mkdirSync('./public/uploads/img');
@@ -114,32 +114,48 @@ router.post('/modify', async (req, res) => {
 });
 
 const uploadVideo = multer({
-    storage:multer.diskStorage({
-        destination:function(req,file,cb){
-            cb(null,'./public/uploads/video');
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, './public/uploads/video');
         },
-        filename:function(req,file,cb){
+        filename: function (req, file, cb) {
             const ext = path.extname(file.originalname)
-            
-            cb(null,`${req.session.userEmail}_${Date.now()}`+ext);
+            cb(null, `${req.session.userEmail}_${Date.now()}` + ext);
         }
     })
 })
 
- 
-router.post('/sandTrainer',uploadVideo.single('video'),async(req,res)=>{
-    console.log('데이터 확인', req.file)
-    // 영상 데이터는 req.file로 확인해야댐
-    try{
+router.post('/sendTrainer', uploadVideo.single('video'), async (req, res) => {
+    try {
         const trainer = await homeService.searchTrainer();
         const matchNum = Math.floor(Math.random()*trainer.length)
         
         res.json({result:1})
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 })
 
+router.post('/logout', (req, res) => {
+    try {
+        req.session.destroy();
+        if (req.session == undefined) {
+            res.json({ result: 1 })
+        } else {
+            res.json({ result: 0 })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+router.post('/getFeedback', (req, res) => {
+    try {
+
+    } catch (err) {
+        console.log(err)
+    }
+})
 
 module.exports = router;

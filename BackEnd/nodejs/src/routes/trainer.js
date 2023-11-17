@@ -54,17 +54,33 @@ router.post('/emailCheck', async (req, res) => {
 })
 
 router.post('/getMemberList', async (req, res) => {
-    console.log('getMemberList')
     try {
         const { trainer_code } = req.body;
         const result = await trainerService.getMemberList(trainer_code);
-        console.log(result)
         res.json({ list: result })
     } catch (err) {
         res.status(500).json({ message: 'error occured' })
     }
 })
 
-router.post('')
+router.post('/getHistory', async (req, res) => {
+    try {
+        const { trainer_code, user_code } = req.body;
+        const result = await trainerService.getHistory(trainer_code, user_code);
+        res.json({ history: result })
+    } catch (err) {
+        res.status(500).json({ message: 'error occured' })
+    }
+})
+
+router.post('/getMemberInfo', async (req, res) => {
+    try {
+        const { user_code } = req.body;
+        const result = await trainerService.getMemberInfo(user_code);
+        res.json({ info: result })
+    } catch (err) {
+        res.status(500).json({ message: 'error occured' })
+    }
+})
 
 module.exports = router;

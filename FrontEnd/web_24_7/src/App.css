@@ -370,11 +370,16 @@ p.check-result {
 }
 
 .history-category {
-  width: 60%;
+  width: 23%;
   text-align: center;
 }
 
 .history-date {
-  width: 40%;
+  width: 27%;
+  text-align: center;
+}
+
+.history-comment {
+  width: 50%;
   text-align: center;
 }

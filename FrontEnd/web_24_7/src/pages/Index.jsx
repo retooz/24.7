@@ -8,59 +8,71 @@ const Index = () => {
   const [selectedMemberData, setSelectedMemberData] = useState({});
   const [memberHistory, setMemberHistory] = useState([]);
 
-  const trainerCode = 10000001;
+  const trainerCode = 20000002;
 
   const getMemberList = () => {
     axios
-      .post('http://localhost:3000/trainer/getMemberList', {
+      .post('/trainer/getMemberList', {
         trainer_code: trainerCode,
       })
       .then((res) => {
-        console.log(res)
-        setMemberList(res.data.list)
-      })
-  }
+        console.log(res);
+        setMemberList(res.data.list);
+      });
+  };
 
   const getHistory = () => {
     axios
-      .post(`/getHistory/`, {
+      .post(`/trainer/getHistory`, {
+        trainer_code: trainerCode,
         user_code: selectedMember,
       })
       .then((res) => {
-        setSelectedMember(res.data.info);
         setMemberHistory(res.data.history);
       });
   };
 
-  useEffect(() => {
-    getMemberList()
-  }, [])
+  const getMemberInfo = () => {
+    axios
+      .post('/trainer/getMemberInfo', {
+        user_code: selectedMember,
+      })
+      .then((res) => {
+        setSelectedMemberData(res.data.info[0])
+      })
+  }
 
   useEffect(() => {
-    console.log(memberHistory.length);
-    console.log(selectedMember);
+    getMemberList();
+  }, []);
+
+  useEffect(() => {
+    console.log('History Length',memberHistory.length);
+    console.log('Selected Member',selectedMember);
   }, [selectedMember, memberHistory]);
 
   // Dummy Function
   useEffect(() => {
-    if (selectedMember !== 0) {
-      setSelectedMemberData({
-        name: '이주리',
-      });
-      setMemberHistory([
-        {
-          exercise: 'squat',
-          connection_code: '40000005',
-          connection_date: '2023-11-09',
-          comment: 'asdasd',
-        },
-        {
-          exercise: 'push-up',
-          connection_code: '40000001',
-          connection_date: '2023-11-02',
-          comment: 'asdasd',
-        },
-      ]);
+    if (selectedMember !== 0 && selectedMember !== undefined) {
+      getHistory(selectedMember)
+      getMemberInfo(selectedMember)
+      // setSelectedMemberData({
+      //   name: '이주리',
+      // });
+      // setMemberHistory([
+      //   {
+      //     exercise: 'squat',
+      //     connection_code: '40000005',
+      //     connection_date: '2023-11-09',
+      //     comment: 'asdasd',
+      //   },
+      //   {
+      //     exercise: 'push-up',
+      //     connection_code: '40000001',
+      //     connection_date: '2023-11-02',
+      //     comment: 'asdasd',
+      //   },
+      // ]);
     }
   }, [selectedMember]);
 
@@ -83,19 +95,19 @@ const Index = () => {
           </div>
           <div id='member-list'>
             <ul>
-              <li>
-                <div
-                  onClick={() => setSelectedMember(10000001)}
-                  className='member-li'
-                >
-                  이주리 회원
-                </div>
-                <div className='red-dot' />
-              </li>
-              <li>이시윤 회원</li>
-              <li>신범식 회원</li>
-              <li>송민재 회원</li>
-              <li>서주원 회원</li>
+              {memberList.map((item, index) => {
+                return (
+                  <li>
+                    <div
+                      onClick={() => setSelectedMember(item.user_code)}
+                      className='member-li'
+                    >
+                      {item.nickname} 회원
+                    </div>
+                    <div className='red-dot' />
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

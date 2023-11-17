@@ -103,7 +103,6 @@ function Login({ navigation }) {
           <TouchableOpacity
             style={{ ...styles.loginButton, opacity: (email === '' || pw === '') ? 0.5 : 1 }}
             onPress={handleLogin}
-            // onPress={() => {navigation.navigate('Main')}}
             disabled={email === '' || pw === ''}>
             <Text style={styles.loginButtonText}>로그인</Text>
           </TouchableOpacity>

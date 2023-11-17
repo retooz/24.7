@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,12 +9,18 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import * as Progress from "react-native-progress";
+// import BottomSheet from '@gorhom/bottom-sheet';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Feedback = () => {
   const navigation = useNavigation();
+  // const bottomSheetRef = useRef < BottomSheet > (null);
+  // const snapPoints = useMemo(() => ['25%', '50%'], []);
+  // const handleSheetChanges = useCallback((index: number) => {
+  //   console.log('handleSheetChanges', index);
+  // }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -62,7 +68,7 @@ const Feedback = () => {
               width={null}
               height={16}
               color={'#FF0044'}
-              animated = {true}
+              animated={true}
             />
 
           </View>
@@ -73,6 +79,18 @@ const Feedback = () => {
         </View>
         {/* 메모 */}
       </View>
+      {/* <View style={styles.container}>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+        >
+          <View style={styles.contentContainer}>
+            <Text>Awesome 🎉</Text>
+          </View>
+        </BottomSheet>
+      </View> */}
     </View>
   );
 };
@@ -108,7 +126,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
 
-  }
+  },
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
 });
 
 export default Feedback;

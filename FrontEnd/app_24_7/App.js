@@ -21,6 +21,8 @@ import CategoryNoAi from './App/screens/CategoryNoAi';
 import RecordVideo from './App/screens/RecordVideo';
 import VideoSubmit from './App/screens/VideoSubmit';
 import SubmitComplete from './App/screens/SubmitComplete';
+import Mypage from './App/screens/Mypage'
+import Changeinfo from './App/screens/Changeinfo'
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -107,6 +109,7 @@ const App = () => {
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: {fontWeight: 'bold'},
+            header: () => null,
           }}
         />
         <Stack.Screen
@@ -120,6 +123,23 @@ const App = () => {
         <Stack.Screen
           name="SubmitComplete"
           component={SubmitComplete}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontWeight: 'bold'},
+            header: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="Mypage"
+          component={Mypage}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontWeight: 'bold'},
+          }}
+        />
+        <Stack.Screen
+          name="Changeinfo"
+          component={Changeinfo}
           options={{
             headerTitleAlign: 'center',
             headerTitleStyle: {fontWeight: 'bold'},

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const homeService = require('../services/homeService.js');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 
 fs.readdir('./public/uploads',(error)=>{
     if(error){
@@ -26,6 +27,19 @@ router.post('/join', async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ result: -1, error: "Internal Server Error" });
+    }
+})
+
+router.post('/logout', async (req, res) => {
+    try {
+        req.session.destroy();
+        if (req.session == undefined) {
+            res.json({ result: 1 })
+        } else {
+            res.json({ result: 0 })
+        }
+    } catch (err) {
+        console.log(err)
     }
 })
 
@@ -105,16 +119,22 @@ const uploadVideo = multer({
             cb(null,'./public/uploads/video');
         },
         filename:function(req,file,cb){
-            cb(null,`${req.session.userEmail}_${Date.now()}`);
+            const ext = path.extname(file.originalname)
+            
+            cb(null,`${req.session.userEmail}_${Date.now()}`+ext);
         }
     })
 })
 
-
+ 
 router.post('/sandTrainer',uploadVideo.single('video'),async(req,res)=>{
+    console.log('데이터 확인', req.file)
+    // 영상 데이터는 req.file로 확인해야댐
     try{
         const trainer = await homeService.searchTrainer();
         const matchNum = Math.floor(Math.random()*trainer.length)
+        
+        res.json({result:1})
 
     }catch(err){
         console.log(err)

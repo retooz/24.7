@@ -23,7 +23,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const RecordVideo = ({navigation}) => {
-  
   const route = useRoute();
   const {category} = route.params;
   const v = require('../assets/video/squat.mp4');
@@ -50,6 +49,7 @@ const RecordVideo = ({navigation}) => {
   useEffect(() => {
     checkCameraPermissionState();
     checkAudioPermissionState();
+    Alert.alert('알림', '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.')
   }, []);
 
   const device = useCameraDevice('back', {
@@ -75,21 +75,24 @@ const RecordVideo = ({navigation}) => {
 
   /** 녹화 실행 함수 */
   const startRecording = () => {
-    console.log('startRecording...')
+    console.log('startRecording...');
 
     setIsRecording(true);
     camera.current.startRecording({
       flash: 'off',
       // 녹화가 완료되었을 때 실행되는 함수 -> 녹화를 중지하는 기능은 없음
-      onRecordingFinished: (video) => {
-        console.log('RecordVideo_startRecording ------- video path :', video.path);
+      onRecordingFinished: video => {
+        console.log(
+          'RecordVideo_startRecording ------- video path :',
+          video.path,
+        );
         setVideoPath(video.path); // videoPath 업데이트
         navigation.navigate('VideoSubmit', {
           category,
-          video: `${video.path}`,
+          videoPath: `${video.path}`,
         });
       },
-      onRecordingError: (error) => {
+      onRecordingError: error => {
         console.error(error);
       },
     });
@@ -97,56 +100,71 @@ const RecordVideo = ({navigation}) => {
 
   /** 녹화 중지 함수 */
   const stopRecording = () => {
-    console.log('stopRecording...')
+    console.log('stopRecording...');
     setIsRecording(false);
     camera.current.stopRecording();
 
-    console.log('RecodeVideo_stopRecording ------ video path :', videoPath)
+    console.log('RecodeVideo_stopRecording ------ video path :', videoPath);
   };
 
   // ------------------------------------------------------------------------------------------------
 
   // 뒤로가기 (RecordVideo -> Category)
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: route.params.category,
-      headerLeft: ({onPress}) => (
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitle: route.params.category,
+  //     headerLeft: ({onPress}) => (
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           navigation.navigate('Category');
+  //         }}>
+  //         <Icon name="chevron-left" size={40} />
+  //       </TouchableOpacity>
+  //     ),
+  //     // headerRight: ({onPress}) => (
+  //     //     isRecording ? (
+  //     //       <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
+  //     //         <Text style={styles.recordButtonText}>시작</Text>
+  //     //       </TouchableOpacity>
+
+  //     //     ) : (
+  //     //       <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
+  //     //         <Text style={styles.recordButtonText}>종료</Text>
+  //     //       </TouchableOpacity>
+  //     //     )
+  //     // ),
+  //     contentStyle: {
+  //       backgroundColor: '#FAFAFA',
+  //     },
+  //   });
+  // }, [navigation, route, isRecording]);
+
+  return (
+    // justifyContent: 'center', alignItems: 'center'
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      {/* 시작, 종료 버튼 */}
+      <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Category');
-          }}>
-          <Icon name="chevron-left" size={40} />
+          }}
+          style={styles.headerBackBtn}>
+          <Icon name="chevron-left" size={40} style={styles.headerIcon} />
         </TouchableOpacity>
-      ),
-      // headerRight: ({onPress}) => (
-      //     isRecording ? (
-      //       <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
-      //         <Text style={styles.recordButtonText}>시작</Text>
-      //       </TouchableOpacity>
+        <View style={styles.headerText}>
+          <Text style={styles.text}>{category}</Text>
+        </View>
+        <View style={styles.headerRecordBtn}>
+          <TouchableOpacity
+            style={styles.recordBtn}
+            onPress={isRecording ? stopRecording : startRecording}>
+            <Text style={styles.recordBtnText}>
+              {isRecording ? '종료' : '시작'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-      //     ) : (
-      //       <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
-      //         <Text style={styles.recordButtonText}>종료</Text>
-      //       </TouchableOpacity>
-      //     )
-      // ),
-      contentStyle: {
-        backgroundColor: '#FAFAFA',
-      },
-    });
-  }, [navigation, route, isRecording]);
-
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      {/* 시작, 종료 버튼 */}
-      <TouchableOpacity
-        style={styles.recordButton}
-        onPress={isRecording ? stopRecording : startRecording}>
-        <Text style={styles.recordButtonText}>
-          {isRecording ? '종료' : '시작'}
-        </Text>
-      </TouchableOpacity>
-     
       {/* 제공하는 영상 */}
       <View style={styles.video}>
         <Video source={v} style={styles.videoPlayer} controls={true} />
@@ -173,22 +191,49 @@ const RecordVideo = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  recordButton: {
-    position: 'absolute',
-    width: 50,
-    height: 40,
-    backgroundColor: 'red',
-    top: 0,
-    right: 0,
-    zIndex: 1,
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    // alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 40,
   },
-  recordButtonText: {
-    fontSize: 15,
+  headerBackBtn: {
+    flex: 1,
+    alignItems: 'flex-start',
+    marginTop: 5,
+  },
+  headerIcon: {},
+  headerText: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 12,
+    height: 30,
+  },
+  text: {
+    fontSize: 20,
+  },
+  headerRecordBtn: {
+    flex: 1,
+    alignItems: 'flex-end',
+    right: 10,
+  },
+  recordBtn: {
+    width: 60,
+    height: 40,
+    backgroundColor: '#7254F5',
+    borderRadius: 6,
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+  recordBtnText: {
+    fontSize: 20,
     color: '#fff',
+    textAlign: 'center',
   },
   video: {
     position: 'absolute',
-    top: 0,
+    top: windowWidth * 0.23,
   },
   videoPlayer: {
     width: windowWidth / Math.sqrt(1.1),

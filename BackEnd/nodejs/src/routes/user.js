@@ -30,6 +30,19 @@ router.post('/join', async (req, res) => {
     }
 })
 
+router.post('/logout', async (req, res) => {
+    try {
+        req.session.destroy();
+        if (req.session == undefined) {
+            res.json({ result: 1 })
+        } else {
+            res.json({ result: 0 })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+})
+
 router.post('/emailCheck', async (req, res) => {
     try {
         const userEmail = req.body.email;
@@ -115,7 +128,9 @@ const uploadVideo = multer({
 router.post('/sendTrainer', uploadVideo.single('video'), async (req, res) => {
     try {
         const trainer = await homeService.searchTrainer();
-        const matchNum = Math.floor(Math.random() * trainer.length)
+        const matchNum = Math.floor(Math.random()*trainer.length)
+        
+        res.json({result:1})
 
     } catch (err) {
         console.log(err)

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, Fragment} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,7 +11,7 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRoute} from '@react-navigation/native';
 import Video from 'react-native-video';
-import {Camera} from 'react-native-vision-camera';
+import MovToMp4 from 'react-native-mov-to-mp4';
 // ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/EvilIcons';
 import axios from 'axios';
@@ -21,34 +21,89 @@ const windowHeight = Dimensions.get('window').height;
 
 const VideoSubmit = ({navigation}) => {
   const route = useRoute();
-  const {category, video} = route.params;
+  const {category, videoPath} = route.params;
   const [comment, setComment] = useState('');
-  const commentRef = useRef({})
-  console.log('videosubmit ------ video path :', video);
+  const commentRef = useRef({});
+  console.log('videosubmit ------ video path :', videoPath);
 
-  const formData = new FormData();
-  formData.append('video', {
-    uri: video,
-    name: 'video.mov',
-    type: 'video/mov'
-  });
-  formData.append('comment', comment);
+  // const handleConversion = () => {
+  //   console.log('버튼 누르기')
+  //   const formData = new FormData();
+  //   formData.append('video', {
+  //     uri: videoPath,
+  //     name: 'video.mov',
+  //     type: 'video/quicktime'
+  //   });
+  //   formData.append('comment', comment);
+  //   console.log('formData', formData)
 
-  const handleSubmit = () => {
-    console.log('제출 버튼 누르기')
-    axios
-      .post('https://121.66.158.210/user/sandTrainer', formData)
-      .then((res) => {
-        console.log('handleSubmit =>', res.data.result);
+  //   axios
+  //     .post('http://192.168.21.126:3000/user/sandTrainer', formData)
+  //     .then(res => {
+  //       console.log('handleSubmit =>', res);
+  //       navigation.navigate('Main');
+  //     })
+  //     .catch(error => {
+  //       console.error('submit error --->', error);
+  //     });
+  // };
 
-        if (res.data.result === 0) {
-          navigation.navigate('Main')
-        }
-      })
-      .catch((error) => {
-        console.error('submit error --->',error);
+  // 파일 변환
+  const handleConversion = () => {
+    const video = Date.now().toString();
+  
+    // 파일 확장자 확인
+    const extension = videoPath.split('.').pop();
+  
+    if (extension.toLowerCase() === 'mov') {
+      // MOV 파일인 경우 변환 시도
+      MovToMp4.convertMovToMp4(videoPath, video).then(function (results) {
+        console.log('mov->mp4 파일 변환', results);
+        const mp4Uri = results;  // 변환된 mp4 파일의 경로
+  
+        const formData = new FormData();
+        formData.append('video', {
+          uri: mp4Uri,
+          name: "video.mp4",
+          type: 'video/mp4',
+        });
+        formData.append('comment', comment);
+        handleSubmit(formData);
+      });
+    } else {
+      // MOV 파일이 아닌 경우 변환 없이 전송
+      const formData = new FormData();
+      formData.append('video', {
+        uri: videoPath,
+        name: `video.${extension}`,
+        type: `video/${extension}`,
+      });
+      formData.append('comment', comment);
+      handleSubmit(formData);
+    }
+  };
+
+  const handleSubmit = (formData) => {
+    console.log('제출 버튼 누르기', formData);
+    formData._parts.forEach(part => {
+      if (part[0] === 'video') {
+        console.log('formData ----- ', part[1]);
+      }
     });
-  }
+    axios
+      .post('http://192.168.21.126:3000/user/sandTrainer', formData)
+      .then(res => {
+        console.log('handleSubmit =>', res);
+        
+        // if (res === 1) {
+          //   navigation.navigate('SubmitComplete');
+          // }
+        })
+        .catch(error => {
+          console.error('submit error --->', error);
+        });
+        navigation.navigate('SubmitComplete')
+  };
 
   // 뒤로가기 (VideoSubmit -> RecordVideo)
   React.useLayoutEffect(() => {
@@ -76,7 +131,7 @@ const VideoSubmit = ({navigation}) => {
         {/* 사용자가 녹화한 영상 확인 */}
         <View style={styles.videoContainer}>
           <Video
-            source={{uri: video}}
+            source={{uri: videoPath}}
             style={styles.videoPlayer}
             controls={true}
           />
@@ -90,16 +145,19 @@ const VideoSubmit = ({navigation}) => {
           </Text>
 
           <TextInput
+            placeholder="질문을 작성해주세요."
             multiline={true}
-            style={{...styles.input, lineHeight: 30,}}
-            ref={ref => (this.commentRef = ref)} onChangeText={(text) => setComment(text)}
+            ref={ref => (this.commentRef = ref)}
+            onChangeText={text => setComment(text)}
+            style={{...styles.input, lineHeight: 30}}
+            placeholderTextColor="#AFAFB5"
           />
         </View>
 
         <View style={styles.btn}>
           <TouchableOpacity
             style={styles.submitButton}
-            onPress={handleSubmit}>
+            onPress={handleConversion}>
             <Text style={styles.submitButtonText}>제출</Text>
           </TouchableOpacity>
         </View>
@@ -128,7 +186,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 0,
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 5,
     lineHeight: 20,
   },
   text1: {
@@ -145,7 +203,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#F9F7FE',
-    borderColor: '#AB9EF4', 
+    borderColor: '#AB9EF4',
     borderWidth: 1,
     marginHorizontal: 15,
     marginVertical: 5,
@@ -158,7 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   btn: {
-    width: '80%',
+    width: '90%',
     marginVertical: 20,
     marginTop: 10,
   },
@@ -170,7 +228,7 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: 'white',
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });

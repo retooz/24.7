@@ -44,7 +44,7 @@ function Login({ navigation }) {
       return;
     } else {
       axios
-        .post("http://10.0.2.2:3000/auth/login", {
+        .post("http://192.168.21.126:3000/auth/login", {
           email: email,
           pw: pw,
           type : "u"
@@ -54,6 +54,7 @@ function Login({ navigation }) {
           // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
           if (res.data.result === 0) {
             AsyncStorage.setItem('userEmail', email);
+            setAlarmText('');
             navigation.navigate('Main')
           }
         })

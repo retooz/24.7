@@ -72,13 +72,14 @@ function Join({ navigation }) {
       return false;
     }
     axios
-      .post("http://10.0.2.2:3000/user/emailCheck", {
+      .post("http://192.168.21.126:3000/user/emailCheck", {
         email: email,
       })
       .then((res) => {
         console.log("emailCheck =>", res.data.result);
         // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
         if (res.data.result === 0) {
+          console.log("result", res.data)
           setEmailCheckResult(true)
           setAlarmText("회원가입 가능 이메일")
           alarmRef.current.setNativeProps({ style: { color: 'green', display : 'block' } });

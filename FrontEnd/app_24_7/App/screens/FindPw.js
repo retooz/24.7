@@ -45,7 +45,7 @@ function FindPw({ navigation }) {
       return false;
     }
     axios
-      .post("http://10.0.2.2:3000/user/emailCheck", {
+      .post("http://192.168.21.126:3000/user/emailCheck", {
         email: email,
       })
       .then((res) => {

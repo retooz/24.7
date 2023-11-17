@@ -22,7 +22,7 @@ passport.use('local-login', new local({
             [userRows] = await conn.query(userQueries.signInCheck, [email], (err, rows) => { })
             
         } else if (type == 't') {
-            [userRows] = await conn.query(trainerQueries.signIn, [email], (err, rows) => { })
+            [userRows] = await conn.query(trainerQueries.signIn, [email], (err,  rows) => {  })
         }
         const user = userRows[0]
         const same = bcrypt.compareSync(pw, user.pw)

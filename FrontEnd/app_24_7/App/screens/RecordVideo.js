@@ -6,6 +6,7 @@ import {
   Dimensions,
   Text,
   Alert,
+  Button,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import Video from 'react-native-video';
@@ -13,12 +14,8 @@ import {
   Camera,
   useCameraDevice,
   useCameraPermission,
-  requestCameraPermission,
-  requestMicrophonePermission,
-  CameraRoll,
+  useCameraFormat,
 } from 'react-native-vision-camera';
-// import RNFS from "react-native-fs";
-// import { RNCamera } from 'react-native-camera';
 // ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/EvilIcons';
 
@@ -26,38 +23,10 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const RecordVideo = ({navigation}) => {
-  // 뒤로가기 (RecordVideo -> Category)
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: route.params.category,
-      headerLeft: ({onPress}) => (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Category');
-          }}>
-          <Icon name="chevron-left" size={40} />
-        </TouchableOpacity>
-      ),
-      // headerRight: () => (
-      //   isRecording ? (
-      //     <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
-      //       <Text style={styles.recordButtonText}>종료</Text>
-      //     </TouchableOpacity>
-      //   ) : (
-      //     <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
-      //       <Text style={styles.recordButtonText}>시작</Text>
-      //     </TouchableOpacity>
-      //   )
-      // ),
-      contentStyle: {
-        backgroundColor: '#FAFAFA',
-      },
-    });
-  }, [navigation, route, isRecording]);
-
-  // ------------------------------------------------------------------------------------------------
-  console.log('---------------- device 크기 : ', windowWidth, windowHeight);
+  
   const route = useRoute();
+  const {category} = route.params;
+  const v = require('../assets/video/squat.mp4');
 
   const {hasPermission, requestPermission} = useCameraPermission();
   // 카메라 권한 설정
@@ -85,7 +54,7 @@ const RecordVideo = ({navigation}) => {
 
   const device = useCameraDevice('back', {
     physicalDevices: [
-      'ultra-wide-angle-camera',
+      // 'ultra-wide-angle-camera',
       'wide-angle-camera',
       'telephoto-camera',
     ],
@@ -94,71 +63,108 @@ const RecordVideo = ({navigation}) => {
   // console.log('device', device);
   if (device == null) return Alert.alert('알림', '실패');
 
+  const format = useCameraFormat(device, [
+    {videoResolution: {width: 1920, height: 1080}},
+    // {fps: 60},
+  ]);
+
   // 녹화
   const [isRecording, setIsRecording] = useState(false);
   const [videoPath, setVideoPath] = useState('');
   const camera = useRef();
-  // const camera = useRef < Camera > null;
 
-  const startRecording = async () => {
-    // const hasPermission = await requestCameraPermission();
-    // if (!hasPermission) return;
+  /** 녹화 실행 함수 */
+  const startRecording = () => {
+    console.log('startRecording...')
 
     setIsRecording(true);
-
     camera.current.startRecording({
-      // videoBitRate: 'low',
       flash: 'off',
-      // savePath: '/Users/seojuwon/desktop',
-      // onRecordingFinished: video => {
-      //   setVideoPath(video.path);
-      // },
-      onRecordingFinished: video => {
-        console.log('---------- video ', video.path);
-        setVideoPath(video.path);
+      // 녹화가 완료되었을 때 실행되는 함수 -> 녹화를 중지하는 기능은 없음
+      onRecordingFinished: (video) => {
+        console.log('RecordVideo_startRecording ------- video path :', video.path);
+        setVideoPath(video.path); // videoPath 업데이트
+        navigation.navigate('VideoSubmit', {
+          category,
+          video: `${video.path}`,
+        });
       },
-      onRecordingError: error => console.error(error),
+      onRecordingError: (error) => {
+        console.error(error);
+      },
     });
   };
 
-  const stopRecording = async () => {
+  /** 녹화 중지 함수 */
+  const stopRecording = () => {
+    console.log('stopRecording...')
     setIsRecording(false);
-    const video = camera.current.stopRecording();
+    camera.current.stopRecording();
 
-    // 동영상 경로 찾기
-    // const path = await fs.realpathSync(video.path);
-    // console.log('동영상 경로', path);
+    console.log('RecodeVideo_stopRecording ------ video path :', videoPath)
   };
+
+  // ------------------------------------------------------------------------------------------------
+
+  // 뒤로가기 (RecordVideo -> Category)
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: route.params.category,
+      headerLeft: ({onPress}) => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Category');
+          }}>
+          <Icon name="chevron-left" size={40} />
+        </TouchableOpacity>
+      ),
+      // headerRight: ({onPress}) => (
+      //     isRecording ? (
+      //       <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
+      //         <Text style={styles.recordButtonText}>시작</Text>
+      //       </TouchableOpacity>
+
+      //     ) : (
+      //       <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
+      //         <Text style={styles.recordButtonText}>종료</Text>
+      //       </TouchableOpacity>
+      //     )
+      // ),
+      contentStyle: {
+        backgroundColor: '#FAFAFA',
+      },
+    });
+  }, [navigation, route, isRecording]);
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      {isRecording ? (
-        <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
-          <Text style={styles.recordButtonText}>종료</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
-          <Text style={styles.recordButtonText}>시작</Text>
-        </TouchableOpacity>
-      )}
-      {/* <Video
-        source={{uri: 'file:///data/user/0/com.app_24_7/cache/mrousavy3447176662132122093.mp4'}}
-        style={styles.videoPlayer}
-        controls={true}
-      />  */}
+      {/* 시작, 종료 버튼 */}
+      <TouchableOpacity
+        style={styles.recordButton}
+        onPress={isRecording ? stopRecording : startRecording}>
+        <Text style={styles.recordButtonText}>
+          {isRecording ? '종료' : '시작'}
+        </Text>
+      </TouchableOpacity>
+     
+      {/* 제공하는 영상 */}
+      <View style={styles.video}>
+        <Video source={v} style={styles.videoPlayer} controls={true} />
+      </View>
+      {/* 사용자 카메라 화면 */}
       <View style={{position: 'absolute', bottom: 0}}>
         <Camera
           style={{
             // 카메라 크기를 화면 너비의 제곱근으로 설정, Math.sqrt() -> 주어진 숫자의 제곱근을 반환
-            width: windowWidth / Math.sqrt(1),
-            height: windowWidth / Math.sqrt(1),
+            width: windowWidth / Math.sqrt(1.1),
+            height: windowWidth / Math.sqrt(1.1),
           }}
           device={device}
           isActive={true}
           video={true}
           audio={false}
           ref={camera}
-          // format={format}
+          format={format}
           // fps={fps}
         />
       </View>
@@ -169,27 +175,24 @@ const RecordVideo = ({navigation}) => {
 const styles = StyleSheet.create({
   recordButton: {
     position: 'absolute',
-    top: 20,
-    left: 20,
-    right: 20,
-    backgroundColor: '#7254F5',
-    padding: 20,
-    alignItems: 'center',
-    // marginRight: 10,
-    // padding: 10,
-    // backgroundColor: '#7254F5',
-    // zIndex: 1,
+    width: 50,
+    height: 40,
+    backgroundColor: 'red',
+    top: 0,
+    right: 0,
+    zIndex: 1,
   },
   recordButtonText: {
-    fontSize: 18,
+    fontSize: 15,
     color: '#fff',
   },
+  video: {
+    position: 'absolute',
+    top: 0,
+  },
   videoPlayer: {
-    flex: 1,
-    marginTop: 50,
-    height: 50,
-    width: windowWidth,
-    // backgroundColor: 'red',
+    width: windowWidth / Math.sqrt(1.1),
+    height: windowWidth / Math.sqrt(1.1),
   },
 });
 

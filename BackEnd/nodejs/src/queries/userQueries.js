@@ -5,7 +5,7 @@ module.exports = {
     signUp: `insert into user (email, pw, nickname) values (?,?,?)`,
 
     /** email 확인 */
-    duplicateCheck : `select email from user where email = ?`,
+    duplicateCheck : `select email,user_code from user where email = ?`,
 
     /** 로그인(이메일) */
     signInCheck: `select email,pw from user where email = ?`,
@@ -21,5 +21,8 @@ module.exports = {
 
     //** feedback 트레이너에게 보내기 */
     sandFeedback: `insert into connection (user_code,trainer_code, exercise_category, user_comment,accuracy,accuracy_list,user_video_url) values (?,?,?,?,?,?,?)`,
+
+    /** 트레이너의 피드백 확인 */
+    getFeedback : `select feedback_content, attachment, base_url, memo from feedback_list_user where `,
 
 }

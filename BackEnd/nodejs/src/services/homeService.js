@@ -69,7 +69,16 @@ const homeService = {
         } catch (err) {
             throw err;
         }
+    },
 
+    getFeedback : async (userEmail) =>{
+        try{
+            const [userResult] = await conn.query(userQueries.duplicateCheck,[email]);
+            const userCode = userResult[0].user_code
+            
+        } catch(err){
+            throw err;
+        }
     }
 
 }

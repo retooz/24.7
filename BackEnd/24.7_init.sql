@@ -1,41 +1,42 @@
 use Insa4_JSB_final_4;
 
-# DROP SEQUENCE user_code;
-# DROP SEQUENCE trainer_code;
-# DROP SEQUENCE connection_code;
+DROP SEQUENCE user_code;
+DROP SEQUENCE trainer_code;
+DROP SEQUENCE connection_code;
+DROP TABLE feedback_list_user;
+DROP TABLE connection;
+DROP TABLE trainer;
+DROP TABLE user;
 
 CREATE SEQUENCE user_code START WITH 10000001 INCREMENT BY 1 MAXVALUE 19999999;
 CREATE SEQUENCE trainer_code START WITH 20000001 INCREMENT BY 1 MAXVALUE 29999999;
 CREATE SEQUENCE connection_code START WITH 30000001 INCREMENT BY 1 MAXVALUE 49999999;
 
-# DROP TABLE user;
 CREATE TABLE user(
     email VARCHAR(50) NOT NULL,
     pw VARCHAR(100) NOT NULL,
     nickname VARCHAR(20) NOT NULL,
-    user_code INT NOT NULL,
+    user_code INT NOT NULL DEFAULT NEXTVAL(user_code),
     join_date TIMESTAMP,
     PRIMARY KEY (user_code)
 );
 
-# DROP TABLE trainer;
 CREATE TABLE trainer(
     email VARCHAR(50) NOT NULL,
     pw VARCHAR(100) NOT NULL,
     trainer_name VARCHAR(20) NOT NULL,
     profile_pic VARCHAR(512),
     career VARCHAR(512),
-    trainer_code INT NOT NULL,
+    trainer_code INT NOT NULL DEFAULT NEXTVAL(trainer_code),
     join_date TIMESTAMP,
     PRIMARY KEY (trainer_code)
 );
 
-# DROP TABLE connection;
 CREATE TABLE connection (
     user_code INT NOT NULL,
     trainer_code INT NOT NULL,
     connection_code INT NOT NULL PRIMARY KEY,
-    exercise_category VARCHAR(20),
+    exercise_category VARCHAR(20) NOT NULL,
     user_comment VARCHAR(1024),
     accuracy FLOAT,
     accuracy_list VARCHAR(512),
@@ -45,10 +46,9 @@ CREATE TABLE connection (
     CONSTRAINT FK_trainer_connection FOREIGN KEY(trainer_code) REFERENCES trainer(trainer_code)
 );
 
-# DROP TABLE feedback_list_user;
 CREATE TABLE feedback_list_user (
     connection_code INT NOT NULL,
-    feedback_content VARCHAR(1024),
+    feedback_content VARCHAR(1024) NOT NULL,
     attachment VARCHAR(512),
     base_url VARCHAR(512),
     memo VARCHAR(100),

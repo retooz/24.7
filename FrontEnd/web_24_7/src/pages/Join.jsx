@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 const Join = () => {
   let regex = new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}');
 
+  const navigate = useNavigate();
   const fileRef = useRef();
   const fileNameRef = useRef();
   const emailCheckRef = useRef();
@@ -81,17 +83,8 @@ const Join = () => {
       setJoinCheckText('비밀번호가 같지 않습니다.');
     } else if (!inputName) {
       setJoinCheckText('이름을 입력해주세요');
-    } else if (!career) {
-      console.log(career);
-      setJoinCheckText('경력사항을 입력해주세요');
     } else if (!fileName) {
-      if (
-        !window.confirm(
-          '프로필 사진을 등록하지 않으셨습니다. 이대로 진행하시겠습니까?'
-        )
-      ) {
-        return null;
-      }
+      setJoinCheckText('프로필 사진을 등록하지 않으셨습니다. 이대로 진행하시겠습니까?')
     } else {
       const formData = new FormData();
       formData.append('profilePic', file);
@@ -108,6 +101,9 @@ const Join = () => {
         })
         .then((res) => {
           console.log('success', res.data);
+          if (res.data.result === 0) {
+            navigate('/')
+          }
         })
         .catch((err) => {
           console.error('failed', err);

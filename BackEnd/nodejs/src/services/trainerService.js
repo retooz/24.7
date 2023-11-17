@@ -25,9 +25,36 @@ const trainerService = {
 
     signIn: async (trainerEmail) => {
         try {
-            cosnt [results] = await conn.query(trainerQueries.signIn, [trainerEmail]);
+            const [results] = await conn.query(trainerQueries.signIn, [trainerEmail]);
             return results;
         } catch(err) {
+            throw err;
+        }
+    },
+
+    getMemberList : async (trainerCode) => {
+        try {
+            const [results] = await conn.query(trainerQueries.getMemberList, [trainerCode]);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    getHistory: async (trainerCode, userCode) => {
+        try {
+            const [results] = await conn.query(trainerQueries.getHistory, [trainerCode, userCode]);
+            return results;
+        } catch (err) {
+            throw err;
+        }
+    }, 
+
+    getMemberInfo: async (userCode) => {
+        try {
+            const [results] = await conn.query(trainerQueries.getMemberInfo, [userCode]);
+            return results;
+        } catch (err) {
             throw err;
         }
     }

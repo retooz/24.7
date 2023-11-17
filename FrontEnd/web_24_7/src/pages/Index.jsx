@@ -3,9 +3,23 @@ import History from '../components/History';
 import axios from '../axios';
 
 const Index = () => {
+  const [memberList, setMemberList] = useState([]);
   const [selectedMember, setSelectedMember] = useState(0);
   const [selectedMemberData, setSelectedMemberData] = useState({});
   const [memberHistory, setMemberHistory] = useState([]);
+
+  const trainerCode = 10000001;
+
+  const getMemberList = () => {
+    axios
+      .post('http://localhost:3000/trainer/getMemberList', {
+        trainer_code: trainerCode,
+      })
+      .then((res) => {
+        console.log(res)
+        setMemberList(res.data.list)
+      })
+  }
 
   const getHistory = () => {
     axios
@@ -18,9 +32,9 @@ const Index = () => {
       });
   };
 
-  // useEffect(() => {
-  //   console.log(selectedUser);
-  // }, [selectedUser]);
+  useEffect(() => {
+    getMemberList()
+  }, [])
 
   useEffect(() => {
     console.log(memberHistory.length);

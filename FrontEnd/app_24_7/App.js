@@ -23,8 +23,6 @@ import Mypage from './App/screens/Mypage';
 import Changeinfo from './App/screens/Changeinfo';
 import VideoSubmit from './App/screens/VideoSubmit';
 import SubmitComplete from './App/screens/SubmitComplete';
-import Mypage from './App/screens/Mypage'
-import Changeinfo from './App/screens/Changeinfo'
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -58,7 +56,7 @@ const App = () => {
           options={{
             headerTitle: '회원가입',
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -67,7 +65,7 @@ const App = () => {
           options={{
             headerTitle: '비밀번호 찾기',
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -110,7 +108,7 @@ const App = () => {
           component={RecordVideo}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
             header: () => null,
           }}
         />
@@ -119,7 +117,7 @@ const App = () => {
           component={VideoSubmit}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -127,7 +125,7 @@ const App = () => {
           component={SubmitComplete}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
             header: () => null,
           }}
         />
@@ -136,7 +134,7 @@ const App = () => {
           component={Mypage}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -144,41 +142,10 @@ const App = () => {
           component={Changeinfo}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: {fontWeight: 'bold'},
+            headerTitleStyle: {fontFamily: 'Pretendard-Light'},
           }}
         />
-        <Stack.Screen
-          name="Mypage"
-          component={Mypage}
-          options={{
-            headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        />
-        <Stack.Screen
-          name="Changeinfo"
-          component={Changeinfo}
-          options={{
-            headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        />
-        <Stack.Screen
-          name="Mypage"
-          component={Mypage}
-          options={{
-            headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        />
-        <Stack.Screen
-          name="Changeinfo"
-          component={Changeinfo}
-          options={{
-            headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -44,6 +44,7 @@ const CategoryAi = ({navigation}) => {
           <Icon name="chevron-left" size={40} />
         </TouchableOpacity>
       ),
+      headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
       contentStyle: {
         backgroundColor: '#fff',
       },
@@ -122,8 +123,9 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     position: 'absolute',
-    bottom: 25,
+    bottom: 20,
     alignSelf: 'center',
+    fontFamily: 'Pretendard-Medium'
   },
   // circle: {
   //   width: windowHeight * 0.3,

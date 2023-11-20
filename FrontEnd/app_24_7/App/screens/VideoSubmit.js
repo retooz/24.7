@@ -119,6 +119,7 @@ const VideoSubmit = ({navigation}) => {
           <Icon name="chevron-left" size={40} />
         </TouchableOpacity>
       ),
+      headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
       contentStyle: {
         backgroundColor: '#FAFAFA',
       },

@@ -23,7 +23,11 @@ const Main = ({navigation}) => {
   const todayString = today.toISOString().split('T')[0];
 
   const markedDates = {
-    '2023-10-31': {
+    '2023-11-14': {
+      marked: true,
+      dotColor: '#AB9EF4',
+    },
+    '2023-11-10': {
       marked: true,
       dotColor: '#AB9EF4',
     },
@@ -46,6 +50,11 @@ const Main = ({navigation}) => {
     textMonthFontSize: 85, // 월 폰트 크기 설정
     textYearFontSize: 80, // 년도 폰트 크기 설정
   };
+
+  /** 날짜 누르면 해당 날짜 피드백 화면으로 이동 */
+  const handleCheck = () => {
+
+  }
 
   return (
     <View style={styles.calendarContainer}>
@@ -75,7 +84,13 @@ const Main = ({navigation}) => {
           style={styles.calendar}
           theme={theme}
           markedDates={markedDates}
-          headerStyle={headerStyle}></Calendar>
+          headerStyle={headerStyle} 
+          onDayPress={(day) => {
+            if (markedDates[day.dateString]) {
+              navigation.navigate('Feedback', {selectedDay: day});
+            }
+          }}
+        />
       </View>
       <TouchableOpacity
         style={styles.cameraBtn}

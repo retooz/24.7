@@ -33,7 +33,7 @@ function Mypage({ navigation }) {
         </TouchableOpacity>
       ),
       contentStyle: {
-        backgroundColor: '#F6F6F6',
+        backgroundColor: '#fff',
       },
     });
   }, [navigation]);
@@ -52,7 +52,7 @@ function Mypage({ navigation }) {
     try {
       const storedEmail = await getEmailFromAsyncStorage();
       console.log("로그아웃 어싱크스토어", storedEmail)
-      axios.post("http://192.168.21.126:3000/user/logout", {
+      axios.post("http://192.168.20.203:3000/user/logout", {
         email : storedEmail
       })
         .then((res) => {
@@ -87,7 +87,7 @@ function Mypage({ navigation }) {
 
       // axios 요청에서 storedEmail을 사용하세요
       axios
-        .post("http://192.168.21.126:3000/user/passwordCheck", {
+        .post("http://192.168.20.203:3000/user/passwordCheck", {
           email: storedEmail,
           pw: pw
         })
@@ -130,7 +130,7 @@ function Mypage({ navigation }) {
           <Text style={styles.checkBtnText}>다음</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={logout}>
-          <Text>로그아웃</Text>
+          <Text style={styles.logoutText}>로그아웃</Text>
         </TouchableOpacity>
 
       </View>
@@ -146,12 +146,13 @@ const styles = StyleSheet.create({
     height: windowHeight,
     backgroundColor: 'white',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: windowHeight * 0.15,
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   headerContent: {
     alignItems: 'center',
-    marginTop: 50,
+    // marginTop: 50,
   },
   inputText: {
     backgroundColor: '#F9F7FE',
@@ -165,19 +166,19 @@ const styles = StyleSheet.create({
   },
   checkBtn: {
     backgroundColor: '#7254F5',
-    padding: 15,
+    padding: 13,
     borderRadius: 10,
     alignItems: 'center',
     width: 320,
     marginVertical: 10,
   },
   checkBtnText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
   },
   text: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
     fontSize: 15,
   },
@@ -189,6 +190,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 80,
+  },
+  logoutText: {
+    fontFamily: 'Pretendard-Regular',
+    color: 'black',
+    fontSize: 15,
   },
 });
 

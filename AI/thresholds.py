@@ -4,24 +4,13 @@
 def thresholds_squat():
 
     _ANGLE_HIP_KNEE_VERT = {
-                            'NORMAL' : (0,  32),
-                            'TRANS'  : (35, 65),
-                            'PASS'   : (70, 95)
+                            'NORMAL' : (165, 180),
+                            'TRANS'  : (120, 160),
+                            'PASS'   : (0, 120)
                            }    
-
-             
     thresholds = {
-                    'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT,
-
-                    # 'HIP_THRESH'   : [10, 50],
-                    # 'ANKLE_THRESH' : 45,
-                    # 'KNEE_THRESH'  : [50, 70, 95],
-
-                    'OFFSET_THRESH'    : 35.0
-
-                    # 'CNT_FRAME_THRESH' : 50
+                    'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT
                 }
-
     return thresholds
 
 
@@ -29,27 +18,13 @@ def thresholds_squat():
 # 런지 자세 범위
 def thresholds_lunge():
 
-    _ANGLE_HIP_KNEE_VERT = {
-                            'NORMAL' : (0,  32),
-                            'TRANS'  : (35, 65),
-                            'PASS'   : (80, 95)
-                           }    
-
-        
+    _ANGLE_HIP_FRONT_KNEE = {
+                            'NORMAL' : (115, 180),
+                            'PASS'   : (0, 110)
+                        }     
     thresholds = {
-                    'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT,
-
-                    'HIP_THRESH'   : [15, 50],
-                    'ANKLE_THRESH' : 30,
-                    'KNEE_THRESH'  : [50, 80, 95],
-
-                    'OFFSET_THRESH'    : 35.0,
-                    'INACTIVE_THRESH'  : 15.0,
-
-                    'CNT_FRAME_THRESH' : 50
-                            
-                 }
-                 
+                    'HIP_FRONT_KNEE_VERT': _ANGLE_HIP_FRONT_KNEE
+                }
     return thresholds
 
 
@@ -57,24 +32,11 @@ def thresholds_lunge():
 # 푸쉬업 자세 범위
 def thresholds_pushup():
 
-    _ANGLE_SHIDR_ELBOW_VERT = {
-                            'NORMAL' : (0,  32),
-                            'PASS'  : (35, 65)
-                           }    
-
-        
+    _ANGLE_SHLDR_ELBOW_VERT = {
+                            'NORMAL' : (0,  35),
+                            'PASS'  : (40, 120)
+                        }    
     thresholds = {
-                    'SHIDR_ELBOW_VERT': _ANGLE_SHIDR_ELBOW_VERT,
-
-                    'HIP_THRESH'   : [15, 50],
-                    'ANKLE_THRESH' : 30,
-                    'KNEE_THRESH'  : [50, 80, 95],
-
-                    'OFFSET_THRESH'    : 35.0,
-                    'INACTIVE_THRESH'  : 15.0,
-
-                    'CNT_FRAME_THRESH' : 50
-                            
-                 }
-                 
+                    'SHLDR_ELBOW_VERT': _ANGLE_SHLDR_ELBOW_VERT
+                }
     return thresholds

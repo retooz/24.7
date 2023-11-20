@@ -72,7 +72,7 @@ function Join({ navigation }) {
       return false;
     }
     axios
-      .post("http://192.168.21.126:3000/user/emailCheck", {
+      .post("http://192.168.20.203:3000/user/emailCheck", {
         email: email,
       })
       .then((res) => {
@@ -178,7 +178,7 @@ function Join({ navigation }) {
             <Text style={styles.emailBtnText}>확인</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{ display: 'none', color: 'red', fontWeight: "bold", marginTop: windowHeight * -0.018, marginBottom: windowHeight * 0.025 }} ref={alarmRef}>{alarmText}</Text>
+        <Text style={{ display: 'none', color: 'red', fontFamily: 'Pretendard-Light', marginTop: windowHeight * -0.018, marginBottom: windowHeight * 0.025 }} ref={alarmRef}>{alarmText}</Text>
         <Text style={{ ...styles.text, marginLeft: 10 }}>비밀번호</Text>
         <TextInput style={styles.inputText} ref={ref => (this.pwRef = ref)} onChangeText={(text) => setPw(text)} />
         <Text style={{ ...styles.text, marginLeft: 40 }}>비밀번호 확인</Text>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginRight: 250,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
     fontSize: 15,
   },
@@ -235,9 +235,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   JoinButtonText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
   },
   btn: {
     backgroundColor: '#7254F5',
@@ -248,10 +248,10 @@ const styles = StyleSheet.create({
     height: 59,
   },
   emailBtnText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'white',
-    fontSize: 15,
-    marginTop: 4,
+    fontSize: 18,
+    marginTop: 3,
   },
   emailInputText: {
     backgroundColor: 'white',

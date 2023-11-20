@@ -12,6 +12,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRoute} from '@react-navigation/native';
 import Video from 'react-native-video';
 import MovToMp4 from 'react-native-mov-to-mp4';
+import {VideoEditor, crop} from 'react-native-video-processing';
 // ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/EvilIcons';
 import axios from 'axios';
@@ -24,47 +25,28 @@ const VideoSubmit = ({navigation}) => {
   const {category, videoPath} = route.params;
   const [comment, setComment] = useState('');
   const commentRef = useRef({});
+  const [cropVideoUri, setCropVideoUri] = useState();
   console.log('videosubmit ------ video path :', videoPath);
 
-  // const handleConversion = () => {
-  //   console.log('버튼 누르기')
-  //   const formData = new FormData();
-  //   formData.append('video', {
-  //     uri: videoPath,
-  //     name: 'video.mov',
-  //     type: 'video/quicktime'
-  //   });
-  //   formData.append('comment', comment);
-  //   console.log('formData', formData)
 
-  //   axios
-  //     .post('http://192.168.21.126:3000/user/sandTrainer', formData)
-  //     .then(res => {
-  //       console.log('handleSubmit =>', res);
-  //       navigation.navigate('Main');
-  //     })
-  //     .catch(error => {
-  //       console.error('submit error --->', error);
-  //     });
-  // };
 
   // 파일 변환
   const handleConversion = () => {
     const video = Date.now().toString();
-  
+
     // 파일 확장자 확인
     const extension = videoPath.split('.').pop();
-  
+
     if (extension.toLowerCase() === 'mov') {
       // MOV 파일인 경우 변환 시도
       MovToMp4.convertMovToMp4(videoPath, video).then(function (results) {
         console.log('mov->mp4 파일 변환', results);
-        const mp4Uri = results;  // 변환된 mp4 파일의 경로
-  
+        const mp4Uri = results; // 변환된 mp4 파일의 경로
+
         const formData = new FormData();
         formData.append('video', {
           uri: mp4Uri,
-          name: "video.mp4",
+          name: 'video.mp4',
           type: 'video/mp4',
         });
         formData.append('comment', comment);
@@ -83,26 +65,26 @@ const VideoSubmit = ({navigation}) => {
     }
   };
 
-  const handleSubmit = (formData) => {
-    console.log('제출 버튼 누르기', formData);
+  const handleSubmit = formData => {
+    console.log('제출 버튼 누르기', formData._parts);
     formData._parts.forEach(part => {
       if (part[0] === 'video') {
         console.log('formData ----- ', part[1]);
       }
     });
     axios
-      .post('http://192.168.21.126:3000/user/sendTrainer', formData)
+      .post('http://192.168.20.203:3000/user/sendTrainer', formData)
       .then(res => {
-        console.log('handleSubmit =>', res);
-        
+        console.log('handleSubmit =>');
+
         // if (res === 1) {
-          //   navigation.navigate('SubmitComplete');
-          // }
-        })
-        .catch(error => {
-          console.error('submit error --->', error);
-        });
-        navigation.navigate('SubmitComplete')
+        //   navigation.navigate('SubmitComplete');
+        // }
+      })
+      .catch(error => {
+        console.error('submit error --->', error);
+      });
+    navigation.navigate('SubmitComplete');
   };
 
   // 뒤로가기 (VideoSubmit -> RecordVideo)

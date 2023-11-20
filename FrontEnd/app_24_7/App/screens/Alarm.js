@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
@@ -14,6 +14,9 @@ const windowHeight = Dimensions.get('window').height;
 
 const Alarm = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const {selectedDay} = route.params;
+  console.log('alarm -----', selectedDay)
 
   // 헤더 (알림 -> 메인)
   React.useLayoutEffect(() => {
@@ -41,11 +44,11 @@ const Alarm = () => {
         <View style={styles.alarmBox}>
           <View style={styles.alarmText}>
             <Text style={{fontSize: 18, fontFamily: 'Pretendard-Thin'}}>
-              10월 28일 운동 피드백이 도착했습니다.
+            {selectedDay}월 {selectedDay}일 운동 피드백이 도착했습니다.
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Feedback')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Feedback', {selectedDay})}>
             <View style={styles.alarmBtn}>
               <Icon name="chevron-right" size={45} color="#AB9EF4" />
             </View>

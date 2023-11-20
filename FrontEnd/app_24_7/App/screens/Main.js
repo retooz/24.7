@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -18,7 +18,8 @@ console.log(windowWidth);
 console.log(windowHeight);
 
 const Main = ({navigation}) => {
-  const [dates, setDates] = React.useState(['2023-10-31']);
+  // const [dates, setDates] = React.useState(['2023-10-31']);
+  const [selectedDay, setSelectedDay] = useState();
   const today = new Date();
   const todayString = today.toISOString().split('T')[0];
 
@@ -61,7 +62,7 @@ const Main = ({navigation}) => {
       <View style={styles.headerComponent}>
         <TouchableOpacity
           style={styles.bellBtn}
-          onPress={() => navigation.navigate('Alarm')}>
+          onPress={() => navigation.navigate('Alarm', {selectedDay})}>
           {/* <Fontisto name="bell" size={35} color="#AB9EF4" /> */}
           <Image
             source={require('../assets/image/Bell.png')}
@@ -86,7 +87,9 @@ const Main = ({navigation}) => {
           markedDates={markedDates}
           headerStyle={headerStyle} 
           onDayPress={(day) => {
+            console.log('Selected day:', day.month, day.day);
             if (markedDates[day.dateString]) {
+              // setSelectedDay(day);
               navigation.navigate('Feedback', {selectedDay: day});
             }
           }}

@@ -26,6 +26,7 @@ const RecordVideo = ({navigation}) => {
   const route = useRoute();
   const {category} = route.params;
   const v = require('../assets/video/squat.mp4');
+  const [timer, setTimer] = useState(10)
 
   const {hasPermission, requestPermission} = useCameraPermission();
   // 카메라 권한 설정
@@ -49,17 +50,20 @@ const RecordVideo = ({navigation}) => {
   useEffect(() => {
     checkCameraPermissionState();
     checkAudioPermissionState();
-    Alert.alert('알림', '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.')
+    Alert.alert('알림', '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n 화면을 돌리지 말아주세요.')
   }, []);
 
-  const device = useCameraDevice('back', {
-    physicalDevices: [
-      // 'ultra-wide-angle-camera',
-      'wide-angle-camera',
-      'telephoto-camera',
-    ],
-  });
-  // const device = useCameraDevice('front')
+  // const device = useCameraDevice('back', {
+  //   physicalDevices: [
+  //     // 'ultra-wide-angle-camera',
+  //     'wide-angle-camera',
+  //     'telephoto-camera',
+  //   ],
+  // });
+  const device = useCameraDevice('front', {
+    // videoHeight:windowWidth / Math.sqrt(1.1),
+    // videoWidth: windowWidth / Math.sqrt(1.1),
+  })
   // console.log('device', device);
   if (device == null) return Alert.alert('알림', '실패');
 
@@ -80,6 +84,7 @@ const RecordVideo = ({navigation}) => {
     setIsRecording(true);
     camera.current.startRecording({
       flash: 'off',
+      videoBitRate: 'low',
       // 녹화가 완료되었을 때 실행되는 함수 -> 녹화를 중지하는 기능은 없음
       onRecordingFinished: video => {
         console.log(
@@ -167,10 +172,10 @@ const RecordVideo = ({navigation}) => {
 
       {/* 제공하는 영상 */}
       <View style={styles.video}>
-        <Video source={v} style={styles.videoPlayer} controls={true} />
+        <Video source={v} style={styles.videoPlayer} controls={true} volume = {0.0} />
       </View>
       {/* 사용자 카메라 화면 */}
-      <View style={{position: 'absolute', bottom: 0}}>
+      <View style={{position: 'absolute', bottom: 10}}>
         <Camera
           style={{
             // 카메라 크기를 화면 너비의 제곱근으로 설정, Math.sqrt() -> 주어진 숫자의 제곱근을 반환

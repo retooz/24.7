@@ -126,10 +126,11 @@ const uploadVideo = multer({
 })
 
 router.post('/sendTrainer', uploadVideo.single('video'), async (req, res) => {
+    console.log('확인 ------ ', req.file)
+    
     try {
         const trainer = await homeService.searchTrainer();
         const matchNum = Math.floor(Math.random()*trainer.length)
-        
         res.json({result:1})
 
     } catch (err) {

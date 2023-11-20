@@ -21,7 +21,7 @@ const SubmitComplete = ({navigation}) => {
       <Image source={require('../assets/image/submit.png')}
         style={{width:100, height:100, alignSelf: 'center'}}
       />
-      <Text style={{marginTop: 20, textAlign:'center', fontSize: 35}}>제출 완료!</Text>
+      <Text style={{marginTop: 20, textAlign:'center', fontSize: 35, fontFamily: 'Pretendard-ExtraLight'}}>제출 완료!</Text>
     </View>
   )
 }

@@ -55,6 +55,15 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>fonts/Pretendard-Black.ttf</string>
+		<string>fonts/Pretendard-Bold.ttf</string>
+		<string>fonts/Pretendard-ExtraBold.ttf</string>
+		<string>fonts/Pretendard-ExtraLight.ttf</string>
+		<string>fonts/Pretendard-Light.ttf</string>
+		<string>fonts/Pretendard-Medium.ttf</string>
+		<string>fonts/Pretendard-Regular.ttf</string>
+		<string>fonts/Pretendard-SemiBold.ttf</string>
+		<string>fonts/Pretendard-Thin.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>

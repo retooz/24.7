@@ -76,7 +76,7 @@ function FindPw({ navigation }) {
       return false;
     } else {
       axios
-        .post("http://10.0.2.2:3000/user/findPassword", {
+        .post("http://192.168.20.203:3000/user/findPassword", {
           email: email,
           newPw: newPassword,
         })
@@ -180,19 +180,19 @@ const styles = StyleSheet.create({
   },
   checkBtn: {
     backgroundColor: '#7254F5',
-    padding: 15,
+    padding: 13,
     borderRadius: 10,
     alignItems: 'center',
     width: 320,
     marginVertical: 10,
   },
   checkBtnText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
   },
   text: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
     fontSize: 15,
   },
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 15,
     marginTop: 10,
+    fontFamily: 'Pretendard-Light',
   },
   newPw: {
     alignItems: 'center',

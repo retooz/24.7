@@ -45,7 +45,7 @@ const Category = ({navigation}) => {
           source={require('../assets/image/aiCoach.png')}
           style={styles.image}>
           <View style={styles.textContainer}>
-            <Text style={styles.headText}>AI 코치와 함께!</Text>
+            <Text style={styles.headText}>AI 코치와 함께 !</Text>
             <Text style={styles.text}>
               AI 운동 분석 결과와{'\n'}트레이너의 피드백을 받아보세요.
             </Text>
@@ -103,19 +103,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textContainer: {
-    marginTop: windowHeight * 0.08,
+    marginTop: windowHeight * 0.07,
   },
   headText: {
     fontSize: 30,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 10,
     color: 'black',
     marginVertical: 10,
     alignSelf: 'center',
+    fontFamily: 'Pretendard-Bold'
   },
   text: {
     textAlign: 'center',
-    fontWeight: 'thin',
+    // fontWeight: 'thin',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 20,
     color: 'black',
     marginVertical: windowHeight * 0.02,
@@ -123,20 +125,20 @@ const styles = StyleSheet.create({
   },
   startExercise: {
     width: windowWidth * 0.35,
-    height: windowHeight * 0.085,
+    height: windowHeight * 0.08,
     backgroundColor: 'rgba(249, 247, 254, 0.50)',
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+    marginVertical: 10,
   },
   startText: {
     color: '#000',
     textAlign: 'center',
-    fontFamily: 'Pretendard',
+    fontFamily: 'Pretendard-Light',
     fontSize: 20,
     fontStyle: 'normal',
-    fontWeight: 300,
   },
 });
 

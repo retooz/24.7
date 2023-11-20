@@ -40,7 +40,7 @@ const Alarm = () => {
         {/* 개별 알림창 */}
         <View style={styles.alarmBox}>
           <View style={styles.alarmText}>
-            <Text style={{fontSize: 18, fontFamily: 'Pretendard-Light'}}>
+            <Text style={{fontSize: 18, fontFamily: 'Pretendard-Thin'}}>
               10월 28일 운동 피드백이 도착했습니다.
             </Text>
           </View>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   alarmText: {
     flex: 1,
     alignItems: 'center',
+    marginLeft: 10,
   },
   alarmBtn: {
     alignItems: 'flex-end',

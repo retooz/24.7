@@ -17,8 +17,12 @@ import Alarm from './App/screens/Alarm';
 import Feedback from './App/screens/Feedback';
 import Category from './App/screens/Category';
 import CategoryAi from './App/screens/CategoryAi';
-import CategoryNoAi from './App/screens/CategoryNoAi'
+import CategoryNoAi from './App/screens/CategoryNoAi';
 import RecordVideo from './App/screens/RecordVideo';
+import Mypage from './App/screens/Mypage';
+import Changeinfo from './App/screens/Changeinfo';
+import VideoSubmit from './App/screens/VideoSubmit';
+import SubmitComplete from './App/screens/SubmitComplete';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -52,8 +56,7 @@ const App = () => {
           options={{
             headerTitle: '회원가입',
             headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
-            
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -62,7 +65,7 @@ const App = () => {
           options={{
             headerTitle: '비밀번호 찾기',
             headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
           }}
         />
         <Stack.Screen
@@ -93,34 +96,57 @@ const App = () => {
             headerTitle: '',
           })}
         />
-        <Stack.Screen
-          name="Category"
-          component={Category}
-          options={{
-          }}
-        />
-        <Stack.Screen
-          name="CategoryAi"
-          component={CategoryAi}
-          options={{
-          }}
-        />
+        <Stack.Screen name="Category" component={Category} options={{}} />
+        <Stack.Screen name="CategoryAi" component={CategoryAi} options={{}} />
         <Stack.Screen
           name="CategoryNoAi"
           component={CategoryNoAi}
-          options={{
-          }}
+          options={{}}
         />
         <Stack.Screen
           name="RecordVideo"
           component={RecordVideo}
           options={{
             headerTitleAlign: 'center',
-            headerTitleStyle: { fontWeight: 'bold' },
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
+            header: () => null,
           }}
         />
+        <Stack.Screen
+          name="VideoSubmit"
+          component={VideoSubmit}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
+          }}
+        />
+        <Stack.Screen
+          name="SubmitComplete"
+          component={SubmitComplete}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
+            header: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="Mypage"
+          component={Mypage}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
+          }}
+        />
+        <Stack.Screen
+          name="Changeinfo"
+          component={Changeinfo}
+          options={{
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontFamily: 'Pretendard-Light'},
+          }}
+        />
+
       </Stack.Navigator>
-      
     </NavigationContainer>
   );
 };

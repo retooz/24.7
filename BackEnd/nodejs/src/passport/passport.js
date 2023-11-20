@@ -2,51 +2,67 @@ const passport = require('passport');
 const local = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const conn = require('../../config/database');
-const homeService = require('../services/homeService')
 const userQueries = require('../queries/userQueries')
 const trainerQueries = require('../queries/trainerQueries')
 
+let userData = ""
 
 //로그인 성공 0 아니면 1
-passport.use('local-login-user', new local({
+passport.use('local-login', new local({
     usernameField: 'email',
     passwordField: 'pw',
-    session:true,
-}, (email, pw, done) => {
-    conn.query(userQueries.signInCheck,[email],(err,result)=>{
-        if(result.length > 0){
-            const same = bcrypt.compareSync(pw, result[0].pw);
-            if(same){
-                console.log('로그인 성공')
-                return done(null,result)
-            }
+    session: true,
+    passReqToCallback: true
+}, async (req, email, pw, done) => {
+    try {
+        const type = req.body.type;
+        let [userRows] = []
+        if (type == 'u') {
+            
+            [userRows] = await conn.query(userQueries.signInCheck, [email], (err, rows) => { })
+            
+        } else if (type == 't') {
+            [userRows] = await conn.query(trainerQueries.signIn, [email], (err,  rows) => {  })
         }
-        console.log('로그인 실패')
-        return done(null, false, { message: '로그인에 실패하였습니다.' })
-    })
-}));
-
-passport.use('local-login-trainer',new local({
-    usernameField : 'userId',
-    passwordField : 'password',
-    session:true,
-},(userId,password,done)=>{
-    console.log('passport의 trainer login :',userId,password)
+        const user = userRows[0]
+        const same = bcrypt.compareSync(pw, user.pw)
+        if (same) {
+            return done(null, user)
+        }
+        return done(null, false, { message: 'login failed' })
+    } catch (err) {
+        console.log(err)
+        return done(err)
+    }
 }))
 
 passport.serializeUser(function (user, done) {
     console.log('serializeUser() 호출');
-    console.log( user[0].email);
-    done(null, user[0].email)
+    console.log(user.email);
+    done(null, user.email)
 })
 
-passport.deserializeUser(function (user, done) {
-    console.log('deserializeUser() 호출');
-    console.log(user);
-    conn.query(userQueries.duplicateCheck,[user],(err,result)=>{
-        done(null,result);
-    })
-    // done(null, user);
-})
 
+/** DB에 연동해서 결과를 얻어내는 함수 */
+const getUserData = async (user)=>{
+    const [result] = await conn.query(userQueries.duplicateCheck,[user]);
+
+    if(result.length>0){
+        userData = {email : result[0].email, user_code : result[0].user_code}
+    }else{
+        userData = undefined
+    }
+    return userData;
+}
+
+
+passport.deserializeUser(async (user, done) => {
+    try{
+        const userData = await getUserData(user);
+        done(null,userData);
+    }catch(err){
+        done(err)        
+    }
+    
+})
 module.exports = passport

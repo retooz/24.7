@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,25 +25,36 @@ function Login({ navigation }) {
   const emailRef = useRef({})
   const pwRef = useRef({})
   const alarmRef = useRef({})
+
+  // const isValidEmail = (email) => {
+  //   // 이메일 유효성 검사 정규식
+  //   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  //   return emailRegex.test(email);
+  // };
+
+  // const isValidPassword = (pw) => {
+  //   // 비밀번호는 최소 8자 이상, 영문 대소문자 및 숫자를 포함해야 합니다.
+  //   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  //   return passwordRegex.test(pw);
+  // };
+
   const handleLogin = () => {
-    if (email === "" || email === undefined) {
-      alert("이메일 확인 하고 와")
-      return false;
-    }
-    if (pw === "" || pw === undefined) {
-      alert("비번 확인")
-      return false;
-    }
-    else {
+    if (email === "" || email === undefined || pw === "" || pw === undefined) {
+      alert("이메일과 비밀번호를 모두 입력하세요.");
+      return;
+    } else {
       axios
-        .post("http://10.0.2.2:3000/auth/userLogin", {
+        .post("http://192.168.20.203:3000/auth/login", {
           email: email,
-          pw: pw
+          pw: pw,
+          type : "u"
         })
         .then((res) => {
           console.log("handleLogin =>", res.data.result);
           // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
           if (res.data.result === 0) {
+            AsyncStorage.setItem('userEmail', email);
+            setAlarmText('');
             navigation.navigate('Main')
           }
         })
@@ -50,8 +63,6 @@ function Login({ navigation }) {
           setAlarmText("잘못된 비밀번호입니다. 다시 확인하세요.")
           alarmRef.current.setNativeProps({ style: { color: 'red', display: 'block' } });
         });
-
-
     };
   }
 
@@ -90,8 +101,9 @@ function Login({ navigation }) {
 
         <View style={styles.btn}>
           <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}>
+            style={{ ...styles.loginButton, opacity: (email === '' || pw === '') ? 0.5 : 1 }}
+            onPress={handleLogin}
+            disabled={email === '' || pw === ''}>
             <Text style={styles.loginButtonText}>로그인</Text>
           </TouchableOpacity>
 
@@ -140,11 +152,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontSize: 18,
     width: '80%',
+    fontFamily: 'Pretendard-Regular',
   },
   btn: {
     width: '80%',
     marginVertical: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
   others: {
     flexDirection: 'row',
@@ -164,26 +177,25 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 10,
   },
   linkText: {
     marginHorizontal: 40,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
   },
   loginButtonText: {
     color: 'white',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold'
   },
   kakaoLoginButtonText: {
     color: 'black',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold'
   },
 });
-// 1. 클레스이름 마주기
-// 2. 토요일까지 달력
-// 3.
+
 
 export default Login;

@@ -9,15 +9,14 @@ def draw_rounded_rect(img, rect_start, rect_end, corner_width, box_color):
     x2, y2 = rect_end
     w = corner_width
 
-    # draw filled rectangles
+    # 점수 텍스트 상자
     cv2.rectangle(img, (x1 + w, y1), (x2 - w, y1 + w), box_color, -1)
     cv2.rectangle(img, (x1 + w, y2 - w), (x2 - w, y2), box_color, -1)
     cv2.rectangle(img, (x1, y1 + w), (x1 + w, y2 - w), box_color, -1)
     cv2.rectangle(img, (x2 - w, y1 + w), (x2, y2 - w), box_color, -1)
     cv2.rectangle(img, (x1 + w, y1 + w), (x2 - w, y2 - w), box_color, -1)
 
-
-    # draw filled ellipses
+    # 각도 표시
     cv2.ellipse(img, (x1 + w, y1 + w), (w, w),
                 angle = 0, startAngle = -90, endAngle = -180, color = box_color, thickness = -1)
 
@@ -31,8 +30,6 @@ def draw_rounded_rect(img, rect_start, rect_end, corner_width, box_color):
                 angle = 0, startAngle = 0, endAngle = 90, color = box_color, thickness = -1)
 
     return img
-
-
 
 # 이미지에 점선을 그리는 함수
 def draw_dotted_line(frame, lm_coord, start, end, line_color):
@@ -65,8 +62,7 @@ def draw_text(
     rec_end = tuple(m + n - o for m, n, o in zip((x + text_w, y + text_h), offset, (25, 0)))
     
     img = draw_rounded_rect(img, rec_start, rec_end, width, text_color_bg)
-
-
+    
     cv2.putText(
         img,
         msg,
@@ -78,10 +74,7 @@ def draw_text(
         cv2.LINE_AA,
     )
 
-    
     return text_size
-
-
 
 # 두 점 사이의 각도를 계산하는 함수
 def find_angle(p1, p2, ref_pt = np.array([0,0])):
@@ -90,13 +83,10 @@ def find_angle(p1, p2, ref_pt = np.array([0,0])):
 
     cos_theta = (np.dot(p1_ref,p2_ref)) / (1.0 * np.linalg.norm(p1_ref) * np.linalg.norm(p2_ref))
     theta = np.arccos(np.clip(cos_theta, -1.0, 1.0))
-            
+
     degree = int(180 / np.pi) * theta
 
     return int(degree)
-
-
-
 
 # 미디어파이프에서 반환된 랜드마크 좌표를 이미지의 실제 좌표로 변환하는 함수
 def get_landmark_array(pose_landmark, key, frame_width, frame_height):
@@ -106,15 +96,13 @@ def get_landmark_array(pose_landmark, key, frame_width, frame_height):
 
     return np.array([denorm_x, denorm_y])
 
-
-
 # 랜드마크 결과와 랜드마크 기능 사전, 기능, 프레임의 너비와 높이를 입력받아 해당 기능의 좌표를 반환하는 함수.
 def get_landmark_features(kp_results, dict_features, feature, frame_width, frame_height):
 
-    if feature == 'nose':
-        return get_landmark_array(kp_results, dict_features[feature], frame_width, frame_height)
+    # if feature == 'nose':
+    #     return get_landmark_array(kp_results, dict_features[feature], frame_width, frame_height)
 
-    elif feature == 'left' or 'right':
+    if feature == 'left' or 'right':
         shldr_coord = get_landmark_array(kp_results, dict_features[feature]['shoulder'], frame_width, frame_height)
         elbow_coord   = get_landmark_array(kp_results, dict_features[feature]['elbow'], frame_width, frame_height)
         wrist_coord   = get_landmark_array(kp_results, dict_features[feature]['wrist'], frame_width, frame_height)

@@ -82,10 +82,11 @@ if up_file and uploaded:
             upload_process_frame = ProcessFrameSquat(thresholds=thresholds, fps=fps, frame_size=frame_size)
         elif type == 'Lunge':
             thresholds = thresholds_lunge()
-            upload_process_frame = ProcessFrameLunge(thresholds=thresholds)
+            upload_process_frame = ProcessFrameLunge(thresholds=thresholds,
+            fps=fps, frame_size=frame_size)
         elif type == 'Pushup':
             thresholds = thresholds_pushup()
-            upload_process_frame = ProcessFramePushup(thresholds=thresholds)
+            upload_process_frame = ProcessFramePushup(thresholds=thresholds, fps=fps, frame_size=frame_size)
         
         txt = st.sidebar.markdown(ip_vid_str, unsafe_allow_html=True)   
         ip_video = st.sidebar.video(tfile.name) 
@@ -127,11 +128,3 @@ if os.path.exists(output_video_file) and st.session_state['download']:
     os.remove(output_video_file)
     st.session_state['download'] = False
     download_button.empty()
-
-
-    
-    
-
-    
-
-

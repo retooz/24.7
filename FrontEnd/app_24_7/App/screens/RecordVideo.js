@@ -26,7 +26,7 @@ const RecordVideo = ({navigation}) => {
   const route = useRoute();
   const {category} = route.params;
   const v = require('../assets/video/squat.mp4');
-  const [timer, setTimer] = useState(10)
+  const [timer, setTimer] = useState(10);
 
   const {hasPermission, requestPermission} = useCameraPermission();
   // 카메라 권한 설정
@@ -50,7 +50,10 @@ const RecordVideo = ({navigation}) => {
   useEffect(() => {
     checkCameraPermissionState();
     checkAudioPermissionState();
-    Alert.alert('알림', '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n 화면을 돌리지 말아주세요.')
+    Alert.alert(
+      '알림',
+      '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n 화면을 돌리지 말아주세요.',
+    );
   }, []);
 
   // const device = useCameraDevice('back', {
@@ -63,13 +66,13 @@ const RecordVideo = ({navigation}) => {
   const device = useCameraDevice('front', {
     // videoHeight:windowWidth / Math.sqrt(1.1),
     // videoWidth: windowWidth / Math.sqrt(1.1),
-  })
+  });
+
   // console.log('device', device);
   if (device == null) return Alert.alert('알림', '실패');
 
   const format = useCameraFormat(device, [
-    {videoResolution: {width: 1920, height: 1080}},
-    // {fps: 60},
+    {videoResolution: {width: 640, height: 480}}, // 480p 해상도 설정
   ]);
 
   // 녹화
@@ -112,42 +115,11 @@ const RecordVideo = ({navigation}) => {
     console.log('RecodeVideo_stopRecording ------ video path :', videoPath);
   };
 
-  // ------------------------------------------------------------------------------------------------
-
-  // 뒤로가기 (RecordVideo -> Category)
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerTitle: route.params.category,
-  //     headerLeft: ({onPress}) => (
-  //       <TouchableOpacity
-  //         onPress={() => {
-  //           navigation.navigate('Category');
-  //         }}>
-  //         <Icon name="chevron-left" size={40} />
-  //       </TouchableOpacity>
-  //     ),
-  //     // headerRight: ({onPress}) => (
-  //     //     isRecording ? (
-  //     //       <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
-  //     //         <Text style={styles.recordButtonText}>시작</Text>
-  //     //       </TouchableOpacity>
-
-  //     //     ) : (
-  //     //       <TouchableOpacity style={styles.recordButton} onPress={stopRecording}>
-  //     //         <Text style={styles.recordButtonText}>종료</Text>
-  //     //       </TouchableOpacity>
-  //     //     )
-  //     // ),
-  //     contentStyle: {
-  //       backgroundColor: '#FAFAFA',
-  //     },
-  //   });
-  // }, [navigation, route, isRecording]);
 
   return (
     // justifyContent: 'center', alignItems: 'center'
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      {/* 시작, 종료 버튼 */}
+      {/* 뒤로가기 */}
       <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -156,9 +128,11 @@ const RecordVideo = ({navigation}) => {
           style={styles.headerBackBtn}>
           <Icon name="chevron-left" size={40} style={styles.headerIcon} />
         </TouchableOpacity>
+        {/* 카테고리 */}
         <View style={styles.headerText}>
           <Text style={styles.text}>{category}</Text>
         </View>
+        {/* 시작, 종료 버튼 */}
         <View style={styles.headerRecordBtn}>
           <TouchableOpacity
             style={styles.recordBtn}
@@ -172,7 +146,12 @@ const RecordVideo = ({navigation}) => {
 
       {/* 제공하는 영상 */}
       <View style={styles.video}>
-        <Video source={v} style={styles.videoPlayer} controls={true} volume = {0.0} />
+        <Video
+          source={v}
+          style={styles.videoPlayer}
+          controls={true}
+          volume={0.0}
+        />
       </View>
       {/* 사용자 카메라 화면 */}
       <View style={{position: 'absolute', bottom: 10}}>
@@ -228,8 +207,8 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#7254F5',
     borderRadius: 6,
-    justifyContent: 'center', 
-    alignItems: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recordBtnText: {
     fontSize: 20,

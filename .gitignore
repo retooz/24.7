@@ -1,13 +1,13 @@
-/docs
-/Temp
-/.idea
-/.vscode
+docs/
+Temp/
+.idea/
+.vscode/
 .DS_Store
+node_modules/
 
 # FE-Web Ignore List
 
 # Dependencies
-/FrontEnd/web_24_7/node_modules
 /FrontEnd/web_24_7/.pnp
 /FrontEnd/web_24_7/.pnp.js
 
@@ -15,9 +15,7 @@
 /FrontEnd/web_24_7/coverage
 /FrontEnd/web_24_7/build
 
-# misc7
-/FrontEnd/web_24_7/.DS_Store
-/FrontEnd/web_24_7/.vscode
+# misc
 /FrontEnd/web_24_7/.env.*
 /FrontEnd/web_24_7/npm-debug.log*
 /FrontEnd/web_24_7yarn-debug.log*
@@ -25,11 +23,6 @@
 
 
 # FE-App Ignore List
-
-/FrontEnd/app_24_7/.vscode
-
-# macOS
-/FrontEnd/app_24_7/.DS_Store
 
 # Xcode
 /FrontEnd/app_24_7/build/
@@ -51,7 +44,6 @@
 /FrontEnd/app_24_7/ios/.xcode.env.local
 
 # Android/IntelliJ
-/FrontEnd/app_24_7/.idea
 /FrontEnd/app_24_7/.gradle
 /FrontEnd/app_24_7/local.properties
 /FrontEnd/app_24_7/*.iml
@@ -61,7 +53,6 @@
 /FrontEnd/app_24_7/!debug.keystore
 
 # node.js
-/FrontEnd/app_24_7/node_modules/
 /FrontEnd/app_24_7/npm-debug.log
 /FrontEnd/app_24_7/yarn-error.log
 
@@ -87,7 +78,5 @@
 
 # BE-node.js Ignore List
 
-/BackEnd/.idea
-/BackEnd/.vscode
 /BackEnd/nodejs/sessions
-/BackEnd/nodejs/node_modules
+/BackEnd/nodejs/config

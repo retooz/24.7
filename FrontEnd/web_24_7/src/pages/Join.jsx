@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from '../axios';
 import { useNavigate } from 'react-router-dom';
+import './Join.css';
 
 const Join = () => {
   let regex = new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}');
@@ -92,7 +93,6 @@ const Join = () => {
       formData.append('pw', inputPw);
       formData.append('name', inputName);
       formData.append('career', career);
-
       axios
         .post('/trainer/join', formData, {
           headers: {

@@ -22,11 +22,9 @@ router.get('/',(req,res) => {
 })
 
 router.post('/join', uploadImg.single('profilePic'), async (req,res) => {
+    
     const data = req.body;
-    let profilePic = null;
-    if (req.file !== undefined) {
-        profilePic = req.file.filename;
-    }
+    const profilePic = req.file.filename;
     try {
         const cryptedPW = bcrypt.hashSync(data.pw, 10);
         const result = await trainerService.join(data, cryptedPW, profilePic)
@@ -77,9 +75,20 @@ router.post('/getMemberInfo', async (req, res) => {
     try {
         const { user_code } = req.body;
         const result = await trainerService.getMemberInfo(user_code);
-        res.json({ info: result })
+        res.json({ info: result[0] })
     } catch (err) {
         res.status(500).json({ message: 'error occured' })
+    }
+})
+
+router.post('/getDetail', async (req, res) => {
+    try {
+        const { connection_code } = req.body;
+        const result = await trainerService.getDetail(connection_code);
+        res.json({ detail: result[0] })
+    } catch (err) {
+        res.status(500).json({ message: 'error occured' })
+        
     }
 })
 

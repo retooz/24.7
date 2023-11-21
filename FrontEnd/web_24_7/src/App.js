@@ -1,4 +1,3 @@
-import './reset.css';
 import './App.css';
 import Login from './pages/Login';
 import Join from './pages/Join'

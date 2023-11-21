@@ -41,7 +41,9 @@ CREATE TABLE connection (
     accuracy FLOAT,
     accuracy_list VARCHAR(512),
     user_video_url VARCHAR(512),
+    split_video_base_url VARCHAR(512),
     connection_date TIMESTAMP,
+    confirm_trainer BOOLEAN DEFAULT false NOT NULL,
     CONSTRAINT FK_user_connection FOREIGN KEY(user_code) REFERENCES user(user_code),
     CONSTRAINT FK_trainer_connection FOREIGN KEY(trainer_code) REFERENCES trainer(trainer_code)
 );
@@ -53,6 +55,7 @@ CREATE TABLE feedback_list_user (
     base_url VARCHAR(512),
     memo VARCHAR(100),
     feedback_date TIMESTAMP,
+    confirm_user BOOLEAN DEFAULT false NOT NULL
     CONSTRAINT FK_connection_feedback_user FOREIGN KEY(connection_code) REFERENCES connection(connection_code)
 );
 

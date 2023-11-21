@@ -1,39 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import './History.css'
 
-const History = ({ history, memberinfo }) => {
-  console.log(history, memberinfo);
+const History = ({ history, memberinfo, selectConnection }) => {
+  console.log(history)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageContents, setCurrentPageContents] = useState([]);
+  const maxPage = Math.ceil((history.length + 1) / 10);
+
+  const selectHistoryHandle = (connection_code) => {
+    selectConnection(connection_code);
+  };
+
+  useEffect(() => {
+    setCurrentPageContents(
+      history.slice((currentPage - 1) * 10, currentPage * 10)
+    );
+    // eslint-disable-next-line
+  }, [currentPage]);
+
   return (
     <div id='history'>
-      <div className='member-info-container'>
-        <div>
-          <span id='member-name'>{memberinfo.nickname} 회원</span>
-          <p id='member-info'>회원 정보</p>
-        </div>
-        <div id='hamburger-icon'>
-          <img src='./hamburger.png' alt='' />
-        </div>
-      </div>
       <div className='history-container'>
         <div className='history-item'>
+          <p className='history-index'>No.</p>
           <p className='history-date'>신청 날짜</p>
           <p className='history-category'>운동 종류</p>
-          <p className="history-comment">사용자 코멘트</p>
+          <p className='history-comment'>사용자 요청내용</p>
+          <p className='history-check'></p>
         </div>
         <ul>
-          {history.map((data, index) => {
-            return (
-              <li>
-                <hr/>
+          {currentPageContents.map((data, index) => {
+            return data.confirm_trainer === 0 ? (
+              <li onClick={() => selectHistoryHandle(data.connection_code)}>
+                <hr />
                 <div className='history-item'>
-                  <p className='history-date'>{data.connection_date}</p>
-                  <p className='history-category'>{data.exercise_category}</p>
+                  <p className='history-index'>{index + 1}</p>|
+                  <p className='history-date'>{data.connection_date}</p>|
+                  <p className='history-category'>{data.exercise_category}</p>|
                   <p className='history-comment'>{data.user_comment}</p>
+                  <div className='history-check  not-checked'></div>
+                </div>
+              </li>
+            ) : (
+              <li onClick={() => selectHistoryHandle(data.connection_code)}>
+                <hr />
+                <div className='history-item'>
+                  <p className='history-index'>{index + 1}</p>|
+                  <p className='history-date'>{data.connection_date}</p>|
+                  <p className='history-category'>{data.exercise_category}</p>|
+                  <p className='history-comment'>{data.user_comment}</p>
+                  <div className='history-check'></div>
                 </div>
               </li>
             );
           })}
         </ul>
+        
       </div>
+      <div id='page-number-container'>
+          <ul id='page-number'>
+            {[...Array(maxPage)].map((n, index) => {
+              return index + 1 === currentPage ? (
+                <li id='current-page' onClick={() => setCurrentPage(index + 1)}>
+                  {index + 1}
+                </li>
+              ) : (
+                <li onClick={() => setCurrentPage(index + 1)}>{index + 1}</li>
+              );
+            })}
+          </ul>
+        </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import * as Progress from "react-native-progress";
 // import BottomSheet from '@gorhom/bottom-sheet';
@@ -16,6 +16,9 @@ const windowHeight = Dimensions.get('window').height;
 
 const Feedback = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const {selectedDay} = route.params;
+  console.log(selectedDay)
   // const bottomSheetRef = useRef < BottomSheet > (null);
   // const snapPoints = useMemo(() => ['25%', '50%'], []);
   // const handleSheetChanges = useCallback((index: number) => {
@@ -45,12 +48,11 @@ const Feedback = () => {
       <View style={styles.dateAndExercise}>
         {/* 날짜 */}
         <View style={styles.date}>
-          <Text>11월 23일</Text>
+          <Text style={styles.dateText}>{selectedDay.month}월 {selectedDay.day}일</Text>
         </View>
         {/* 운동 종목 */}
         <View>
-          <Text style={styles.exerciseInfo}>스쿼트</Text>
-          <Text style={styles.exerciseText}> 피드백</Text>
+          <Text style={styles.exerciseInfo}>스쿼트 피드백</Text>
         </View>
       </View>
       {/* 트레이너 정보 */}
@@ -102,10 +104,21 @@ const styles = StyleSheet.create({
     paddingTop: windowWidth * 0.035,
 
   },
-  dateAndExercise: {},
-  date: {},
-  exerciseInfo: {},
-  exerciseText: {},
+  dateAndExercise: {
+    justifyContent:'center',
+    alignItems: 'center'
+  },
+  date:{},
+  dateText: {
+    fontSize: 25,
+    fontFamily: 'Pretendard-Light',
+    marginVertical: 5,
+  },
+  exerciseInfo: {
+    fontSize: 18,
+    fontFamily: 'Pretendard-Regular',
+    marginVertical: 10,
+  },
   trainerInfo: {},
   exerciseVideo: {},
   feedback: {},

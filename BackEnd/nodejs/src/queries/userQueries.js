@@ -20,9 +20,11 @@ module.exports = {
     searchTrainer: `select email,trainer_code from trainer`,
 
     //** feedback 트레이너에게 보내기 */
-    sandFeedback: `insert into connection (user_code,trainer_code, exercise_category, user_comment,accuracy,accuracy_list,user_video_url) values (?,?,?,?,?,?,?)`,
+    sendFeedback: `insert into connection (user_code,trainer_code, exercise_category, user_comment,accuracy,accuracy_list,user_video_url) values (?,?,?,?,?,?,?)`,
 
     /** 트레이너의 피드백 확인 */
-    getFeedback : `select feedback_content, attachment, base_url, memo from feedback_list_user where `,
+    getFeedback : `select feedback_content, attachment, base_url, memo from feedback_list_user where connection_code = ?`,
 
+    /** 피드백 보낸 건수 검색 */
+    getFeedbackDate : `select connection_code, connection_date from connection where user_code = ?`,
 }

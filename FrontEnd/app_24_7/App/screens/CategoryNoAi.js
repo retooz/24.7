@@ -214,6 +214,7 @@ const CategoryNoAi = ({navigation}) => {
           <Icon name="chevron-left" size={40} />
         </TouchableOpacity>
       ),
+      headerTitleStyle: {fontFamily: 'Pretendard-Regular'},
       contentStyle: {
         backgroundColor: '#FAFAFA',
       },
@@ -250,7 +251,8 @@ const CategoryNoAi = ({navigation}) => {
             }}
             listItemContainerStyle={styles.dropdown}
             style={{...styles.Picker}}
-            textStyle={{textAlign: 'center', fontWeight: 'bold'}}
+            textStyle={{...styles.textStyle}}
+            placeholderStyle = {{...styles.placeholderStyle}}
           />
         </View>
       </View>
@@ -283,7 +285,8 @@ const CategoryNoAi = ({navigation}) => {
             }}
             listItemContainerStyle={styles.dropdown}
             style={{...styles.Picker}}
-            textStyle={{textAlign: 'center', fontWeight: 'bold'}}
+            textStyle={{...styles.textStyle}}
+            placeholderStyle = {{...styles.placeholderStyle}}
           />
         </View>
       </View>
@@ -316,7 +319,8 @@ const CategoryNoAi = ({navigation}) => {
             }}
             listItemContainerStyle={{...styles.dropdown}}
             style={{...styles.Picker}}
-            textStyle={{textAlign: 'center', fontWeight: 'bold'}}
+            textStyle={{...styles.textStyle}}
+            placeholderStyle = {{...styles.placeholderStyle}}
           />
         </View>
       </View>
@@ -349,7 +353,8 @@ const CategoryNoAi = ({navigation}) => {
             }}
             listItemContainerStyle={styles.dropdown}
             style={{...styles.Picker}}
-            textStyle={{textAlign: 'center', fontWeight: 'bold'}}
+            textStyle={{...styles.textStyle}}
+            placeholderStyle = {{...styles.placeholderStyle}}
           />
         </View>
       </View>
@@ -382,7 +387,8 @@ const CategoryNoAi = ({navigation}) => {
             }}
             listItemContainerStyle={styles.dropdown}
             style={{...styles.Picker}}
-            textStyle={{textAlign: 'center', fontWeight: 'bold'}}
+            textStyle={{...styles.textStyle}}
+            placeholderStyle = {{...styles.placeholderStyle}}
           />
         </View>
       </View>
@@ -410,6 +416,7 @@ const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: 'white',
     justifyContent: 'center',
+    
   },
   Picker: {
     backgroundColor: '#F9F7FE',
@@ -429,6 +436,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     // android
     elevation: 3,
+    
   },
   dropDownContainer: {
     borderWidth: null,
@@ -438,6 +446,16 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     marginTop: 10,
   },
+  textStyle: {
+    fontSize: 20,
+    textAlign: 'center', 
+    fontFamily: 'Pretendard-Light',
+    // marginRight: 5,
+  },
+  placeholderStyle: {
+    fontFamily: 'Pretendard-Regular',
+    marginLeft: 30,
+  }
 });
 
 export default CategoryNoAi;

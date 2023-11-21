@@ -44,7 +44,7 @@ function Login({ navigation }) {
       return;
     } else {
       axios
-        .post("http://192.168.21.126:3000/auth/login", {
+        .post("http://192.168.20.203:3000/auth/login", {
           email: email,
           pw: pw,
           type : "u"
@@ -152,11 +152,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontSize: 18,
     width: '80%',
+    fontFamily: 'Pretendard-Regular',
   },
   btn: {
     width: '80%',
     marginVertical: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
   others: {
     flexDirection: 'row',
@@ -176,22 +177,23 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 10,
   },
   linkText: {
     marginHorizontal: 40,
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
   },
   loginButtonText: {
     color: 'white',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold'
   },
   kakaoLoginButtonText: {
     color: 'black',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold'
   },
 });
 

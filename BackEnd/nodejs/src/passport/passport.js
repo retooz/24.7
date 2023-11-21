@@ -6,6 +6,7 @@ const userQueries = require('../queries/userQueries')
 const trainerQueries = require('../queries/trainerQueries')
 
 let userData = ""
+let userType = ''
 
 //로그인 성공 0 아니면 1
 passport.use('local-login', new local({
@@ -17,12 +18,12 @@ passport.use('local-login', new local({
     try {
         const type = req.body.type;
         let [userRows] = []
-        if (type == 'u') {
-            
+        if (userType == 'u') {
+
             [userRows] = await conn.query(userQueries.signInCheck, [email], (err, rows) => { })
-            
-        } else if (type == 't') {
-            [userRows] = await conn.query(trainerQueries.signIn, [email], (err,  rows) => {  })
+
+        } else if (userType == 't') {
+            [userRows] = await conn.query(trainerQueries.signIn, [email], (err, rows) => { })
         }
         const user = userRows[0]
         const same = bcrypt.compareSync(pw, user.pw)
@@ -44,25 +45,38 @@ passport.serializeUser(function (user, done) {
 
 
 /** DB에 연동해서 결과를 얻어내는 함수 */
-const getUserData = async (user)=>{
-    const [result] = await conn.query(userQueries.duplicateCheck,[user]);
+const getUserData = async (user) => {
+    if(userType == 'u'){
 
-    if(result.length>0){
-        userData = {email : result[0].email, user_code : result[0].user_code}
+        const [result] = await conn.query(userQueries.duplicateCheck, [user]);
+        
+        if (result.length > 0) {
+            userData = { email: result[0].email, user_code: result[0].user_code };
+        } else {
+            userData = undefined;
+        }
+        return userData;
+
     }else{
-        userData = undefined
+        const [result] = await conn.query(trainerQueries.duplicateCheck, [user]);
+        
+        if (result.length > 0) {
+            userData = { email: result[0].email, trainer_code: result[0].trainer_code };
+        } else {
+            userData = undefined;
+        }
+        return userData;
     }
-    return userData;
 }
 
 
 passport.deserializeUser(async (user, done) => {
-    try{
+    try {
         const userData = await getUserData(user);
-        done(null,userData);
-    }catch(err){
-        done(err)        
+        done(null, userData);
+    } catch (err) {
+        done(err)
     }
-    
+
 })
 module.exports = passport

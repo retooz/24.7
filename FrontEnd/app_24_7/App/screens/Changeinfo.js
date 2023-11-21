@@ -33,7 +33,7 @@ function Changeinfo({ navigation }) {
             </TouchableOpacity>
         ),
         contentStyle: {
-            backgroundColor: '#F6F6F6',
+            backgroundColor: '#fff',
         },
     });
 }, [navigation]);
@@ -64,7 +64,7 @@ function Changeinfo({ navigation }) {
   
       console.log("저장된 이메일3:", email);
   
-      const response = await axios.post("http://10.0.2.2:3000/user/modify", {
+      const response = await axios.post("http://192.168.20.203:3000/user/modify", {
         email: email,
         pw: pw,
         nickname : nick
@@ -85,20 +85,20 @@ function Changeinfo({ navigation }) {
   return (
     <View style={styles.Container}>
       <View style={styles.headerContent}>
-        <Text style={{ ...styles.text, marginRight: 230 }}>이메일</Text>
+        <Text style={{ ...styles.text, marginRight: 270 }}>이메일</Text>
         <TextInput
-          style={styles.inputText}
+          style={{...styles.inputText, backgroundColor: '#EBE8F4', color: '#807F7F'}}
           value={email}
           onChangeText={(text) => setEmail(text)}
           editable={false} // 편집 불가능하게 만들기 위해 editable을 false로 설정
         />
-        <Text style={{ ...styles.text, marginRight: 230 }}>비밀번호</Text>
+        <Text style={{ ...styles.text, marginRight: 270 }}>비밀번호</Text>
         <TextInput
           style={styles.inputText}
           value={pw}
           onChangeText={(text) => setPw(text)}
         />
-        <Text style={{ ...styles.text, marginRight: 230 }}>닉네임</Text>
+        <Text style={{ ...styles.text, marginRight: 270 }}>닉네임</Text>
         <TextInput
           style={styles.inputText}
           value={nick}
@@ -121,12 +121,15 @@ const styles = StyleSheet.create({
     height: windowHeight,
     backgroundColor: 'white',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    marginTop: windowHeight * 0.15,
+    // backgroundColor: 'blue'
   },
   headerContent: {
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 0,
+    // backgroundColor: 'red'
   },
   inputText: {
     backgroundColor: '#F9F7FE',
@@ -137,6 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 320,
     height: 50,
+    fontFamily: 'Pretendard-Regular',
   },
   checkBtn: {
     backgroundColor: '#7254F5',
@@ -147,16 +151,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   checkBtnText: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
   },
   text: {
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-Regular',
     color: 'black',
     fontSize: 15,
   },
   errorMessage: {
+    fontFamily: 'Pretendard-Light',
     color: 'red',
     fontSize: 15,
   },

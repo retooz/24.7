@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -18,12 +18,17 @@ console.log(windowWidth);
 console.log(windowHeight);
 
 const Main = ({navigation}) => {
-  const [dates, setDates] = React.useState(['2023-10-31']);
+  // const [dates, setDates] = React.useState(['2023-10-31']);
+  const [selectedDay, setSelectedDay] = useState();
   const today = new Date();
   const todayString = today.toISOString().split('T')[0];
 
   const markedDates = {
-    '2023-10-31': {
+    '2023-11-14': {
+      marked: true,
+      dotColor: '#AB9EF4',
+    },
+    '2023-11-10': {
       marked: true,
       dotColor: '#AB9EF4',
     },
@@ -47,12 +52,17 @@ const Main = ({navigation}) => {
     textYearFontSize: 80, // 년도 폰트 크기 설정
   };
 
+  /** 날짜 누르면 해당 날짜 피드백 화면으로 이동 */
+  const handleCheck = () => {
+
+  }
+
   return (
     <View style={styles.calendarContainer}>
       <View style={styles.headerComponent}>
         <TouchableOpacity
           style={styles.bellBtn}
-          onPress={() => navigation.navigate('Alarm')}>
+          onPress={() => navigation.navigate('Alarm', {selectedDay})}>
           {/* <Fontisto name="bell" size={35} color="#AB9EF4" /> */}
           <Image
             source={require('../assets/image/Bell.png')}
@@ -75,7 +85,15 @@ const Main = ({navigation}) => {
           style={styles.calendar}
           theme={theme}
           markedDates={markedDates}
-          headerStyle={headerStyle}></Calendar>
+          headerStyle={headerStyle} 
+          onDayPress={(day) => {
+            console.log('Selected day:', day.month, day.day);
+            if (markedDates[day.dateString]) {
+              // setSelectedDay(day);
+              navigation.navigate('Feedback', {selectedDay: day});
+            }
+          }}
+        />
       </View>
       <TouchableOpacity
         style={styles.cameraBtn}

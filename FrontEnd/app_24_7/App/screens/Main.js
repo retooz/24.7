@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -18,7 +19,6 @@ console.log(windowWidth);
 console.log(windowHeight);
 
 const Main = ({navigation}) => {
-  // const [dates, setDates] = React.useState(['2023-10-31']);
   const [selectedDay, setSelectedDay] = useState();
   const today = new Date();
   const todayString = today.toISOString().split('T')[0];
@@ -40,6 +40,23 @@ const Main = ({navigation}) => {
     },
   };
 
+  useEffect(() => {
+    data()
+  }, []);
+
+  const data = async () => {
+    try {
+      const response = await axios.get(
+        'http://20.249.87.104:3000/user/getData',
+      );
+      console.log('data -----', response);
+      // setSelectedDay(response);
+      // console.log(selectedDay);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const theme = {
     arrowColor: 'black',
     textDayFontSize: 16,
@@ -53,9 +70,7 @@ const Main = ({navigation}) => {
   };
 
   /** 날짜 누르면 해당 날짜 피드백 화면으로 이동 */
-  const handleCheck = () => {
-
-  }
+  const handleCheck = () => {};
 
   return (
     <View style={styles.calendarContainer}>
@@ -69,7 +84,11 @@ const Main = ({navigation}) => {
             style={{width: 40, height: 40}}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.userBtn} onPress={()=>{navigation.navigate("Mypage")}}>
+        <TouchableOpacity
+          style={styles.userBtn}
+          onPress={() => {
+            navigation.navigate('Mypage');
+          }}>
           <View style={styles.userCircle}>
             {/* <Icon name="user" size={35} color="#AB9EF4" /> */}
             <Image
@@ -85,8 +104,8 @@ const Main = ({navigation}) => {
           style={styles.calendar}
           theme={theme}
           markedDates={markedDates}
-          headerStyle={headerStyle} 
-          onDayPress={(day) => {
+          headerStyle={headerStyle}
+          onDayPress={day => {
             console.log('Selected day:', day.month, day.day);
             if (markedDates[day.dateString]) {
               // setSelectedDay(day);

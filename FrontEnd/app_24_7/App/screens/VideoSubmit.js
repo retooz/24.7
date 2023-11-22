@@ -73,7 +73,7 @@ const VideoSubmit = ({navigation}) => {
       }
     });
     axios
-      .post('http://192.168.20.203:3000/user/sendTrainer', formData)
+      .post('http://20.249.87.104:3000/user/sendTrainer', formData)
       .then(res => {
         console.log('handleSubmit =>');
 

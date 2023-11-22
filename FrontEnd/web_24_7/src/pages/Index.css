@@ -39,8 +39,14 @@
 #profile-img {
   width: 6em;
   height: 6em;
-  background-color: #4a4a4a;
   margin-right: 2%;
+  display: flex;
+  align-items: center;
+}
+
+#profile-img img {
+  max-width: 6em;
+
 }
 
 #hamburger-icon {

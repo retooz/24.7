@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from '../axios';
+import { Trainer } from '../App'
 import './Login.css';
 
 const Login = () => {
-  const navigate = useNavigate();
+
+  const { setTrainerInfo } = useContext(Trainer);
+
   const inputEmailRef = useRef();
   const inputPwRef = useRef();
   const signInCheckRef = useRef();
+
   const [signInCheckText, setSignInCheckText] = useState('');
 
   useEffect(() => {
@@ -21,15 +25,16 @@ const Login = () => {
     const inputPw = inputPwRef.current.value;
     if (regex.test(inputEmail)) {
       axios
-        .post('/auth/login', {
+        .post('/login', {
           email: inputEmail,
           pw: inputPw,
           type: 't'
         })
         .then((res) => {
           console.log('success', res.data);
-          if (res.data.result === 0) {
-            navigate('/main');
+          if (res.data.result === 'success') {
+            console.log(res.data.trainer);
+            setTrainerInfo(res.data.trainer);
           }
         })
         .catch((err) => {

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const passport = require('../passport/passport.js');
 const path = require('path')
 const trainerService = require('../services/trainerService.js');
+
 const uploadImg = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
@@ -18,7 +19,27 @@ const uploadImg = multer({
 })
 
 router.get('/',(req,res) => {
-    res.render('trainer');
+    res.render('trainer', {trainer: req.session.trainer});
+})
+
+router.post('/login', async (req,res) => {
+    console.log(req.body)
+    const data = req.body;
+    try {
+        const [userRows] = await trainerService.signIn(data.email)
+        const trainer = userRows
+
+        const compare = bcrypt.compareSync(data.pw, trainer.pw)
+        if (compare) {
+            const trainerObj = {email: trainer.email, trainer_name: trainer.trainer_name, trainer_code: trainer.trainer_code,
+            profile_pic : trainer.profile_pic}
+            req.session.trainer = trainerObj
+            res.json({ result: 'success', trainer : req.session.trainer })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ result: 'error occured during login'})
+    }
 })
 
 router.post('/join', uploadImg.single('profilePic'), async (req,res) => {
@@ -89,6 +110,23 @@ router.post('/getDetail', async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'error occured' })
         
+    }
+})
+
+router.post('/sendFeedback', async (req, res) => {
+    console.log(req.body)
+    try {
+        const { connection_code, feedbackContent, link, base } = req.body;
+        const result = await trainerService.sendFeedback(connection_code, feedbackContent, link, base)
+        console.log(result)
+        if (result.affectedRows > 0) {
+            res.json({ result: 'success' })
+        } else {
+            res.json({ result: 'error occured'})
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: 'error occured during send feedback'})
     }
 })
 

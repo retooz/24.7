@@ -31,11 +31,10 @@ const Join = () => {
   const emailCheck = () => {
     if (regex.test(inputEmail)) {
       axios
-        .post('/trainer/emailCheck', {
+        .post('/emailCheck', {
           email: inputEmail,
         })
         .then((res) => {
-          console.log('check res', res.data.result);
           if (res.data.result === 'ok') {
             setEmailCheckRes(true);
             setEmailCheckText('사용 가능한 이메일입니다.');
@@ -94,13 +93,12 @@ const Join = () => {
       formData.append('name', inputName);
       formData.append('career', career);
       axios
-        .post('/trainer/join', formData, {
+        .post('/join', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
         .then((res) => {
-          console.log('success', res.data);
           if (res.data.result === 0) {
             navigate('/')
           }

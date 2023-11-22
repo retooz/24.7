@@ -1,37 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Detail from '../components/Detail';
 import History from '../components/History';
 import axios from '../axios';
+import { Trainer } from '../App';
 import './Index.css';
 
 const Index = () => {
+  const { trainerInfo } = useContext(Trainer);
+
+  const filterMemberQuery = useRef();
+
   const [memberList, setMemberList] = useState([]);
+  const [filteredMemberList, setFilteredMemberList] = useState([]);
   const [selectedMember, setSelectedMember] = useState(0);
   const [selectedMemberData, setSelectedMemberData] = useState({});
   const [memberHistory, setMemberHistory] = useState([]);
   const [selectedConnCode, setSelectedConnCode] = useState(0);
   const [detailData, setDetailData] = useState({});
 
-  const trainerCode = 20000002;
-
   const conectionChangeHandle = (connection_code) => {
     setSelectedConnCode(connection_code);
   };
 
+  const reset = () => {
+    setSelectedMember(0);
+    setSelectedConnCode(0);
+    setDetailData({});
+  };
+
   const getMemberList = () => {
     axios
-      .post('/trainer/getMemberList', {
-        trainer_code: trainerCode,
+      .post('/getMemberList', {
+        trainer_code: trainerInfo.trainer_code,
       })
       .then((res) => {
         setMemberList(res.data.list);
+        setFilteredMemberList(res.data.list);
       });
   };
 
   const getHistory = () => {
     axios
-      .post(`/trainer/getHistory`, {
-        trainer_code: trainerCode,
+      .post(`/getHistory`, {
+        trainer_code: trainerInfo.trainer_code,
         user_code: selectedMember,
       })
       .then((res) => {
@@ -41,7 +52,7 @@ const Index = () => {
 
   const getMemberInfo = () => {
     axios
-      .post('/trainer/getMemberInfo', {
+      .post('/getMemberInfo', {
         user_code: selectedMember,
       })
       .then((res) => {
@@ -51,7 +62,7 @@ const Index = () => {
 
   const getDetail = () => {
     axios
-      .post('/trainer/getDetail', {
+      .post('/getDetail', {
         connection_code: selectedConnCode,
       })
       .then((res) => {
@@ -59,34 +70,40 @@ const Index = () => {
       });
   };
 
+  const filterMember = () => {
+    reset()
+    const query = filterMemberQuery.current.value;
+    const filtered = memberList.filter((user) => {
+      return user.nickname.includes(query)
+    })
+    setFilteredMemberList(filtered)
+  }
+
   const listClickHandle = (user_code) => {
+    reset();
     setSelectedMember(user_code);
-    setSelectedConnCode(0);
-    setDetailData({});
-    setMemberHistory([]);
   };
 
   useEffect(() => {
     getMemberList();
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (selectedConnCode !== 0 && selectedConnCode !== undefined) {
-      console.log(selectedConnCode);
       getDetail(selectedConnCode);
+    } else {
+      setDetailData({});
     }
     // eslint-disable-next-line
   }, [selectedConnCode]);
 
   useEffect(() => {
-    console.log('History Length', memberHistory.length);
-    console.log('Selected Member', selectedMember);
-  }, [selectedMember, memberHistory]);
-
-  useEffect(() => {
     if (selectedMember !== 0 && selectedMember !== undefined) {
       getHistory(selectedMember);
       getMemberInfo(selectedMember);
+    } else {
+      setMemberHistory([]);
     }
     // eslint-disable-next-line
   }, [selectedMember]);
@@ -96,8 +113,10 @@ const Index = () => {
       <div className='menu-list'>
         <img src='./pageLogo.png' alt='' id='main-logo' />
         <div id='trainer-info'>
-          <div id='profile-img' />
-          <p>김형진 트레이너님</p>
+          <div id='profile-img' > 
+            <img src={'./'+trainerInfo.profile_pic} alt="" />
+          </div>
+          <p>{trainerInfo.trainer_name} 트레이너님</p>
           <div id='hamburger-icon'>
             <img src='./hamburger.png' alt='' />
           </div>
@@ -105,12 +124,12 @@ const Index = () => {
         <div id='member-list-container'>
           <p>가입 회원 리스트</p>
           <div id='member-search-form'>
-            <input type='text' name='' id='member-search-input' />
-            <input type='button' id='member-search-button' value='검색' />
+            <input type='text' name='' id='member-search-input' ref={filterMemberQuery}/>
+            <input type='button' id='member-search-button' value='검색' onClick={() => filterMember()} />
           </div>
           <div id='member-list'>
             <ul>
-              {memberList.map((item, index) => {
+              {filteredMemberList.map((item, index) => {
                 return item.checked === 0 &&
                   item.user_code === selectedMember ? (
                   <li
@@ -152,11 +171,14 @@ const Index = () => {
       </div>
       <div className='data-container'>
         {detailData.exercise_category ? (
-          <Detail detail={detailData} />
+          <Detail
+            detail={detailData}
+            memberinfo={selectedMemberData}
+            reset={reset}
+          />
         ) : memberHistory.length > 0 ? (
           <History
             history={memberHistory}
-            memberinfo={selectedMemberData}
             selectConnection={conectionChangeHandle}
           />
         ) : (

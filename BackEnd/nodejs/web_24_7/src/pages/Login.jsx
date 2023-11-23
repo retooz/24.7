@@ -27,12 +27,11 @@ const Login = () => {
       axios
         .post('/login', {
           email: inputEmail,
-          pw: inputPw,
-          type: 't'
+          pw: inputPw
         })
         .then((res) => {
           console.log('success', res.data);
-          if (res.data.result === 'success') {
+          if (res.data.result === 1) {
             console.log(res.data.trainer);
             setTrainerInfo(res.data.trainer);
           }
@@ -55,7 +54,7 @@ const Login = () => {
   return (
     <div className='login'>
       <img src='./loginLogo.png' alt='' id='login-logo' />
-      <form action='http://localhost:3000/auth/trainerLogin' method='POST'>
+      <form method='POST'>
         <input
           type='text'
           placeholder='Email'

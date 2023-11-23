@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer');
 const bcrypt = require('bcrypt');
-const passport = require('../passport/passport.js');
 const path = require('path')
 const trainerService = require('../services/trainerService.js');
 
@@ -19,7 +18,9 @@ const uploadImg = multer({
 })
 
 router.get('/',(req,res) => {
-    res.render('trainer', {trainer: req.session.trainer});
+    res.sendFile(
+        path.join(__dirname, '..', '..', 'web_24_7', 'build', 'index.html'), {trainer: req.session.trainer}
+    );
 })
 
 router.post('/login', async (req,res) => {
@@ -50,10 +51,10 @@ router.post('/join', uploadImg.single('profilePic'), async (req,res) => {
         const cryptedPW = bcrypt.hashSync(data.pw, 10);
         const result = await trainerService.join(data, cryptedPW, profilePic)
         if (result.affectedRows > 0) {
-            res.json({ message: 'join success', result : 0 })
+            res.json({ result : 1 })
         }
     } catch (err) {
-        res.status(500).json({ message: 'error occured' })
+        res.status(500).json({ result: 'error occured' })
     }
 })
 
@@ -63,9 +64,9 @@ router.post('/emailCheck', async (req, res) => {
         const trainerEmail = req.body.email;
         const result = await trainerService.duplicateCheck(trainerEmail);
         if (result.length > 0) {
-            res.json({ result: 'fail' })
+            res.json({ result: 0 })
         } else {
-            res.json({ result: 'ok' })
+            res.json({ result: 1 })
         }
     } catch (err) {
         res.status(500).json({ message: 'error occured' })
@@ -118,9 +119,8 @@ router.post('/sendFeedback', async (req, res) => {
     try {
         const { connection_code, feedbackContent, link, base } = req.body;
         const result = await trainerService.sendFeedback(connection_code, feedbackContent, link, base)
-        console.log(result)
         if (result.affectedRows > 0) {
-            res.json({ result: 'success' })
+            res.json({ result: 1 })
         } else {
             res.json({ result: 'error occured'})
         }

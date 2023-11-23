@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 
 const homeService = {
 
+    /** 회원가입 */
     join: async (data, cryptedPW) => {
         try {
             const [results] = await conn.query(userQueries.signUp, [data.email, cryptedPW, data.nick]);
@@ -14,6 +15,7 @@ const homeService = {
         }
     },
 
+    /** 이메일 체크 */
     duplicateCheck: async (userEmail) => {
         try {
             const [results] = await conn.query(userQueries.duplicateCheck, userEmail);
@@ -23,6 +25,7 @@ const homeService = {
         }
     },
 
+    /** 비밀번호 변경 */
     updatePassword: async (userEmail, cryptedPW) => {
         try {
             const [results] = await conn.query(userQueries.updatePassword, [cryptedPW, userEmail]);
@@ -32,6 +35,7 @@ const homeService = {
         }
     },
 
+    /** 로그인 */
     signInCheck: async (userEmail) => {
         try {
             const [results] = await conn.query(userQueries.signInCheck, [userEmail]);
@@ -41,6 +45,7 @@ const homeService = {
         }
     },
 
+    /** 닉네임 변경 */
     updateNickname: async (userEmail, nickname) => {
         try {
             const [results] = await conn.query(userQueries.updateNickname, [nickname, userEmail]);
@@ -50,6 +55,7 @@ const homeService = {
         }
     },
 
+    /** 영상을 보내기위한 트레이너 검색 */
     searchTrainer: async () => {
         try {
             const [results] = await conn.query(userQueries.searchTrainer);
@@ -59,23 +65,19 @@ const homeService = {
         }
     },
 
-    sendFeedback: async (userEmail, trainerCode, exerciseCategory, userComment, accuracy, accuracyList, userVideoUrl) => {
+    /** DB에 피드백 저장 */
+    sendFeedback: async (userCode, trainerCode, exerciseCategory, userComment, accuracy, accuracyList, userVideoUrl) => {
         try {
-            const [userResult] = await conn.query(userQueries.duplicateCheck, [userEmail]);
-            const userCode = userResult[0].user_code
-            const accuracy_list = JSON.stringify(accuracyList);
-            const [results] = await conn.query(userQueries.sendFeedback, [userCode, trainerCode, exerciseCategory, userComment, accuracy, accuracy_list, userVideoUrl]);
-            //let data2 = JSON.parse(data); json 파싱하는법
+            const [results] = await conn.query(userQueries.sendFeedback, [userCode, trainerCode, exerciseCategory, userComment, accuracy, accuracyList, userVideoUrl]);
             return results
         } catch (err) {
             throw err;
         }
     },
 
-    getConnectionData: async (userEmail) => {
+    /** DB에 저장된 운동 데이터를 가져오기 */
+    getConnectionData: async (userCode) => {
         try {
-            const [userResult] = await conn.query(userQueries.duplicateCheck, [userEmail]);
-            const userCode = userResult[0].user_code
             const [connectionResult] = await conn.query(userQueries.getFeedbackDate, [userCode]);
             return connectionResult
         } catch (err) {
@@ -83,10 +85,9 @@ const homeService = {
         }
     },
 
-    getFeedback: async (userEmail) => {
+    /** 특정 날짜 데이터 가져오기 */
+    getFeedback: async (userCode) => {
         try {
-            const [userResult] = await conn.query(userQueries.duplicateCheck, [userEmail]);
-            const userCode = userResult[0].user_code
             const [connectionResult] = await conn.query(userQueries.getFeedbackDate, [userCode]);
             if (connectionResult.length > 0) {
                 for (let i = 0; i < connectionResult.length; i++) {

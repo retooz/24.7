@@ -5,6 +5,7 @@ const homeService = require('../services/homeService.js');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const axios = require("axios");
 
 fs.readdir('./public/uploads', (error) => {
     if (error) {
@@ -17,18 +18,18 @@ fs.readdir('./public/uploads', (error) => {
 // let varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기  
 // if ( varUA.indexOf('android') > -1) {     
 //     //안드로이드 
-//     console.log('android')
+//     //.log('android')
 // } else if ( varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1 ) {     
 //     //IOS 
-//     console.log('IOS')
+//     //.log('IOS')
 // } else {     
 //     //아이폰, 안드로이드 외 모바일 
-//     console.log('else')
+//     //.log('else')
 // }
 
 router.post('/join', async (req, res) => {
     const data = req.body;
-    console.log('data',data)
+    // //.log('data',data)
     try {
         const cryptedPW = bcrypt.hashSync(data.pw, 10);
         const result = await homeService.join(data, cryptedPW);
@@ -51,7 +52,7 @@ router.post('/logout', async (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -66,7 +67,7 @@ router.post('/emailCheck', async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error);
+        //.error(error);
         res.status(500).json({ result: -1, error: "Internal Server Error" });
     }
 });
@@ -84,7 +85,7 @@ router.post('/findPassword', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(error);
+        //.log(error);
     }
 })
 
@@ -101,7 +102,7 @@ router.post('/passwordCheck', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(error);
+        //.log(error);
     }
 })
 
@@ -120,36 +121,49 @@ router.post('/modify', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(error);
+        //.log(error);
     }
 });
 
 const upLoadVideo = (req, res, next) => {
     try {
-        const uploadVideo = multer({
-            storage: multer.diskStorage({
-                destination: function (req, file, cb) {
-                    cb(null, './public/uploads/video');
-                },
-                filename: function (req, file, cb) {
-                    let time = new Date
-                    let setTime = `${time.getFullYear()}${time.getMonth() + 1}${time.getDate()}${time.getHours()}${time.getMinutes()}`
-                    const ext = path.extname(file.originalname)
-                    cb(null, `${req.session.userEmail}_${setTime}` + ext);
-                }
-            })
-        })
+        uploadVideo.single('video')(req, res, (err) => {
+            if (err) {
+                // //.log(err);
+                return res.status(500).json({ result: -1, error: "파일 업로드 오류" });
+            }
+            // //.log("File uploaded successfully");
+            next();
+        });
     } catch (err) {
-        console.log(err)
+        // //.log(err);
+        res.status(500).json({ result: -1, error: "내부 서버 오류" });
     }
-    next();
-}
+};
 
+const uploadVideo = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, path.join('public', 'uploads', 'video'));
+        },
+        filename: function (req, file, cb) {
+            let time = new Date
+            let setTime = `${time.getFullYear()}${time.getMonth() + 1}${time.getDate()}${time.getHours()}${time.getMinutes()}`
+            const ext = path.extname(file.originalname)
+            // cb(null, `${req.user.user_code}_${setTime}` + ext);
+            cb(null, `${req.session.email}_${setTime}` + ext);
+        }
+    })
+})
+
+// flask 연동 테스트중 ... 
 router.post('/sendTrainer', upLoadVideo, async (req, res) => {
     try {
+        // const userCode = req.user.user_code;
         const trainer = await homeService.searchTrainer();
         const matchNum = Math.floor(Math.random() * trainer.length)
         // 임시로 넣은 변수(나중에 지워야함)
+        // let userEmail = 'qwe@gmail.com'
         let accuracy = 0
         let accuracy_list = []
         let sum = 0
@@ -162,15 +176,57 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         }
         accuracy = sum / accuracy_list.length
 
-        const result = await homeService.sendFeedback(req.user.email, trainer[matchNum].trainer_code, exercise_category, user_comment, accuracy, accuracy_list, testUrl);
-        if (result.affectedRows > 0) {
-            res.json({ result: 1 })
-        } else {
-            res.json({ result: 0 })
-        }
+
+
+
+
+        // flask 연동 부분
+        // const url = JSON.stringify(req.file.path)
+        const url = req.file.path
+        const type = req.body.type
+        // console.log('to flask', req.file.path)
+        // console.log('to flask', url)
+        const response = await axios.post('http://127.0.0.1:5000/test',{url, type}); 
+
+        res.json({
+            message: 'from flask',
+            status: 'success',
+            data: response.data.result,
+        });
+
+
+
+
+
+
+
+
+
+        // if (result.affectedRows > 0) {
+        //     res.json({
+        //         message: 'from flask',
+        //         status: 'success',
+        //         data: response.data.result,
+        //     });
+        // } else {
+        //     res.json({
+        //         message:'fail',
+        //         status: 'fail'
+        //     })
+        // }
+
+  
+
+
+        // const result = await homeService.sendFeedback(req.user.email, trainer[matchNum].trainer_code, exercise_category, user_comment, accuracy, accuracy_list, testUrl);
+        // if (result.affectedRows > 0) {
+        //     res.json({ result: 1 })
+        // } else {
+        //     res.json({ result: 0 })
+        // }
 
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -183,7 +239,7 @@ router.post('/logout', (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -196,7 +252,7 @@ router.post('/getFeedback', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -209,7 +265,7 @@ router.post('/getData', async (req, res) => {
             res.json({ list: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -217,8 +273,8 @@ router.post('/test', async (req, res) => {
     try {
         const trainer = await homeService.searchTrainer();
         const matchNum = Math.floor(Math.random() * trainer.length)
-        console.log('trainer : ', trainer)
-        console.log('matchNum : ', matchNum)
+        // //.log('trainer : ', trainer)
+        // //.log('matchNum : ', matchNum)
         let accuracy = 0
         let accuracy_list = []
         let sum = 0
@@ -232,19 +288,48 @@ router.post('/test', async (req, res) => {
         }
         accuracy = sum / accuracy_list.length
         const result = await homeService.sendFeedback(email, trainer[matchNum].trainer_code, exercise_category, user_comment, accuracy, accuracy_list, testUrl);
-        console.log('accuary', accuracy)
-        console.log('accuary_list', accuracy_list)
+        // //.log('accuary', accuracy)
+        // //.log('accuary_list', accuracy_list)
         // const result1 = await homeService.getFeedback(email);
-        // console.log('result1', result1)
+        // //.log('result1', result1)
         // if (result1 == null) {
-        //     console.log('asdf')
+        //     //.log('asdf')
         // } else {
-        //     console.log('zxcz')
+        //     //.log('zxcz')
         // }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
+
+// flask 연동 테스트중 ... 
+// flask -> node : 전체점수, 횟수별 점수리스트, 쪼개진영상url(url_1, url_2, ...) 
+// router.post('/dataToFlask',async(req,res)=>{
+//     try{
+//         let userEmail = 'qwe@gmail.com'
+//         const videoDirectory = './public/uploads/video'
+//         const files = fs.readdirSync(videoDirectory);
+//         const videoContent = []
+//         let i = 0
+//         files.forEach(file=>{
+//             if(file.startsWith(`${userEmail}_`)){
+//                 videoContent[i] = path.join(videoDirectory,file)
+//                 i += 1
+//             }
+//         })
+//         const data = {
+//             url : videoContent[videoContent.length - 1]
+//         }
+//         const response = await axios.post('http://localhost:5000/test',{data}); 
+//         //.log('response data : ',response.data)
+//         res.json({
+//             message : 'from flask',
+//             data : response.data
+//         })
+//     }catch(err){
+//         //.log(err)
+//     }
+// })
 
 
 module.exports = router;

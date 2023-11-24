@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
   Text,
   StyleSheet,
   Dimensions,
+  ScrollView,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 const windowWidth = Dimensions.get('window').width;
@@ -16,7 +17,25 @@ const Alarm = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {selectedDay} = route.params;
-  console.log('alarm -----', selectedDay)
+  console.log('alarm -----', selectedDay);
+
+  const [date, setDate] = useState();
+  const [month, setMonth] = useState();
+  const [day, setDay] = useState();
+
+  useEffect(() => {
+    if (selectedDay) {
+      let alarmDate = selectedDay.map(date => {
+        let [year, month, day] = date.split(' ')[0].split('-');
+        return {month, day};
+      });
+
+      setMonth(alarmDate.map(dateObj => dateObj.month));
+      setDay(alarmDate.map(dateObj => dateObj.day));
+    }
+  }, [selectedDay]);
+
+  console.log(month, day);
 
   // 헤더 (알림 -> 메인)
   React.useLayoutEffect(() => {
@@ -39,22 +58,33 @@ const Alarm = () => {
   return (
     <View>
       {/* 알림창 부분 */}
-      <View style={styles.alarmContainer}>
-        {/* 개별 알림창 */}
-        <View style={styles.alarmBox}>
-          <View style={styles.alarmText}>
-            <Text style={{fontSize: 18, fontFamily: 'Pretendard-Thin'}}>
-            {selectedDay}월 {selectedDay}일 운동 피드백이 도착했습니다.
-            </Text>
-          </View>
+      <ScrollView>
+        <View style={styles.alarmContainer}>
+          {/* 개별 알림창 */}
+          {selectedDay.map((date, index) => {
+            let [, month, day] = date.split(' ')[0].split('-');
 
-          <TouchableOpacity onPress={() => navigation.navigate('Feedback', {selectedDay})}>
-            <View style={styles.alarmBtn}>
-              <Icon name="chevron-right" size={45} color="#AB9EF4" />
-            </View>
-          </TouchableOpacity>
+            return (
+              <View key={index} style={styles.alarmBox}>
+                <View style={styles.alarmText}>
+                  <Text style={{fontSize: 18, fontFamily: 'Pretendard-Thin'}}>
+                    {month}월 {day}일 운동 피드백이 도착했습니다.
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Feedback', {selectMonth: month, selectDay : day})
+                  }>
+                  <View style={styles.alarmBtn}>
+                    <Icon name="chevron-right" size={45} color="#AB9EF4" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -72,6 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
+    marginVertical: 10,
   },
   alarmText: {
     flex: 1,

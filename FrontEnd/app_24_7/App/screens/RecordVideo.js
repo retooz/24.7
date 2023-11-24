@@ -24,11 +24,14 @@ const windowHeight = Dimensions.get('window').height;
 
 const RecordVideo = ({navigation}) => {
   const route = useRoute();
-  const {category} = route.params;
-  const v = require('../assets/video/squat.mp4');
-  const [timer, setTimer] = useState(10);
+  const {category, path} = route.params;
+  // const v = require('../assets/video/squat2.mp4');
+
+  const [paused, setPaused] = useState(true); // 제공 비디오 재생 상태 관리
+  const [countdown, setCountdown] = useState(10); // 카운트다운
 
   const {hasPermission, requestPermission} = useCameraPermission();
+
   // 카메라 권한 설정
   const checkCameraPermissionState = async () => {
     // 권한 요청
@@ -52,7 +55,33 @@ const RecordVideo = ({navigation}) => {
     checkAudioPermissionState();
     Alert.alert(
       '알림',
-      '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n 화면을 돌리지 말아주세요.',
+      '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n\n 화면을 돌리지 말아주세요.',
+      [
+        {text: '취소', onPress: () => {navigation.navigate('Category')}, style: 'default'},
+        {
+          text: '녹화 시작',
+          onPress: () => {
+            const countdownInterval = setInterval(() => {
+              setCountdown(prevCountdown => {
+                if (prevCountdown <= 1) {
+                  clearInterval(countdownInterval);
+                  startRecording();
+                  setPaused(false); // 카운트다운이 끝나면 비디오 재생
+                  return (<></>); // 카운트다운 삭제
+                } else {
+                  return prevCountdown - 1; // 카운트다운 1초씩 감소
+                }
+              });
+            }, 1000);
+          },
+          style: 'destructive',
+        },
+
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      },
     );
   }, []);
 
@@ -63,10 +92,7 @@ const RecordVideo = ({navigation}) => {
   //     'telephoto-camera',
   //   ],
   // });
-  const device = useCameraDevice('front', {
-    // videoHeight:windowWidth / Math.sqrt(1.1),
-    // videoWidth: windowWidth / Math.sqrt(1.1),
-  });
+  const device = useCameraDevice('front', {});
 
   // console.log('device', device);
   if (device == null) return Alert.alert('알림', '실패');
@@ -104,6 +130,10 @@ const RecordVideo = ({navigation}) => {
         console.error(error);
       },
     });
+
+    setTimeout(() => {
+      stopRecording();
+    }, 60 * 1000)
   };
 
   /** 녹화 중지 함수 */
@@ -114,7 +144,6 @@ const RecordVideo = ({navigation}) => {
 
     console.log('RecodeVideo_stopRecording ------ video path :', videoPath);
   };
-
 
   return (
     // justifyContent: 'center', alignItems: 'center'
@@ -134,11 +163,18 @@ const RecordVideo = ({navigation}) => {
         </View>
         {/* 시작, 종료 버튼 */}
         <View style={styles.headerRecordBtn}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.recordBtn}
             onPress={isRecording ? stopRecording : startRecording}>
             <Text style={styles.recordBtnText}>
               {isRecording ? '종료' : '시작'}
+            </Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={styles.recordBtn}
+            onPress={stopRecording}>
+            <Text style={styles.recordBtnText}>
+              종료
             </Text>
           </TouchableOpacity>
         </View>
@@ -147,12 +183,14 @@ const RecordVideo = ({navigation}) => {
       {/* 제공하는 영상 */}
       <View style={styles.video}>
         <Video
-          source={v}
+          source={path}
           style={styles.videoPlayer}
           controls={true}
           volume={0.0}
+          paused={paused}
         />
       </View>
+      <Text style={{ fontSize: 300, color: 'red', zIndex: 1, marginBottom: 300}}>{countdown}</Text>
       {/* 사용자 카메라 화면 */}
       <View style={{position: 'absolute', bottom: 10}}>
         <Camera
@@ -167,7 +205,6 @@ const RecordVideo = ({navigation}) => {
           audio={false}
           ref={camera}
           format={format}
-          // fps={fps}
         />
       </View>
     </View>

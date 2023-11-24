@@ -47,6 +47,7 @@ const CategoryNoAi = ({navigation}) => {
       case '1':
         navigation.navigate('RecordVideo', {
           category: '숄더프레스',
+          path: require('../assets/video/shoulderPress2.mp4')
         });
         // setCurrentValue(1);
         break;

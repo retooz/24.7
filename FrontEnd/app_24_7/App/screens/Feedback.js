@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,12 +12,19 @@ import {
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Video from 'react-native-video';
-// import * as Progress from 'react-native-progress';
 import LinearGradient from 'react-native-linear-gradient';
+
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetHandle,
+} from '@gorhom/bottom-sheet';
+
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {Image} from 'react-native-svg';
-// import BottomSheet from '@gorhom/bottom-sheet';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -27,40 +34,84 @@ const Feedback = () => {
   const route = useRoute();
   const [showVideo, setShowVideo] = useState(false);
 
-  const {selectedDay} = route.params;
-  // console.log(selectedDay);
+  const {selectedDay, selectMonth, selectDay} = route.params;
+  console.log(selectedDay, selectMonth, selectDay);
+
+  const [bottomText, setBottomText] = useState(
+    '난 강력한 트레이너\n3대 500 가능',
+  );
+
+  // ref
+  const bottomSheetModalRef = useRef(null);
+
+  // state
+  const [modalOpened, setModalOpened] = useState(false);
+
+  // variables
+  const snapPoints = useMemo(() => ['50%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+    setModalOpened(true);
+  }, []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+
+  const CustomHandleComponent = () => (
+    <BottomSheetHandle
+      style={{
+        backgroundColor: '#7254F5',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        color: 'white',
+      }}
+    />
+  );
 
   const v = require('../assets/video/squat.mp4');
 
   const dots = Array(4).fill(0);
   const boxes = Array(10).fill(0);
 
-  let value = 100; // 사용자 전체 정확도
+  let value = 40; // 사용자 전체 정확도
   let roundValue = [20, 98, 40, 60, 76, 80, 70, 55, 100, 88]; // 사용자 회차별 정확도
   const getResult = value => {
     let color;
     let text;
     if (value == null) {
       color = '#fff';
-    } else if (value <= 20) {
+    } else if (value <= 40) {
       color = '#FF939C';
       text =
         '더 노력하면 더 나은 결과를 얻을 수 있을 거예요. 조금만 더 힘내세요!';
-    } else if (value <= 40) {
+    } else if (value <= 54) {
       color = '#FFC692';
       text =
         '아직은 미숙하지만, 꾸준한 노력으로 더 나아질 수 있어요. 계속해서 발전해 나가세요!';
-    } else if (value <= 60) {
+    } else if (value <= 69) {
       color = '#FFE86D';
       text = '지금처럼 계속 하시면 더욱 더 좋은 결과를 얻을 수 있을 거예요.';
-    } else if (value <= 80) {
+    } else if (value <= 85) {
       color = '#97E79A';
       text =
         '정말 멋진 성과를 이뤄내셨어요! 계속해서 이런 성과를 이어나가세요!';
     } else if (value <= 100) {
       color = '#969AFF';
-      text =
-        '정말 훌륭한 성과를 거두셨어요! 이런 노력과 역량을 유지하면 놀라운 변화를 경험하실 수 있을 거예요!';
+      text = '정말 훌륭한 성과를 거두셨어요!👏👏👏👏👏';
     }
     return {color, text};
   };
@@ -72,7 +123,7 @@ const Feedback = () => {
   // 뒤로가기 ()
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: ' ',
+      // headerTitle: `${selectedDay.month}월 ${selectedDay.day}일`,
       headerLeft: ({onPress}) => (
         <TouchableOpacity
           onPress={() => {
@@ -88,66 +139,90 @@ const Feedback = () => {
   }, [navigation]);
 
   return (
-    <View style={styles.FeedbackContainer}>
-      <ScrollView>
-        {/* 날짜, 운동 종목 */}
-        <View style={styles.dateAndExercise}>
-          {/* 날짜 */}
-          <View style={styles.date}>
-            <Text style={styles.dateText}>
-              {selectedDay.month}월 {selectedDay.day}일
-            </Text>
-          </View>
-          {/* 운동 종목 */}
-          <View>
-            <Text style={styles.exerciseInfo}>스쿼트 피드백</Text>
-          </View>
-        </View>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <BottomSheetModalProvider>
+        <View style={styles.FeedbackContainer}>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+            backdropComponent={renderBackdrop}
+            handleComponent={CustomHandleComponent}>
+            {/* 바텀시트 내용 */}
+            <View style={[styles.contentContainer]}>
+              <View style={styles.trainerInfo}>
+                {/* 프로필 사진 */}
+                <View style={styles.trainerImg}>
+                  {/* <Image source={require('../assets/image/user.png')}></Image> */}
+                </View>
+                <View>
+                  <Text style={styles.trainerName}>김형진 트레이너</Text>
+                </View>
+              </View>
+              <Text style={{paddingLeft: 20}}>{bottomText}</Text>
+            </View>
+          </BottomSheetModal>
+          <ScrollView>
+            {/* 날짜, 운동 종목 */}
+            <View style={styles.dateAndExercise}>
+              {/* 날짜 */}
+              <View style={styles.date}>
+                <Text style={styles.dateText}>
+                  {/* {selectedDay.month}월 {selectedDay.day}일 */}
+                  {selectMonth}월 {selectDay}일
+                </Text>
+              </View>
+              {/* 운동 종목 */}
+              <View>
+                <Text style={styles.exerciseInfo}>스쿼트 피드백</Text>
+              </View>
+            </View>
 
-        {/* 트레이너 정보 */}
-        <View style={styles.trainerInfo}>
-          {/* 프로필 사진 */}
-          <View style={styles.trainerImg}>
-            {/* <Image source={require('../assets/image/user.png')}></Image> */}
-          </View>
-          <View>
-            <Text style={styles.trainerName}>김형진 트레이너</Text>
-          </View>
-        </View>
+            {/* 트레이너 정보 */}
+            <TouchableOpacity style={styles.trainerInfo} onPress={handlePresentModalPress}>
+              {/* 프로필 사진 */}
+              <View style={styles.trainerImg}>
+                {/* <Image source={require('../assets/image/user.png')}></Image> */}
+              </View>
+              <View>
+                <Text style={styles.trainerName}>김형진 트레이너</Text>
+              </View>
+            </TouchableOpacity>
 
-        {/* 운동영상 */}
-        <View style={styles.exerciseVideo}>
-          <Video
-            source={v}
-            style={styles.videoPlayer}
-            controls={true}
-            volume={0.0}
-          />
-        </View>
+            {/* 운동영상 */}
+            <View style={styles.exerciseVideo}>
+              <Video
+                source={v}
+                style={styles.videoPlayer}
+                controls={true}
+                volume={0.0}
+              />
+            </View>
 
-        {/* 피드백 */}
-        <View style={styles.feedback}>
-          <Text>
-            안녕하세요 김형진 트레이너 입니다. 회원님의 경우, 스쿼트 자세에서
-            무릎이 다소 앞으로 나오는 경향이 있어 중심이 앞으로 쏠릴 수 있으니,
-            엉덩이 근육에 신경을 써주시면 좋을 거 같습니다.
-          </Text>
-          <Text>참고할 링크 & 사진</Text>
-        </View>
+            {/* 피드백 */}
+            <View style={styles.feedback}>
+              <Text>
+                안녕하세요 김형진 트레이너 입니다. 회원님의 경우, 스쿼트
+                자세에서 무릎이 다소 앞으로 나오는 경향이 있어 중심이 앞으로
+                쏠릴 수 있으니, 엉덩이 근육에 신경을 써주시면 좋을 거 같습니다.
+              </Text>
+              <Text>참고할 링크 & 사진</Text>
+            </View>
 
-        {/* 분석 결과 */}
-        <View style={styles.analysisResult}>
-          {/* 모달 */}
-          <View style={{flexDirection: 'row'}}>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-              }}>
-                <View style={styles.centeredView}>
+            {/* 분석 결과 */}
+            <View style={styles.analysisResult}>
+              {/* 모달 */}
+              <View style={{flexDirection: 'row'}}>
+                <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                       <View>
                         <Text style={styles.modalText}>
@@ -162,92 +237,107 @@ const Feedback = () => {
                           파란색 : 아주 잘해요{'\n'}
                         </Text>
                       </View>
-                      <Pressable
-                        onPress={() => setModalVisible(!modalVisible)}>
-                        <Icon name="close-o" size={40} color='#7254F5' />
+                      <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                        <Icon name="close-o" size={40} color="#7254F5" />
                       </Pressable>
                     </View>
-                </View>
-            </Modal>
-            <Text style={{fontSize: 23, fontFamily: 'Pretendard-SemiBold'}}>
-              분석결과
-            </Text>
-            <Pressable onPress={() => setModalVisible(true)}>
-              <Icon name="question" size={25} style={{marginTop: 2}}color='#939393' />
-            </Pressable>
-          </View>
-          {/* </View> */}
-
-          {/* 전체 정확도 */}
-          <View style={styles.allAccuracy}>
-            <Text
-              style={{
-                fontSize: 15,
-                fontFamily: 'Pretendard-SemiBold',
-                marginBottom: 5,
-              }}>
-              전체 정확도
-            </Text>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              locations={[0.1, 0.2, 0.5, 0.8, 1]}
-              colors={['#FF939C', '#FFC692', '#FFE86D', '#97E79A', '#969AFF']}
-              style={styles.linearGradient}>
-              <View
-                style={[styles.innerBar, {width: `${100 - value}%`}]}></View>
-              <View style={styles.dotsContainer}>
-                {dots.map((_, index) => (
-                  <View key={index} style={styles.dot} />
-                ))}
+                  </View>
+                </Modal>
+                <Text style={{fontSize: 23, fontFamily: 'Pretendard-SemiBold'}}>
+                  분석결과
+                </Text>
+                <Pressable onPress={() => setModalVisible(true)}>
+                  <Icon
+                    name="question"
+                    size={25}
+                    style={{marginTop: 2}}
+                    color="#939393"
+                  />
+                </Pressable>
               </View>
-            </LinearGradient>
-            <Text style={styles.resText}>{result.text}</Text>
-          </View>
-          {/* 회차별 정확도 */}
-          <View style={styles.roundAccuracy}>
-            <Text style={{fontSize: 15, fontFamily: 'Pretendard-SemiBold'}}>
-              회차별 정확도
-            </Text>
-            <View style={styles.boxContainer}>
-              {boxes.map((_, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.box}
-                  onPress={() => {
-                    setShowVideo(!showVideo);
+              {/* </View> */}
+
+              {/* 전체 정확도 */}
+              <View style={styles.allAccuracy}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: 'Pretendard-SemiBold',
+                    marginBottom: 5,
                   }}>
+                  전체 정확도
+                </Text>
+                <LinearGradient
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  locations={[0.1, 0.2, 0.5, 0.8, 1]}
+                  colors={[
+                    '#FF939C',
+                    '#FFC692',
+                    '#FFE86D',
+                    '#97E79A',
+                    '#969AFF',
+                  ]}
+                  style={styles.linearGradient}>
                   <View
                     style={[
-                      styles.circle,
-                      {backgroundColor: getResult(roundValue[index]).color},
-                    ]}
-                  />
-                  <Text style={styles.roundText}>{index + 1}회</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            {showVideo && (
-              <View>
-                <Text>사용자가 볼 회차별 비디오 영상</Text>
-                <Video
-                  source={v}
-                  style={styles.roundVideoPlayer}
-                  controls={true}
-                  volume={0.0}
-                />
+                      styles.innerBar,
+                      {width: `${100 - value}%`},
+                    ]}></View>
+                  <View style={styles.dotsContainer}>
+                    {dots.map((_, index) => (
+                      <View key={index} style={styles.dot} />
+                    ))}
+                  </View>
+                </LinearGradient>
+                <Text style={styles.resText}>{result.text}</Text>
               </View>
-            )}
-          </View>
-        </View>
+              {/* 회차별 정확도 */}
+              <View style={styles.roundAccuracy}>
+                <Text style={{fontSize: 15, fontFamily: 'Pretendard-SemiBold'}}>
+                  회차별 정확도
+                </Text>
+                <View style={styles.boxContainer}>
+                  {boxes.map((_, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.box}
+                      onPress={() => {
+                        setShowVideo(!showVideo);
+                      }}>
+                      <View
+                        style={[
+                          styles.circle,
+                          {backgroundColor: getResult(roundValue[index]).color},
+                        ]}
+                      />
+                      <Text style={styles.roundText}>{index + 1}회</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {showVideo && (
+                  <View>
+                    <Text></Text>
+                    <Video
+                      source={v}
+                      style={styles.roundVideoPlayer}
+                      controls={true}
+                      volume={0.0}
+                    />
+                  </View>
+                )}
+              </View>
+            </View>
 
-        {/* 메모 */}
-        <View style={{flex: 1, backgroundColor: 'darkorange'}}>
-          <Text>메모작성칸</Text>
-          <Text>저장</Text>
+            {/* 메모 */}
+            <View style={{flex: 1, backgroundColor: 'darkorange'}}>
+              <Text>메모작성칸</Text>
+              <Text>저장</Text>
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -274,13 +364,13 @@ const styles = StyleSheet.create({
   },
   trainerInfo: {
     flex: 0.2,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
     flexDirection: 'row',
   },
   trainerImg: {
     width: 40,
     height: 40,
-    backgroundColor: 'red',
+    backgroundColor: 'gray',
     borderRadius: 50,
   },
   trainerName: {
@@ -291,7 +381,7 @@ const styles = StyleSheet.create({
   },
   exerciseVideo: {
     flex: 1.5,
-    backgroundColor: 'orange',
+    // backgroundColor: 'orange',
   },
   videoPlayer: {
     alignSelf: 'center',
@@ -301,7 +391,7 @@ const styles = StyleSheet.create({
   feedback: {
     flex: 1,
     marginVertical: 10,
-    backgroundColor: 'green',
+    // backgroundColor: 'green',
   },
   analysisResult: {
     flex: 1,
@@ -422,6 +512,18 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    // backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'left',
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
 });
 

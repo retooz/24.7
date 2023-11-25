@@ -5,7 +5,7 @@ module.exports = {
     signUp: `insert into user (email, pw, nickname) values (?,?,?)`,
 
     /** email 확인 */
-    duplicateCheck: `select email, user_code from user where email = ?`,
+    duplicateCheck: `select email, user_code, pw from user where email = ?`,
 
     /** 로그인(이메일) */
     signInCheck: `select email, pw, nickname from user where email = ?`,
@@ -26,5 +26,18 @@ module.exports = {
     getFeedback: `select feedback_content, attachment, base_url, memo from feedback_list_user where connection_code = ?`,
 
     /** 피드백 보낸 건수 검색 */
-    getFeedbackDate: `select connection_code, connection_date from connection where user_code = ?`,
+    getFeedbackDate: `select connection_code, date_format(connection_date,'%Y-%m-%d') as connection_date from connection where user_code = ? order by connection_date DESC`,
+
+    /** 피드백 보낸 트레이너 확인 */
+    getTrainerInfo: `select trainer_name, profile_pic, career from trainer where trainer_code = ?`,
+
+    /** connection_code를 통한 트레이너 코드 확인용 */
+    searchTrainerCode: `select trainer_code from connection where connection_code = ?`,
+
+    /** connection_code를 통한 분석 결과 확인 */
+    getDataFeedback: `select accuracy, accuracy_list from connection where connection_code = ?`,
+
+    /** 트레이너의 피드백 여부 확인 */
+    getAlarm: `select connection_code,date_format(connection_date,'%Y-%m-%d') as connection_date from connection where user_code = ? and confirm_trainer = 1 order by connection_date DESC`,
+
 }

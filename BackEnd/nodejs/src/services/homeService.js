@@ -86,25 +86,57 @@ const homeService = {
     },
 
     /** 특정 날짜 데이터 가져오기 */
-    getFeedback: async (userCode) => {
+    getFeedback: async (connectionCode) => {
         try {
-            const [connectionResult] = await conn.query(userQueries.getFeedbackDate, [userCode]);
-            if (connectionResult.length > 0) {
-                for (let i = 0; i < connectionResult.length; i++) {
-                    const [result] = await conn.query(userQueries.getFeedback, [connectionResult[i].connection_code]);
-                    if (result.length > 0) {
-                        return result;
-                    } else {
-                        return result;
-                    }
-                }
+            const [result] = await conn.query(userQueries.getFeedback, [connectionCode]);
+            if (result.length > 0) {
+                return result;
+            } else {
+                return result;
             }
-            return connectionResult;
         } catch (err) {
             throw err;
         }
-    }
+    },
 
+    /** 해당 트레이너 정보 가져오기 */
+    getTrainerInfo: async (connectionCode) => {
+        try {
+            const [result] = await conn.query(userQueries.searchTrainerCode, [connectionCode])
+            if (result.length > 0) {
+                const [trainerInfo] = await conn.query(userQueries.getTrainerInfo, [result[0]])
+                if (trainerInfo.length > 0) {
+                    return trainerInfo;
+                }
+            }
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    /** connection_code에 맞는 분석 결과 가져오기 */
+    getDataFeedback: async (connectionCode) => {
+        try {
+            const [result] = await conn.query(userQueries.getDataFeedback, [connectionCode])
+            if (result.length > 0) {
+                return result
+            }
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    /** 트레이너 피드백 알림 용 */
+    alarmFeedback: async (userCode) => {
+        try {
+            const [result] = await conn.query(userQueries.getAlarm, [userCode, 1]);
+            if (result.length > 0) {
+                return result
+            }
+        } catch (err) {
+            throw err
+        }
+    },
 }
 
 module.exports = homeService;

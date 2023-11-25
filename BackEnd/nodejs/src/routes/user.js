@@ -5,7 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const homeService = require('../services/homeService.js');
-require('dotenv').config({path:'../../.env'});
+require('dotenv').config({ path: '../../.env' });
 
 fs.readdir('./public/uploads', (error) => {
     if (error) {
@@ -15,10 +15,6 @@ fs.readdir('./public/uploads', (error) => {
         fs.mkdirSync('./public/uploads/video');
     }
 })
-
-const cookieConfig = {
-    maxAge: 1000 * 60 * 60 * 24 * 180,
-};
 
 /** 회원가입 */
 router.post('/join', async (req, res) => {
@@ -30,8 +26,8 @@ router.post('/join', async (req, res) => {
         if (result.affectedRows > 0) {
             const userResult = await homeService.duplicateCheck(data.email);
             if (userResult.length > 0) {
-                res.cookie('email', userResult.email, cookieConfig);
-                res.cookie('code', userResult.user_code, cookieConfig);
+                req.session.user.email = userResult.email
+                req.session.user.code = userResult.user_code
                 res.send({ result: 1 })
             }
         } else {
@@ -42,31 +38,30 @@ router.post('/join', async (req, res) => {
     }
 })
 
+/** 아이디가 저장되어있을 경우 자동로그인 */
+router.post('/autoLogin', async (req, res) => {
+    if (req.body.email) {
+        console.log('자동로그인 성공');
+        const result = await homeService.duplicateCheck(req.body.email)
+        req.session.user.email = result[0].email
+        req.session.user.code = result[0].user_code
+    }
+})
+
 /** 로그인 */
 router.post('/login', async (req, res) => {
     try {
-        const userEmail = req.body.userEmail
-        if (req.cookies.email) {
-            const userResult = await homeService.duplicateCheck(userEmail);
-            res.clearCookie('email');
-            res.clearCookie('code');
-            res.cookie('email', userResult.email, cookieConfig);
-            res.cookie('code', userResult.user_code, cookieConfig);
-            res.send({ result: 1 });
-        } else {
-            const loginResult = await homeService.duplicateCheck(userEmail);
-            if (loginResult.length > 0) {
-                const user = loginResult[0];
-                const same = bcrypt.compareSync(req.body.pw, user.pw);
-                if (same) {
-                    res.cookie('email', userEmail, cookieConfig);
-                    res.cookie('code', loginResult.user_code, cookieConfig);
-                    res.json({ result: 1 });
-                }
+        const userEmail = req.body.email
+        const loginResult = await homeService.duplicateCheck(userEmail);
+        if (loginResult.length > 0) {
+            const user = loginResult[0];
+            const same = bcrypt.compareSync(req.body.pw, user.pw);
+            if (same) {
+                req.session.user = { email: userEmail, code: loginResult.user_code };
+                res.json({ result: 1 });
             }
-            res.json({ result: 0 })
         }
-        res.json({ result: 0 });
+        res.json({ result: 0 })
     } catch (err) {
         console.log(err)
     }
@@ -75,9 +70,8 @@ router.post('/login', async (req, res) => {
 /** 로그아웃 */
 router.post('/logout', async (req, res) => {
     try {
-        res.clearCookie('email');
-        res.clearCookie('code');
-        if (req.cookies.email == undefined) {
+        res.session.destroy();
+        if (req.session == undefined) {
             res.json({ result: 1 })
         } else {
             res.json({ result: 0 })
@@ -98,15 +92,15 @@ router.post('/emailCheck', async (req, res) => {
             res.json({ result: 0 });
         }
 
-    } catch (error) {
-        res.status(500).json({ result: -1, error: "Internal Server Error" });
+    } catch (err) {
+        res.status(500).json({ result: -1, err: "Internal Server Error" });
     }
 });
 
 /** 비밀번호 변경 */
 router.post('/findPassword', async (req, res) => {
     try {
-        const userEmail = req.cookies.email
+        const userEmail = req.session.email
         const newPw = req.body.newPw
         const cryptedPW = bcrypt.hashSync(newPw, 10);
         const result = await homeService.updatePassword(userEmail, cryptedPW)
@@ -123,7 +117,7 @@ router.post('/findPassword', async (req, res) => {
 /** 비밀번호 찾기 */
 router.post('/passwordCheck', async (req, res) => {
     try {
-        const userEmail = req.cookies.email;
+        const userEmail = req.session.email;
         const result = await homeService.signInCheck(userEmail)
         if (result.length > 0) {
             // 암호화된 비밀번호를 가져와서 같은지 확인
@@ -134,7 +128,7 @@ router.post('/passwordCheck', async (req, res) => {
         } else {
             res.json({ result: 0 });
         }
-    } catch (error) {
+    } catch (err) {
         console.log(err)
     }
 })
@@ -142,7 +136,7 @@ router.post('/passwordCheck', async (req, res) => {
 /** 회원 정보 수정 */
 router.post('/modify', async (req, res) => {
     try {
-        const userEmail = req.cookies.email;
+        const userEmail = req.session.email;
         const nickname = req.body.nickname;
         const cryptedPW = bcrypt.hashSync(req.body.pw, 10);
         const result = await homeService.updatePassword(userEmail, cryptedPW);
@@ -154,7 +148,7 @@ router.post('/modify', async (req, res) => {
         } else {
             res.json({ result: 0 });
         }
-    } catch (error) {
+    } catch (err) {
         console.log(err)
     }
 });
@@ -183,7 +177,7 @@ const uploadVideo = multer({
             let time = new Date
             let setTime = `${time.getFullYear()}${time.getMonth() + 1}${time.getDate()}${time.getHours()}${time.getMinutes()}`
             const ext = path.extname(file.originalname)
-            cb(null, `${req.cookies.code}_${setTime}` + ext);
+            cb(null, `${req.session.code}_${setTime}` + ext);
         }
     })
 })
@@ -193,12 +187,16 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
     try {
         const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: req.file.path });
 
-        // const result = await homeService.sendFeedback(req.cookies.code, trainer[matchNum].trainer_code, exercise_category, user_comment, accuracy, accuracy_list, testUrl);
-        // if (result.affectedRows > 0) {
-        //     res.json({ result: 1 })
-        // } else {
-        //     res.json({ result: 0 })
-        // }
+        /** 저장된 비디오 커넥션 코드 파일로 옮기기 */
+        const videoDirectory = path.join('public', 'uploads', 'video')
+        const fileName = req.file.filename
+        const newPath = path.join('public', 'uploads', 'video', `${connectionCode}`)
+        fs.readdir(newPath, (error) => {
+            if (error) {
+                fs.mkdirSync(newPath);
+                fs.renameSync(req.file.path, path.join(`${newPath}`, `${fileName}`))
+            };
+        });
 
     } catch (err) {
         console.log(err)
@@ -208,10 +206,12 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
 /** connection 코드에 맞는 피드백 가져오기 */
 router.post('/getFeedback', async (req, res) => {
     try {
-        const userCode = req.cookies.code
-        const result = await homeService.getFeedback(userCode);
+        const connectionCode = req.body.connectionCode
+        const result = await homeService.getFeedback(connectionCode);
+        const trainer = await homeService.getTrainerInfo(connectionCode);
+        const accuracyData = await homeService.getDataFeedback(connectionCode);
         if (result.length > 0) {
-            res.json({ result: result })
+            res.json({ result: result, trainer: trainer, accuracyData: accuracyData })
         } else {
             res.json({ result: null })
         }
@@ -223,12 +223,28 @@ router.post('/getFeedback', async (req, res) => {
 /** 유저의 피드백 전부 가져오기 */
 router.post('/getData', async (req, res) => {
     try {
-        const userCode = req.cookies.code
+        const userCode = req.session.code
         const result = await homeService.getConnectionData(userCode);
+        const sortResult = result.connection_date.sort((a, b) => a - b);
         if (result.length > 0) {
-            res.json({ list: result })
+            res.json({ list: sortResult })
         } else {
             res.json({ list: 0 })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+/** 트레이너의 피드백이 있는 connection 호출 */
+router.get('/feedbackConfirm', async (req, res) => {
+    try {
+        const userCode = req.session.code
+        const result = await homeService.alarmFeedback(userCode);
+        if (result.length > 0) {
+            res.json({ result: result })
+        } else {
+            res.json({ result: null })
         }
     } catch (err) {
         console.log(err)

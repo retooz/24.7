@@ -59,7 +59,7 @@ const CategoryAi = ({navigation}) => {
         onPress={() => {
           navigation.navigate('RecordVideo', {
             category: '스쿼트',
-            path: require('../assets/video/squat2.mp4')
+            path: require('../assets/video/squat.mp4')
           });
         }}>
         <ImageBackground

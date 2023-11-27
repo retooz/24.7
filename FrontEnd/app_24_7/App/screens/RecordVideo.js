@@ -29,16 +29,16 @@ const RecordVideo = ({navigation}) => {
 
   const [paused, setPaused] = useState(true); // 제공 비디오 재생 상태 관리
   const [countdown, setCountdown] = useState(10); // 카운트다운
+  const [countdownFinished, setCountdownFinished] = useState(false);
 
   const {hasPermission, requestPermission} = useCameraPermission();
-
   // 카메라 권한 설정
   const checkCameraPermissionState = async () => {
     // 권한 요청
     const newCameraPermission = await Camera.requestCameraPermission();
     // 권한 가져오기
     const cameraPermission = await Camera.getCameraPermissionStatus();
-    console.log(cameraPermission, 'camera');
+    // console.log(cameraPermission, 'camera');
   };
 
   // 마이크 권한 설정
@@ -47,7 +47,7 @@ const RecordVideo = ({navigation}) => {
     const newMicrophonePermission = await Camera.requestMicrophonePermission();
     // 권한 가져오기
     const micPermission = await Camera.getMicrophonePermissionStatus();
-    console.log(micPermission, 'microphone');
+    // console.log(micPermission, 'microphone');
   };
 
   useEffect(() => {
@@ -57,17 +57,25 @@ const RecordVideo = ({navigation}) => {
       '알림',
       '정확한 분석을 위해 다양한 각도로 화면에 보여주세요.\n\n 화면을 돌리지 말아주세요.',
       [
-        {text: '취소', onPress: () => {navigation.navigate('Category')}, style: 'default'},
+        {
+          text: '취소',
+          onPress: () => {
+            navigation.navigate('Category');
+          },
+          style: 'default',
+        },
         {
           text: '녹화 시작',
           onPress: () => {
+            // 카운트다운 함수
             const countdownInterval = setInterval(() => {
               setCountdown(prevCountdown => {
                 if (prevCountdown <= 1) {
                   clearInterval(countdownInterval);
                   startRecording();
                   setPaused(false); // 카운트다운이 끝나면 비디오 재생
-                  return (<></>); // 카운트다운 삭제
+                  setCountdownFinished(true);
+                  return <></>; // 카운트다운 삭제
                 } else {
                   return prevCountdown - 1; // 카운트다운 1초씩 감소
                 }
@@ -76,7 +84,6 @@ const RecordVideo = ({navigation}) => {
           },
           style: 'destructive',
         },
-
       ],
       {
         cancelable: true,
@@ -133,7 +140,7 @@ const RecordVideo = ({navigation}) => {
 
     setTimeout(() => {
       stopRecording();
-    }, 60 * 1000)
+    }, 60 * 1000);
   };
 
   /** 녹화 중지 함수 */
@@ -146,8 +153,36 @@ const RecordVideo = ({navigation}) => {
   };
 
   return (
-    // justifyContent: 'center', alignItems: 'center'
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      {/* 카운트다운 */}
+      {countdownFinished ? (
+        <></>
+      ) : (
+        <View style={{zIndex: 1}}>
+          <Text
+            style={{
+              fontSize: 300,
+              color: '#fff',
+              zIndex: 1,
+              marginTop: '50%',
+              fontFamily: 'Pretendard-Bold',
+              opacity: 1,
+              alignSelf: 'center',
+              position: 'absolute',
+            }}>
+            {countdown}
+            </Text>
+            <View
+              style={{
+                backgroundColor: 'black',
+                opacity: 0.5,
+                height: windowHeight + 50,
+                width: windowWidth,
+              }}
+            />
+        </View>
+      )}
+
       {/* 뒤로가기 */}
       <View style={styles.headerContainer}>
         <TouchableOpacity
@@ -170,12 +205,8 @@ const RecordVideo = ({navigation}) => {
               {isRecording ? '종료' : '시작'}
             </Text>
           </TouchableOpacity> */}
-          <TouchableOpacity
-            style={styles.recordBtn}
-            onPress={stopRecording}>
-            <Text style={styles.recordBtnText}>
-              종료
-            </Text>
+          <TouchableOpacity style={styles.recordBtn} onPress={stopRecording}>
+            <Text style={styles.recordBtnText}>종료</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -190,7 +221,7 @@ const RecordVideo = ({navigation}) => {
           paused={paused}
         />
       </View>
-      <Text style={{ fontSize: 300, color: 'red', zIndex: 1, marginBottom: 300}}>{countdown}</Text>
+
       {/* 사용자 카메라 화면 */}
       <View style={{position: 'absolute', bottom: 10}}>
         <Camera

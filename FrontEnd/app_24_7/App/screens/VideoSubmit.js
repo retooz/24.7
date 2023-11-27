@@ -82,7 +82,7 @@ const VideoSubmit = ({navigation}) => {
         // }
       })
       .catch(error => {
-        console.error('submit error --->', error);
+        // console.error('submit error --->', error);
       });
     navigation.navigate('SubmitComplete');
   };

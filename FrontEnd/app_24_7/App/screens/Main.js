@@ -8,11 +8,13 @@ import {
   Image,
   Text,
 } from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Calendar} from 'react-native-calendars';
 
 // ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import LoadingScreen2 from './LoadingScreen2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -20,16 +22,24 @@ console.log(windowWidth);
 console.log(windowHeight);
 
 const Main = ({navigation}) => {
+  // const route = useRoute();
+  // const {mainData, alarmData} = route.params;
+  // console.log('mainDataaaaaa', mainData);
+  // console.log('alarmDataaaaaa', alarmData);
+
+  const [ready, setReady] = useState(true);
+
   const [selectedDay, setSelectedDay] = useState(null);
   const [markedDates, setMarkedDates] = useState({});
   const [connectionCodes, setConnectionCodes] = useState({});
 
   const [data, setData] = useState();
-  const [alarm, setAlarm] = useState();
+  const [alarm, setAlarm] = useState([]);
+  const [alarmText, setAlarmText] = useState([].length);
   const today = new Date();
   let todayString = today.toISOString().split('T')[0];
 
-  // const markedDates = {
+  // const markedDate = {
   //   '2023-11-20': {
   //     marked: true,
   //     dotColor: '#AB9EF4',
@@ -51,8 +61,12 @@ const Main = ({navigation}) => {
   // };
 
   useEffect(() => {
-    getData();
-    getFeedbackConfirm();
+    //1초 뒤에 실행되는 코드들이 담겨 있는 함수
+    setTimeout(() => {
+      getData();
+      getFeedbackConfirm();
+      setReady(false);
+    }, 1000);
   }, []);
 
   // connection date 정보 가져오기
@@ -61,28 +75,28 @@ const Main = ({navigation}) => {
       const response = await axios.get(
         'http://20.249.87.104:3000/user/getData',
       );
-      // console.log('data -----', response.data.list);
+      console.log('mainData -----', response.data);
       setData(response.data.list);
     } catch (error) {
-      console.error('Main ----- ', error);
+      console.error('mainData ----- ', error);
     }
   };
+
 
   const getFeedbackConfirm = async () => {
     try {
       const response = await axios.get(
         'http://20.249.87.104:3000/user/feedbackConfirm',
       );
-      console.log('data -----', response.data);
-      setAlarm(response.data);
+      console.log('feedbackConfirm -----', response.data.result);
+      setAlarm(response.data.result)
+      console.log('------------------------알림', alarm);
+      setAlarmText(response.data.result.length)
+      console.log('알림 텍스트 ---------', alarmText)
     } catch (error) {
-      console.error('Main ----- ', error);
+      console.error('feedbackConfirm ----- ', error);
     }
   };
-
-  console.log('0000000', alarm)
-
-
 
   useEffect(() => {
     if (data) {
@@ -96,14 +110,14 @@ const Main = ({navigation}) => {
   useEffect(() => {
     if (selectedDay) {
       let newMarkedDates = selectedDay.reduce((acc, date) => {
-        let dateKey = date.split(" ")[0];
+        let dateKey = date.split(' ')[0];
         acc[dateKey] = {
           marked: true,
           dotColor: '#AB9EF4',
         };
         return acc;
       }, {});
-  
+
       // 오늘 날짜 표시
       newMarkedDates[todayString] = {
         selected: true,
@@ -113,7 +127,7 @@ const Main = ({navigation}) => {
       setMarkedDates(newMarkedDates);
 
       let newConnectionCodes = data.reduce((acc, item) => {
-        let dateKey = item.connection_date.split(" ")[0];
+        let dateKey = item.connection_date.split(' ')[0];
         acc[dateKey] = item.connection_code;
         return acc;
       }, {});
@@ -121,18 +135,17 @@ const Main = ({navigation}) => {
     }
   }, [selectedDay]);
 
-
   /** 서버로 유저 코드 보내주는 함수 */
-  const sendConnectionCode = (day) => {
+  const sendConnectionCode = day => {
     let connectionCode = connectionCodes[day.dateString];
     console.log('Selected connection code:', connectionCode);
-    
+
     axios.post('http://20.249.87.104:3000/user/getFeedback', {
-      code : connectionCode
+      code: connectionCode,
     });
-  }
+  };
 
-
+  // 밑으로는 달력 스타일 조정하는 곳
   const theme = {
     arrowColor: 'black',
     textDayFontSize: 16,
@@ -145,17 +158,18 @@ const Main = ({navigation}) => {
     textYearFontSize: 80, // 년도 폰트 크기 설정
   };
 
-  return (
+  return ready ? (
+    <LoadingScreen2 />
+  ) : (
     <View style={styles.calendarContainer}>
       <View style={styles.headerComponent}>
         {/* 알림 */}
         <TouchableOpacity
           style={styles.bellBtn}
           onPress={() => navigation.navigate('Alarm', {selectedDay})}>
-            {/* 계산해서 0이면 동그라미, 숫자 없애고, 1 이상이면 표시 */}
           <View style={styles.alarmContainer}>
             <View style={styles.alarmCircle}>
-              <Text style={styles.alarmText}>1</Text>
+              <Text style={styles.alarmText}>{alarmText}</Text>
             </View>
           </View>
           <Image
@@ -188,9 +202,11 @@ const Main = ({navigation}) => {
           onDayPress={day => {
             console.log('Selected day:', day.month, day.day);
             if (markedDates[day.dateString]) {
-              
               sendConnectionCode(day);
-              navigation.navigate('Feedback', {selectMonth: day.month, selectDay : day.day});
+              navigation.navigate('Feedback', {
+                selectMonth: day.month,
+                selectDay: day.day,
+              });
               // navigation.navigate('Feedback', {selectedDay: day});
             }
           }}
@@ -262,23 +278,25 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   alarmContainer: {
-    marginLeft: 20, position: 'relative', zIndex: 1
+    marginLeft: 20,
+    position: 'relative',
+    zIndex: 1,
   },
   alarmCircle: {
-    width: 20, height: 20, backgroundColor: '#7254F5', borderRadius: 50, justifyContent: 'center', position: 'absolute',
+    width: 20,
+    height: 20,
+    backgroundColor: '#7254F5',
+    borderRadius: 50,
+    justifyContent: 'center',
+    position: 'absolute',
   },
   alarmText: {
-    color: '#fff', alignSelf: 'center'
+    color: '#fff',
+    alignSelf: 'center',
   },
   userBtn: {
     marginLeft: 15,
   },
-  // userCircle: {
-  //   width: '100%', // 선의 너비를 100%로 설정
-  //   borderWidth: 3,
-  //   borderColor: '#AB9EF4',
-  //   borderRadius: 50,
-  // },
 });
 
 export default Main;

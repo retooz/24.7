@@ -22,11 +22,6 @@ console.log(windowWidth);
 console.log(windowHeight);
 
 const Main = ({navigation}) => {
-  // const route = useRoute();
-  // const {mainData, alarmData} = route.params;
-  // console.log('mainDataaaaaa', mainData);
-  // console.log('alarmDataaaaaa', alarmData);
-
   const [ready, setReady] = useState(true);
 
   const [selectedDay, setSelectedDay] = useState(null);
@@ -166,7 +161,7 @@ const Main = ({navigation}) => {
         {/* 알림 */}
         <TouchableOpacity
           style={styles.bellBtn}
-          onPress={() => navigation.navigate('Alarm', {selectedDay})}>
+          onPress={() => navigation.navigate('Alarm', {selectedDay: alarm})}>
           <View style={styles.alarmContainer}>
             <View style={styles.alarmCircle}>
               <Text style={styles.alarmText}>{alarmText}</Text>

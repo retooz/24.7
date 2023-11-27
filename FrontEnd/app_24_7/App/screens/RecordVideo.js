@@ -16,8 +16,10 @@ import {
   useCameraPermission,
   useCameraFormat,
 } from 'react-native-vision-camera';
+import axios from 'axios';
 // ---------------------------------------------------------
 import Icon from 'react-native-vector-icons/EvilIcons';
+import LoadingScreen2 from './LoadingScreen2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,11 +27,16 @@ const windowHeight = Dimensions.get('window').height;
 const RecordVideo = ({navigation}) => {
   const route = useRoute();
   const {category, path} = route.params;
+  console.log('video path -------', path);
   // const v = require('../assets/video/squat2.mp4');
 
+
+  const [ready, setReady] = useState(true);
   const [paused, setPaused] = useState(true); // 제공 비디오 재생 상태 관리
   const [countdown, setCountdown] = useState(10); // 카운트다운
   const [countdownFinished, setCountdownFinished] = useState(false);
+
+  const [path1, setPath] = useState();
 
   const {hasPermission, requestPermission} = useCameraPermission();
   // 카메라 권한 설정
@@ -90,15 +97,12 @@ const RecordVideo = ({navigation}) => {
         onDismiss: () => {},
       },
     );
+    setTimeout(() => {
+
+      setReady(false);
+    }, 1000);
   }, []);
 
-  // const device = useCameraDevice('back', {
-  //   physicalDevices: [
-  //     // 'ultra-wide-angle-camera',
-  //     'wide-angle-camera',
-  //     'telephoto-camera',
-  //   ],
-  // });
   const device = useCameraDevice('front', {});
 
   // console.log('device', device);
@@ -152,7 +156,9 @@ const RecordVideo = ({navigation}) => {
     console.log('RecodeVideo_stopRecording ------ video path :', videoPath);
   };
 
-  return (
+  return ready ? (
+    <LoadingScreen2 />
+  ) : (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       {/* 카운트다운 */}
       {countdownFinished ? (
@@ -171,15 +177,15 @@ const RecordVideo = ({navigation}) => {
               position: 'absolute',
             }}>
             {countdown}
-            </Text>
-            <View
-              style={{
-                backgroundColor: 'black',
-                opacity: 0.5,
-                height: windowHeight + 50,
-                width: windowWidth,
-              }}
-            />
+          </Text>
+          <View
+            style={{
+              backgroundColor: 'black',
+              opacity: 0.5,
+              height: windowHeight + 50,
+              width: windowWidth,
+            }}
+          />
         </View>
       )}
 
@@ -214,7 +220,7 @@ const RecordVideo = ({navigation}) => {
       {/* 제공하는 영상 */}
       <View style={styles.video}>
         <Video
-          source={path}
+            source={{uri: path}}
           style={styles.videoPlayer}
           controls={true}
           volume={0.0}
@@ -290,6 +296,7 @@ const styles = StyleSheet.create({
   videoPlayer: {
     width: windowWidth / Math.sqrt(1.1),
     height: windowWidth / Math.sqrt(1.1),
+    // backgroundColor: 'red'
   },
 });
 

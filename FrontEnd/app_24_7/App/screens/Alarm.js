@@ -25,17 +25,26 @@ const Alarm = () => {
 
   useEffect(() => {
     if (selectedDay) {
-      let alarmDate = selectedDay.map(date => {
-        let [year, month, day] = date.split(' ')[0].split('-');
-        return {month, day};
-      });
-
-      setMonth(alarmDate.map(dateObj => dateObj.month));
-      setDay(alarmDate.map(dateObj => dateObj.day));
+      // selectedDay가 정의되었는지 확인
+      let connectionDates = selectedDay.map(item => item.connection_date);
+      setDate(connectionDates);
+      console.log('------------------',date)
     }
   }, [selectedDay]);
 
-  console.log(month, day);
+  // useEffect(() => {
+  //   if (date) {
+  //     let alarmDate = date.map(date => {
+  //       let [year, month, day] = date.split(' ')[0].split('-');
+  //       return {month, day};
+  //     });
+
+  //     setMonth(alarmDate.map(dateObj => dateObj.month));
+  //     setDay(alarmDate.map(dateObj => dateObj.day));
+  //   }
+  // }, [date]);
+
+  // console.log(month, day);
 
   // 헤더 (알림 -> 메인)
   React.useLayoutEffect(() => {
@@ -61,9 +70,8 @@ const Alarm = () => {
       <ScrollView>
         <View style={styles.alarmContainer}>
           {/* 개별 알림창 */}
-          {selectedDay.map((date, index) => {
-            let [, month, day] = date.split(' ')[0].split('-');
-
+          {date.map((item, index) => {
+            let [, month, day] = item.split(' ')[0].split('-');
             return (
               <View key={index} style={styles.alarmBox}>
                 <View style={styles.alarmText}>

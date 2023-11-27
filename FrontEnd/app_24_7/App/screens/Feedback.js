@@ -48,7 +48,7 @@ const Feedback = () => {
   // const [roundValue, setRoundValue] = useState(); // 회차별 정확도
 
   const [showVideo, setShowVideo] = useState(false); // 회차별 영상
-  const v = require('../assets/video/squat.mp4');
+  const v = require('../assets/video/userLunge.mp4');
 
   const dots = Array(4).fill(0);
   const boxes = Array(10).fill(0);
@@ -98,7 +98,7 @@ const Feedback = () => {
 
   // 바텀시트 ---------------------------------------------------
   const [bottomText, setBottomText] = useState(
-    '난 강력한 트레이너\n3대 500 가능',
+    'A사 피트니스 팀장\nB사 피트니스 퍼스널트레이너\nC사 피트니스 재활트레이너\n한국 야구대표 선수트레이너\n',
   );
   // ref
   const bottomSheetModalRef = useRef(null);
@@ -173,7 +173,7 @@ const Feedback = () => {
                   {/* <Image source={require('../assets/image/user.png')}></Image> */}
                 </View>
                 <View>
-                  <Text style={styles.trainerName}>김형진 트레이너</Text>
+                  <Text style={styles.trainerName}>김이름 트레이너</Text>
                 </View>
               </View>
               <Text style={{paddingLeft: 20}}>{bottomText}</Text>
@@ -186,7 +186,7 @@ const Feedback = () => {
               <View style={styles.dateAndExercise}>
                 {/* 운동 종목 */}
                 <View>
-                  <Text style={styles.exerciseInfo}>스쿼트 피드백</Text>
+                  <Text style={styles.exerciseInfo}>런지 피드백</Text>
                 </View>
               </View>
 
@@ -202,7 +202,7 @@ const Feedback = () => {
                 />
                 {/* </View> */}
                 <View>
-                  <Text style={styles.trainerName}>김형진 트레이너</Text>
+                  <Text style={styles.trainerName}>김이름 트레이너</Text>
                 </View>
               </TouchableOpacity>
 
@@ -214,6 +214,7 @@ const Feedback = () => {
                   controls={true}
                   volume={0.0}
                   paused={true}
+                  resizeMode={'cover'}
                 />
               </View>
 
@@ -248,7 +249,7 @@ const Feedback = () => {
                   }}
                   onPress={() =>
                     Linking.openURL(
-                      `https://youtu.be/q6hBSSfokzY?si=cbGgISW7VdCDLqV6`,
+                      `https://youtu.be/CaT6kHxngJE?si=H2gxLZllYcC0wjBP`,
                     )
                   }>
                   Youtube 바로가기
@@ -375,6 +376,7 @@ const Feedback = () => {
                         style={styles.roundVideoPlayer}
                         controls={true}
                         volume={0.0}
+                        resizeMode={'cover'}
                       />
                     </View>
                   )}
@@ -456,8 +458,8 @@ const styles = StyleSheet.create({
   },
   videoPlayer: {
     alignSelf: 'center',
-    width: windowWidth / Math.sqrt(1.1),
-    height: windowWidth / Math.sqrt(1.1),
+    width: windowWidth / Math.sqrt(1.5),
+    height: windowWidth / Math.sqrt(1.5),
   },
   feedback: {
     flex: 1,

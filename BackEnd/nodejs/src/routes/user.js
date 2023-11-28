@@ -230,7 +230,7 @@ router.post('/getFeedback', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        //.log(err)
+        console.log(err)
     }
 })
 

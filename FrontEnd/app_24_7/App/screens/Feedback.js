@@ -82,7 +82,7 @@ const Feedback = () => {
     } else if (value <= 54) {
       color = '#FFC692';
       text =
-        '아직은 미숙하지만, 꾸준한 노력으로 더 나아질 수 있어요. 계속해서 발전해 나가세요!';
+        '아직은 미숙하지만, 꾸준한 노력으로 더 나아질 수 있어요!';
     } else if (value <= 69) {
       color = '#FFE86D';
       text = '지금처럼 계속 하시면 더욱 더 좋은 결과를 얻을 수 있을 거예요.';
@@ -122,6 +122,19 @@ const Feedback = () => {
 
   };
 
+  // 피드백 데이터 받아오기
+  const getFeedBack = async () =>{
+    const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
+      code
+    })
+    const feedData = response.data.result
+    console.log('피드백 데이터', feedData)
+    setMemo(feedData[0].memo)
+    setAttachment(feedData[0].attachment)
+    setBaseUrl(feedData[0].base_url)
+    setFeedbackContent(feedData[0].feedback_content)
+  }
+
   // 바텀시트 ---------------------------------------------------
   const [bottomText, setBottomText] = useState(
     'A사 피트니스 팀장\nB사 피트니스 퍼스널트레이너\nC사 피트니스 재활트레이너\n한국 야구대표 선수트레이너\n',
@@ -160,19 +173,6 @@ const Feedback = () => {
       }}
     />
   );
-
-  const getFeedBack = async () =>{
-    const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
-      code
-    })
-    const feedData = response.data.result
-    setMemo(feedData[0].memo)
-    setAttachment(feedData[0].attachment)
-    setBaseUrl(feedData[0].base_url)
-    setFeedbackContent(feedData[0].feedback_content)
-  }
-
-
 
   // 뒤로가기 (Feedback -> Main)
   React.useLayoutEffect(() => {
@@ -286,7 +286,8 @@ const Feedback = () => {
                     color: 'grey',
                   }}
                   onPress={() =>
-                    Linking.openURL(attachment)
+                    // Linking.openURL(attachment)
+                    Linking.openURL('https://youtu.be/CaT6kHxngJE?si=rcdKOjDcKK_AxE17')
                   }>
                   Youtube 바로가기
                 </Text>
@@ -544,7 +545,7 @@ const styles = StyleSheet.create({
   },
   resText: {
     marginTop: 10,
-    fontSize: 14,
+    fontSize: 13,
   },
   roundAccuracy: {
     // flex: 1,

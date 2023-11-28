@@ -95,7 +95,7 @@ const Alarm = () => {
             return (
               <View key={index} style={styles.alarmBox}>
                 <View style={styles.alarmText}>
-                  <Text style={{fontSize: 20, fontFamily: 'Pretendard-Light'}}>
+                  <Text style={{fontSize: 18, fontFamily: 'Pretendard-Light'}}>
                     {month}월 {day}일 운동 피드백이 도착했습니다.
                   </Text>
                 </View>

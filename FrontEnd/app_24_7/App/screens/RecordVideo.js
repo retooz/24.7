@@ -201,7 +201,7 @@ const RecordVideo = ({navigation}) => {
     if (group === 'Ai') {
       stopRecordingTimeout = setTimeout(() => {
         stopRecording();
-      }, 23 * 1000);
+      }, 22 * 1000);
     } else if (group === 'NoAi') {
       stopRecordingTimeout = setTimeout(() => {
         stopRecording();

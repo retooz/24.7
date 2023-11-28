@@ -151,15 +151,6 @@ const Main = ({navigation}) => {
     }
   }, [selectedDay, feedbackDay]);
 
-  // useEffect(() => {
-  //   setMarkedDates({
-  //     ...markedDates,
-  //     ...feedbackDay.map(day => ({
-  //       dateString: day,
-  //       marked: true,
-  //     })),
-  //   });
-  // }, [feedbackDay]);
 
   /** 서버로 유저 코드 보내주는 함수 */
   const sendConnectionCode = day => {
@@ -169,7 +160,11 @@ const Main = ({navigation}) => {
     axios.post('http://20.249.87.104:3000/user/getFeedback', {
       code: connectionCode,
     });
+
+    return connectionCode;
   };
+
+
 
   // 밑으로는 달력 스타일 조정하는 곳
   const theme = {
@@ -234,11 +229,13 @@ const Main = ({navigation}) => {
             //     selectMonth: day.month,
             //     selectDay: day.day,
             //   });
+
             if (feedbackDay.includes(day.dateString)) {
-              sendConnectionCode(day);
+              const code = sendConnectionCode(day);
               navigation.navigate('Feedback', {
                 selectMonth: day.month,
                 selectDay: day.day,
+                code: code, // code 전달
               });
             } else {
               Alert.alert('피드백이 도착하지 않았습니다.\n조금만 기다려주세요.')

@@ -25,13 +25,8 @@ app.use(session({
   expires: new Date(Date.now() + (60 * 60 * 24 * 7 * 1000)),
 }));
 
-<<<<<<< HEAD
-app.use('/',trainerRouter);
 app.use('/user',userRouter);
-=======
-app.use('/', trainerRouter);
-app.use('/user', userRouter);
->>>>>>> 6137a1766ec15d4882171f0904a9d3802629286e
+app.use('/trainer',trainerRouter);
 
 app.listen(3000, () => {
   console.log("Node.js server is running on port 3000");

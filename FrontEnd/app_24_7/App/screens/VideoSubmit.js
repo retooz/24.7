@@ -22,7 +22,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const VideoSubmit = ({navigation}) => {
   const route = useRoute();
-  const {category, videoPath} = route.params;
+  const {category, videoPath, group} = route.params;
   const [comment, setComment] = useState('');
   const commentRef = useRef({});
   const [cropVideoUri, setCropVideoUri] = useState();
@@ -50,6 +50,8 @@ const VideoSubmit = ({navigation}) => {
           type: 'video/mp4',
         });
         formData.append('comment', comment);
+        formData.append('category', category);
+        formData.append('group', group);
         handleSubmit(formData);
       });
     } else {
@@ -61,6 +63,8 @@ const VideoSubmit = ({navigation}) => {
         type: `video/${extension}`,
       });
       formData.append('comment', comment);
+      formData.append('category', category);
+      formData.append('group', group);
       handleSubmit(formData);
     }
   };

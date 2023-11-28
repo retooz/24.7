@@ -70,7 +70,8 @@ const CategoryNoAi = ({ navigation }) => {
       const video_path = `${base}${videoPath}`
       navigation.navigate('RecordVideo', {
         category,
-        path: video_path
+        path: video_path,
+        group: 'NoAi'
       });
     } catch (err) {
       console.log(err);
@@ -127,7 +128,8 @@ const CategoryNoAi = ({ navigation }) => {
       const video_path = `${base}${videoPath}`
       navigation.navigate('RecordVideo', {
         category,
-        path: video_path
+        path: video_path,
+        group: 'NoAi'
       });
     } catch (err) {
       console.log(err);
@@ -179,7 +181,8 @@ const CategoryNoAi = ({ navigation }) => {
       const video_path = `${base}${videoPath}`
       navigation.navigate('RecordVideo', {
         category,
-        path: video_path
+        path: video_path,
+        group: 'NoAi'
       });
     } catch (err) {
       console.log(err);
@@ -235,7 +238,8 @@ const CategoryNoAi = ({ navigation }) => {
       const video_path = `${base}${videoPath}`
       navigation.navigate('RecordVideo', {
         category,
-        path: video_path
+        path: video_path,
+        group: 'NoAi'
       });
     } catch (err) {
       console.log(err);
@@ -283,7 +287,8 @@ const CategoryNoAi = ({ navigation }) => {
       const video_path = `${base}${videoPath}`
       navigation.navigate('RecordVideo', {
         category,
-        path: video_path
+        path: video_path,
+        group: 'NoAi'
       });
     } catch (err) {
       console.log(err);

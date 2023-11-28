@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from '../axios';
-import { Trainer } from '../App'
+import { Data } from '../App'
 import './Login.css';
 
 const Login = () => {
 
-  const { setTrainerInfo } = useContext(Trainer);
+  const { setTrainerInfo } = useContext(Data);
 
   const inputEmailRef = useRef();
   const inputPwRef = useRef();
@@ -30,9 +30,7 @@ const Login = () => {
           pw: inputPw
         })
         .then((res) => {
-          console.log('success', res.data);
           if (res.data.result === 1) {
-            console.log(res.data.trainer);
             setTrainerInfo(res.data.trainer);
           }
         })

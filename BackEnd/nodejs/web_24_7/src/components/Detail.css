@@ -23,17 +23,19 @@
 
 .member-name {
   font-size: 1.3em;
+  font-weight: 500;
 }
 
 .member-info {
   margin-top: 10%;
+  font-size: 0.9em;
 }
 
 #user-video-with-comment {
   width: 93%;
-  margin-top: 10%;
+  margin-top: 8%;
   height: 75%;
-  padding: 2%;
+  padding: 1% 2%;
   background-color: #fafafa;
   border-radius: 1em;
   overflow: hidden;
@@ -41,8 +43,9 @@
 
 .detail-heading {
   text-align: center;
+  font-weight: 600;
   margin: 1em 0;
-  font-size: 1.2em;
+  font-size: 1.6em;
 }
 
 #user-video-with-comment hr {
@@ -74,7 +77,6 @@
 #detail-right {
   width: 52%;
   height: 100%;
-  
   display: flex;
   flex-direction: column;
 }
@@ -83,6 +85,54 @@
   height: 45%;
   background-color: #fafafa;
   border-radius: 1em;
+  padding: 0 5%;
+}
+
+#score-heading {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+#score-bar-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 3%;
+}
+
+#score-bar {
+  background: linear-gradient(to right, #FF939C, #FFC692, #FFE86D, #97E79A, #969AFF);
+  width: 80%;
+  height: 30px;
+  border-radius: 1em;
+  margin-left: 2%;
+}
+
+#blank-section {
+  position: relative;
+  background-color: #fafafa;
+  height: 100%;
+  right: 0;
+}
+
+#score-list{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.per-score {
+  width: 50%;
+  margin-top: 4%;
+  display: flex;
+  font-size: 0.9em;
+}
+
+.score-dot {
+  width: 1em;
+  height: 1em;
+  border-radius: 1em;
+  display: inline-block;
+  margin-left: 5%;
 }
 
 #comment-write-form {

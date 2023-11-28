@@ -22,6 +22,9 @@ module.exports = {
     /** DB에 AI로 분석하지 않는 영상 저장 */
     setFeedback: `insert into connection (user_code, trainer_code, exercise_category, user_comment) values (?,?,?,?)`,
 
+    /** 유저videoUrl 저장 */
+    setVideoUrl:`update connection set user_video_url = ? where connection_code = ?`,
+
     //** feedback 트레이너에게 보내기 */
     sendFeedback : `update connection set accuracy = ? , accuracy_list = ? where connection_code = ?`,
 
@@ -41,8 +44,6 @@ module.exports = {
     getDataFeedback: `select accuracy, accuracy_list from connection where connection_code = ?`,
 
     /** 트레이너의 피드백 여부 확인 */
-    // getAlarm: `select connection_code,date_format(connection_date,'%Y-%m-%d') as connection_date from connection where user_code = ? and confirm_trainer = 1 order by connection_date DESC`,
-
     getAlarm: `select a.connection_code, date_format(a.connection_date,'%Y-%m-%d') as connection_date from connection as a inner join feedback_list_user as b on ( a.connection_code = b.connection_code) where a.user_code = ? and b.confirm_user = 0 order by connection_date DESC`,
 
     /** 참고 운동 영상 */

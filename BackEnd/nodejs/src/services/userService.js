@@ -2,7 +2,7 @@ const conn = require('../../config/database')
 const userQueries = require('../queries/userQueries')
 const bcrypt = require('bcrypt')
 
-const homeService = {
+const userService = {
 
     /** 회원가입 */
     join: async (data, cryptedPW) => {
@@ -79,6 +79,18 @@ const homeService = {
                 return getConnectionCode
             }
         } catch (err) {
+            throw err;
+        }
+    },
+
+    /** connection별 주소 저장 */
+    setVideoUrl:async(videoUrl,connectionCode)=>{
+        try{
+            const [result] = await conn.query(userQueries.setVideoUrl,[videoUrl,connectionCode]);
+            if(result.affectedRows > 0){
+                return result
+            }
+        }catch(err){
             throw err;
         }
     },
@@ -198,4 +210,4 @@ const homeService = {
 
 }
 
-module.exports = homeService;
+module.exports = userService;

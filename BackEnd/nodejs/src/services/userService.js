@@ -184,18 +184,6 @@ const userService = {
         }
     },
 
-    /** 저장된 메모 가져오기 */
-    getMemo: async (connectionCode) => {
-        try {
-            const [result] = await conn.query(userQueries.getMemo, [connectionCode]);
-            if (result.length > 0) {
-                return result
-            }
-        } catch (err) {
-            throw err
-        }
-    },
-
     /** 운동 별 메모 저장 */
     updateMemo: async (connectionCode, memo) => {
         try {

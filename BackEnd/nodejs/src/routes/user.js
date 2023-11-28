@@ -5,6 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const userService = require('../services/userService.js');
+const axios = require('axios');
 require('dotenv').config({ path: '../../.env' });
 
 fs.readdir('./public/uploads', (error) => {
@@ -69,7 +70,7 @@ router.post('/login', async (req, res) => {
 /** 로그아웃 */
 router.post('/logout', async (req, res) => {
     try {
-        res.session.destroy();
+        req.session.destroy();
         if (req.session == undefined) {
             res.json({ result: 1 })
         } else {
@@ -181,17 +182,19 @@ const uploadVideo = multer({
 /** 비디오 업로드, 트레이너에게 보내기 */
 router.post('/sendTrainer', upLoadVideo, async (req, res) => {
     try {
+        console.log('안드로이드용', req.file)
         const userCode = req.session.user.code;
         const trainerCodeList = await userService.searchTrainer();
         const trainerCode = trainerCodeList[Math.floor(Math.random() * trainerCodeList.length)].trainer_code
         const userComment = req.body.comment;
-        const exerciseCategory = req.body.category;
+        let exerciseCategory = req.body.category;
         const checkAi = req.body.group;
         const setConnection = await userService.setFeedback(userCode, trainerCode, userComment, exerciseCategory)
         const connectionCode = setConnection[0].connection_code
         /** 저장된 비디오를 커넥션 코드 파일로 옮기기 */
         const fileName = req.file.filename
         const newPath = path.join('public', 'uploads', 'video', `${connectionCode}`)
+        console.log('newPath', newPath)
         fs.readdir(newPath, (error) => {
             if (error) {
                 fs.mkdirSync(newPath);
@@ -200,14 +203,26 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         });
         const setVideoUrl = await userService.setVideoUrl(newPath, connectionCode);
         if (checkAi == 'Ai') {
-            const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: newPath, type: exerciseCategory });
-            const accuracy = response.data.score
-            const accuracyList = response.data.sep_score
-            const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
-            if (setFeedbackAi.affectedRows > 0) {
-                console.log('Ai upload')
-                res.send({ result: 1 })
+            switch (exerciseCategory) {
+                case '런지A':
+                    exerciseCategory = 'lunge'
+                    break;
+                case '푸쉬업A':
+                    exerciseCategory = 'push_up'
+                    break;
+                case '스쿼트A':
+                    exerciseCategory = 'squat'
+                    break;
             }
+            console.log('AI exerciseCategory', exerciseCategory)
+            // const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: newPath, type: exerciseCategory });
+            // const accuracy = response.data.score
+            // const accuracyList = response.data.sep_score
+            // const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
+            // if (setFeedbackAi.affectedRows > 0) {
+            // }
+            console.log('Ai upload')
+            res.send({ result: 1 })
         } else {
             console.log('NoAi upload')
             res.send({ result: 1 })
@@ -279,18 +294,10 @@ router.post('/getVideo', async (req, res) => {
     }
 })
 
-/** 메모 가져오기 */
-router.post('/getMemo', async (req, res) => {
-    const connectionCode = req.body.code
-    const result = await userService.getMemo(connectionCode);
-    if (result.lenght > 0) {
-        res.json({ result: result })
-    }
-})
-
 /** 메모 저장 */
 router.post('/saveMemo', async (req, res) => {
     try {
+        console.log('memo', req.body)
         const connectionCode = req.body.code
         const memo = req.body.input
         const result = await userService.updateMemo(connectionCode, memo);

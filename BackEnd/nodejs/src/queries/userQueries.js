@@ -49,9 +49,6 @@ module.exports = {
     /** 참고 운동 영상 */
     getReference: `select video_url from reference_video where exercise_category = ?`,
 
-    /** 저장된 메모 가져오기 */
-    getMemo: `select memo from feedback_list_user where connection_code = ?`,
-
     /** 메모 저장 */
     saveMemo: `update feedback_list_user set memo = ? where connection_code = ?`,
 

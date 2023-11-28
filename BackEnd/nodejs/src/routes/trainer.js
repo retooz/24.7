@@ -24,7 +24,6 @@ router.get('/',(req,res) => {
 })
 
 router.post('/login', async (req,res) => {
-    console.log(req.body)
     const data = req.body;
     try {
         const [userRows] = await trainerService.signIn(data.email)
@@ -35,7 +34,7 @@ router.post('/login', async (req,res) => {
             const trainerObj = {email: trainer.email, trainer_name: trainer.trainer_name, trainer_code: trainer.trainer_code,
             profile_pic : trainer.profile_pic}
             req.session.trainer = trainerObj
-            res.json({ result: 'success', trainer : req.session.trainer })
+            res.json({ result: 1, trainer : req.session.trainer })
         }
     } catch (err) {
         console.log(err)
@@ -115,7 +114,6 @@ router.post('/getDetail', async (req, res) => {
 })
 
 router.post('/sendFeedback', async (req, res) => {
-    console.log(req.body)
     try {
         const { connection_code, feedbackContent, link, base } = req.body;
         const result = await trainerService.sendFeedback(connection_code, feedbackContent, link, base)

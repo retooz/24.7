@@ -42,6 +42,7 @@ node_modules/
 /FrontEnd/app_24_7/*.ipa
 /FrontEnd/app_24_7/*.xcuserstate
 /FrontEnd/app_24_7/ios/.xcode.env.local
+/FrontEnd/app_24_7/android/app/build
 
 # Android/IntelliJ
 /FrontEnd/app_24_7/.gradle

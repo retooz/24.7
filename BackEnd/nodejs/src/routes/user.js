@@ -77,7 +77,7 @@ router.post('/logout', async (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -260,7 +260,7 @@ router.get('/getData', async (req, res) => {
             res.json({ list: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -275,7 +275,7 @@ router.get('/feedbackConfirm', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -290,7 +290,7 @@ router.post('/getVideo', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 

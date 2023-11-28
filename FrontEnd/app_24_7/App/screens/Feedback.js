@@ -29,6 +29,8 @@ import BottomSheet, {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
+import axios from 'axios';
+import LoadingScreen2 from './LoadingScreen2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,8 +38,17 @@ const windowHeight = Dimensions.get('window').height;
 const Feedback = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {selectedDay, selectMonth, selectDay} = route.params;
-  // console.log(selectedDay, selectMonth, selectDay);
+  const {selectedDay, selectMonth, selectDay, code} = route.params;
+
+  const [ready, setReady] = useState(true);
+
+  useEffect(() => {
+    //1초 뒤에 실행되는 코드들이 담겨 있는 함수
+    setTimeout(() => {
+      getFeedBack()
+      setReady(false);
+    }, 1000);
+  }, []);
 
   // DB 정보 가져오기
   const [profile, setProfile] = useState(); // 트레이너 프로필
@@ -46,6 +57,10 @@ const Feedback = () => {
   const [link, setLink] = useState(); // 참고 링크
   // const [value, setValue] = useState(); // 전체 정확도
   // const [roundValue, setRoundValue] = useState(); // 회차별 정확도
+
+  const[attachment,setAttachment] = useState()
+  const[baseurl, setBaseUrl] = useState()
+  const[feedbackContent, setFeedbackContent] = useState()
 
   const [showVideo, setShowVideo] = useState(false); // 회차별 영상
   const v = require('../assets/video/userLunge.mp4');
@@ -91,9 +106,20 @@ const Feedback = () => {
   const [memo, setMemo] = useState('');
 
   /** 메모 저장하는 함수 */
-  const handleSave = () => {
-    console.log('save memo');
-    setMemo(input);
+  const handleSave = async () => {
+    console.log("--------->", code)
+     try{
+       response = await axios.post("http://20.249.87.104:3000/user/saveMemo",{
+          code,
+          input
+       })
+       if (response.data.result === 1){
+        console.log("메모 성공")
+       }
+     } catch(err){
+       console.log(err);
+     }
+
   };
 
   // 바텀시트 ---------------------------------------------------
@@ -135,6 +161,19 @@ const Feedback = () => {
     />
   );
 
+  const getFeedBack = async () =>{
+    const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
+      code
+    })
+    const feedData = response.data.result
+    setMemo(feedData[0].memo)
+    setAttachment(feedData[0].attachment)
+    setBaseUrl(feedData[0].base_url)
+    setFeedbackContent(feedData[0].feedback_content)
+  }
+
+
+
   // 뒤로가기 (Feedback -> Main)
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -154,7 +193,9 @@ const Feedback = () => {
     });
   }, [navigation]);
 
-  return (
+  return ready ? (
+    <LoadingScreen2 />
+  ) : (
     <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>
         <View style={styles.FeedbackContainer}>
@@ -227,10 +268,7 @@ const Feedback = () => {
                     marginBottom: 10,
                     lineHeight: 23,
                   }}>
-                  안녕하세요 김형진 트레이너 입니다. 회원님의 경우, 스쿼트
-                  자세에서 무릎이 다소 앞으로 나오는 경향이 있어 중심이 앞으로
-                  쏠릴 수 있으니, 엉덩이 근육에 신경을 써주시면 좋을 거
-                  같습니다.
+                  {feedbackContent}
                 </Text>
                 <Text
                   style={{
@@ -248,9 +286,7 @@ const Feedback = () => {
                     color: 'grey',
                   }}
                   onPress={() =>
-                    Linking.openURL(
-                      `https://youtu.be/CaT6kHxngJE?si=H2gxLZllYcC0wjBP`,
-                    )
+                    Linking.openURL(attachment)
                   }>
                   Youtube 바로가기
                 </Text>
@@ -395,8 +431,8 @@ const Feedback = () => {
                   MEMO
                 </Text>
                 <TextInput
-                  value={input}
-                  onChangeText={setInput}
+                  value={memo}
+                  onChangeText={(text) => setInput(text)}
                   placeholder="메모를 작성해주세요"
                   multiline={true}
                   style={{...styles.memo, lineHeight: 30}}

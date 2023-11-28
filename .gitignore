@@ -83,3 +83,7 @@ BackEnd/nodejs/sessions
 BackEnd/nodejs/node_modules
 BackEnd/nodejs/public/uploads
 BackEnd/nodejs/config
+
+
+# AI Ignore
+AI/__pycache__

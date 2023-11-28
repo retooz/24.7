@@ -34,8 +34,11 @@ router.post('/login', async (req,res) => {
             profile_pic : trainer.profile_pic}
             req.session.trainer = trainerObj
             res.json({ result: 1, trainer : req.session.trainer })
+<<<<<<< HEAD
         } else {
             res.json({ result: 0 })
+=======
+>>>>>>> 6137a1766ec15d4882171f0904a9d3802629286e
         }
     } catch (err) {
         console.log(err)

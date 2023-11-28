@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   ImageBackground,
   View,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,8 +38,27 @@ function Login({navigation}) {
   //   return passwordRegex.test(pw);
   // };
 
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
+  // // connection date 정보 가져오기
+  // const getData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       // 20.249.87.104
+  //       'http://20.249.87.104:3000/user/autoLogin',{
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     console.log('kkkkk', response.data.result);
+  //   } catch (error) {
+  //     console.error('자동로그인 ----- ', error);
+  //   }
+  // };
+
   const handleLogin = async () => {
-    navigation.navigate('Main');
+    // navigation.navigate('Main');
     if (email === '' || email === undefined || pw === '' || pw === undefined) {
       alert('이메일과 비밀번호를 모두 입력하세요.');
       return;
@@ -49,7 +69,7 @@ function Login({navigation}) {
           {
             email: email,
             pw: pw,
-            type: 'u',
+            withCredentials: true,
           },
           {
             timeout: 5000,
@@ -58,9 +78,10 @@ function Login({navigation}) {
 
         console.log('handleLogin =>', response.data.result);
         // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
-        if (response.data.result === 0) {
+        if (response.data.result === 1) {
           AsyncStorage.setItem('userEmail', email);
           setAlarmText('');
+
           navigation.navigate('Main');
         }
         
@@ -89,23 +110,6 @@ function Login({navigation}) {
           style: {color: 'red', display: 'block'},
         });
       }
-
-      // .then(res => {
-      //   console.log('handleLogin =>', res.data.result);
-      //   // 로그인 성공여부는 res.data.affectedRows가 0인지 1인지 확인하면 됨
-      //   if (res.data.result === 0) {
-      //     AsyncStorage.setItem('userEmail', email);
-      //     setAlarmText('');
-      //     navigation.navigate('Main');
-      //   }
-      // })
-      // .catch(e => {
-      //   console.error(e);
-      //   setAlarmText('잘못된 비밀번호입니다. 다시 확인하세요.');
-      //   alarmRef.current.setNativeProps({
-      //     style: {color: 'red', display: 'block'},
-      //   });
-      // });
     }
   };
 
@@ -165,7 +169,7 @@ function Login({navigation}) {
             <Text style={styles.loginButtonText}>로그인</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.kakaoLoginButton} onPress={() => {}}>
+          {/* <TouchableOpacity style={styles.kakaoLoginButton} onPress={() => {}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
                 source={require('../assets/image/kakaologo3.png')}
@@ -173,7 +177,7 @@ function Login({navigation}) {
               />
               <Text style={styles.kakaoLoginButtonText}>카카오 로그인</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.others}>
           <TouchableOpacity onPress={() => navigation.navigate('Join')}>
@@ -219,8 +223,8 @@ const styles = StyleSheet.create({
   others: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 10,
+    width: '70%',
+    marginTop: 0,
   },
   kakaoLoginButton: {
     backgroundColor: '#FEE500',

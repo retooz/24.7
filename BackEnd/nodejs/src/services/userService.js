@@ -10,7 +10,6 @@ const userService = {
             const [results] = await conn.query(userQueries.signUp, [data.email, cryptedPW, data.nick]);
             return results
         } catch (err) {
-            console.log(err);
             throw err;
         }
     },
@@ -138,7 +137,7 @@ const userService = {
         try {
             const [result] = await conn.query(userQueries.searchTrainerCode, [connectionCode])
             if (result.length > 0) {
-                const [trainerInfo] = await conn.query(userQueries.getTrainerInfo, [result[0]])
+                const [trainerInfo] = await conn.query(userQueries.getTrainerInfo, [result[0].trainer_code])
                 if (trainerInfo.length > 0) {
                     return trainerInfo;
                 }
@@ -176,18 +175,6 @@ const userService = {
     getReference: async (exerciseCategory) => {
         try {
             const [result] = await conn.query(userQueries.getReference, [exerciseCategory]);
-            if (result.length > 0) {
-                return result
-            }
-        } catch (err) {
-            throw err
-        }
-    },
-
-    /** 저장된 메모 가져오기 */
-    getMemo: async (connectionCode) => {
-        try {
-            const [result] = await conn.query(userQueries.getMemo, [connectionCode]);
             if (result.length > 0) {
                 return result
             }

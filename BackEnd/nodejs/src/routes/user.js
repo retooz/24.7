@@ -5,8 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const userService = require('../services/userService.js');
-require('dotenv').config({ path: '../../.env' });
-
+const axios = require('axios');
 fs.readdir('./public/uploads', (error) => {
     if (error) {
         fs.mkdirSync('./public')
@@ -62,21 +61,21 @@ router.post('/login', async (req, res) => {
         }
         return res.json({ result: 0 })
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
 /** 로그아웃 */
 router.post('/logout', async (req, res) => {
     try {
-        res.session.destroy();
+        req.session.destroy();
         if (req.session == undefined) {
             res.json({ result: 1 })
         } else {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -109,7 +108,7 @@ router.post('/findPassword', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -128,7 +127,7 @@ router.post('/passwordCheck', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -185,7 +184,7 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         const trainerCodeList = await userService.searchTrainer();
         const trainerCode = trainerCodeList[Math.floor(Math.random() * trainerCodeList.length)].trainer_code
         const userComment = req.body.comment;
-        const exerciseCategory = req.body.category;
+        let exerciseCategory = req.body.category;
         const checkAi = req.body.group;
         const setConnection = await userService.setFeedback(userCode, trainerCode, userComment, exerciseCategory)
         const connectionCode = setConnection[0].connection_code
@@ -200,20 +199,29 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         });
         const setVideoUrl = await userService.setVideoUrl(newPath, connectionCode);
         if (checkAi == 'Ai') {
-            const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: newPath, type: exerciseCategory });
+            switch (exerciseCategory) {
+                case '런지A':
+                    exerciseCategory = 'Lunge'
+                    break;
+                case '푸쉬업A':
+                    exerciseCategory = 'Pushup'
+                    break;
+                case '스쿼트A':
+                    exerciseCategory = 'Squat'
+                    break;
+            }
+            const response = await axios.post('http://127.0.0.1:5000/test', { url: newPath+'/'+fileName, type: exerciseCategory });
             const accuracy = response.data.score
-            const accuracyList = response.data.sep_score
+            const accuracyList = '['+response.data.sep_score+']'
             const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
             if (setFeedbackAi.affectedRows > 0) {
-                console.log('Ai upload')
                 res.send({ result: 1 })
             }
         } else {
-            console.log('NoAi upload')
             res.send({ result: 1 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -230,7 +238,7 @@ router.post('/getFeedback', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -245,7 +253,7 @@ router.get('/getData', async (req, res) => {
             res.json({ list: 0 })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -260,7 +268,7 @@ router.get('/feedbackConfirm', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        //.log(err)
     }
 })
 
@@ -275,16 +283,7 @@ router.post('/getVideo', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
-    }
-})
-
-/** 메모 가져오기 */
-router.post('/getMemo', async (req, res) => {
-    const connectionCode = req.body.code
-    const result = await userService.getMemo(connectionCode);
-    if (result.lenght > 0) {
-        res.json({ result: result })
+        //.log(err)
     }
 })
 
@@ -300,7 +299,7 @@ router.post('/saveMemo', async (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 

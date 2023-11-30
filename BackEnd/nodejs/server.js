@@ -8,6 +8,7 @@ const fileStore = require('session-file-store')(session);
 
 const userRouter = require('./src/routes/user');
 const trainerRouter = require('./src/routes/trainer');
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,8 +26,8 @@ app.use(session({
   expires: new Date(Date.now() + (60 * 60 * 24 * 7 * 1000)),
 }));
 
-app.use('/user',userRouter);
-app.use('/trainer',trainerRouter);
+app.use('/', trainerRouter);
+app.use('/user', userRouter);
 
 app.listen(3000, () => {
   console.log("Node.js server is running on port 3000");

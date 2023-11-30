@@ -192,7 +192,7 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         /** 저장된 비디오를 커넥션 코드 파일로 옮기기 */
         const fileName = req.file.filename
         const newPath = path.join('public', 'uploads', 'video', `${connectionCode}`)
-        console.log('newPath', newPath)
+        console.log('newPath', newPath+'/'+fileName)
         fs.readdir(newPath, (error) => {
             if (error) {
                 fs.mkdirSync(newPath);

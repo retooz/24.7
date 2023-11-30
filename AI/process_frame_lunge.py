@@ -11,7 +11,7 @@ class ProcessFrame:
         self.file_name = file_name
         self.ex_count = 1
         
-        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\public\\uploads\\video\\{self.file_name}_{self.ex_count}.mp4'
+        self.file_directory = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{connection_code}/{self.file_name}_{self.ex_count}.mp4'
         
         # self.flip_frame 매개변수 값
         self.flip_frame = flip_frame
@@ -377,7 +377,7 @@ class ProcessFrame:
                         self.state_tracker['rec'] = False
                         self.out.release()
                         self.ex_count += 1
-                        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\public\\uploads\\video\\{self.file_name}_{self.ex_count}.mp4'
+                        self.file_directory = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{connection_code}/{self.file_name}_{self.ex_count}.mp4'
                         self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, self.frame_size)
                         self.state_tracker['SEP_LIST'].append(self.file_directory)
 
@@ -430,21 +430,21 @@ class ProcessFrame:
                 cv2.putText(frame, str(int(back_knee_internal_angle)), (back_knee_text_coord_x, back_knee_coord[1]+10), self.font, 0.4, self.COLORS['light_green'], 1, lineType=cv2.LINE_AA)
 
                 # 스쿼트 자세분석 점수 표시
-                frame = draw_text_kor(
-                    frame, 
-                    text="횟수별 AI분석 점수", 
-                    pos=(int(frame_width / 2)-250, 20),
-                    text_color=(255, 255, 230),
-                    text_color_bg=(0, 100, 0)
-                )     
-                for i in range(0, len(self.state_tracker['SCORE_LIST'])):
-                    frame = draw_text_kor(
-                    frame, 
-                    f"{i+1} 회: {self.state_tracker['SCORE_LIST'][i]}", 
-                    pos=(int(frame_width / 2)-250, 60+(40*i)),
-                    text_color=(255, 255, 230),
-                    text_color_bg=(0, 100, 0)
-                )  
+                # frame = draw_text_kor(
+                #     frame, 
+                #     text="횟수별 AI분석 점수", 
+                #     pos=(int(frame_width / 2)-250, 20),
+                #     text_color=(255, 255, 230),
+                #     text_color_bg=(0, 100, 0)
+                # )     
+                # for i in range(0, len(self.state_tracker['SCORE_LIST'])):
+                #     frame = draw_text_kor(
+                #     frame, 
+                #     f"{i+1} 회: {self.state_tracker['SCORE_LIST'][i]}", 
+                #     pos=(int(frame_width / 2)-250, 60+(40*i)),
+                #     text_color=(255, 255, 230),
+                #     text_color_bg=(0, 100, 0)
+                # )  
 
                 
             return frame, self.state_tracker['SEP_LIST'], self.out, self.state_tracker['SCORE_LIST']

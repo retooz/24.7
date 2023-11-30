@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import './History.css'
+import React, { useContext, useEffect, useState } from 'react';
+import { Data } from '../App';
+import Detail from './Detail';
+import './History.css';
 
-const History = ({ history, selectConnection }) => {
+const History = ({ selectConnection }) => {
+  const {
+    selectedMemberData,
+    memberHistory,
+    detailData,
+    reset,
+  } = useContext(Data);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageContents, setCurrentPageContents] = useState([]);
-  const maxPage = Math.ceil((history.length + 1) / 10);
+  const maxPage = Math.ceil((memberHistory.length + 1) / 10);
 
   const selectHistoryHandle = (connection_code) => {
     selectConnection(connection_code);
@@ -12,16 +21,18 @@ const History = ({ history, selectConnection }) => {
 
   useEffect(() => {
     setCurrentPageContents(
-      history.slice((currentPage - 1) * 10, currentPage * 10)
+      memberHistory.slice((currentPage - 1) * 10, currentPage * 10)
     );
     // eslint-disable-next-line
-  }, [currentPage, history]);
+  }, [currentPage, memberHistory]);
 
   useEffect(() => {
-    setCurrentPage(1)
-  }, [history])
+    setCurrentPage(1);
+  }, [memberHistory]);
 
-  return (
+  return detailData.exercise_category ? (
+    <Detail memberinfo={selectedMemberData} reset={reset} />
+  ) : (
     <div id='history'>
       <div className='history-container'>
         <div className='history-item'>
@@ -34,7 +45,10 @@ const History = ({ history, selectConnection }) => {
         <ul>
           {currentPageContents.map((data, index) => {
             return data.confirm_trainer === 0 ? (
-              <li onClick={() => selectHistoryHandle(data.connection_code)} key={index}>
+              <li
+                onClick={() => selectHistoryHandle(data.connection_code)}
+                key={index}
+              >
                 <hr />
                 <div className='history-item'>
                   <p className='history-index'>{index + 1}</p>|
@@ -45,7 +59,10 @@ const History = ({ history, selectConnection }) => {
                 </div>
               </li>
             ) : (
-              <li onClick={() => selectHistoryHandle(data.connection_code)} key={index}>
+              <li
+                onClick={() => selectHistoryHandle(data.connection_code)}
+                key={index}
+              >
                 <hr />
                 <div className='history-item'>
                   <p className='history-index'>{index + 1}</p>|
@@ -58,21 +75,20 @@ const History = ({ history, selectConnection }) => {
             );
           })}
         </ul>
-        
       </div>
       <div id='page-number-container'>
-          <ul id='page-number'>
-            {[...Array(maxPage)].map((n, index) => {
-              return index + 1 === currentPage ? (
-                <li id='current-page' onClick={() => setCurrentPage(index + 1)}>
-                  {index + 1}
-                </li>
-              ) : (
-                <li onClick={() => setCurrentPage(index + 1)}>{index + 1}</li>
-              );
-            })}
-          </ul>
-        </div>
+        <ul id='page-number'>
+          {[...Array(maxPage)].map((n, index) => {
+            return index + 1 === currentPage ? (
+              <li id='current-page' onClick={() => setCurrentPage(index + 1)}>
+                {index + 1}
+              </li>
+            ) : (
+              <li onClick={() => setCurrentPage(index + 1)}>{index + 1}</li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };

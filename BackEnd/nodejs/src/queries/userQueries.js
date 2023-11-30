@@ -41,7 +41,7 @@ module.exports = {
     searchTrainerCode: `select trainer_code from connection where connection_code = ?`,
 
     /** connection_code를 통한 분석 결과 확인 */
-    getDataFeedback: `select accuracy, accuracy_list from connection where connection_code = ?`,
+    getDataFeedback: `select accuracy, accuracy_list, exercise_category from connection where connection_code = ?`,
 
     /** 트레이너의 피드백 여부 확인 */
     getAlarm: `select a.connection_code, date_format(a.connection_date,'%Y-%m-%d') as connection_date from connection as a inner join feedback_list_user as b on ( a.connection_code = b.connection_code) where a.user_code = ? and b.confirm_user = 0 order by connection_date DESC`,

@@ -21,17 +21,24 @@ output_video_file = f'output_recorded.mp4'
 def test():
     # 업로드된 url, type
     if request.method == 'POST':
-        raw_filename = request.json.get('url').split('\\')[-1][:-4]
-        url_path = 'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\' + request.json.get('url') 
+        req_url = request.json.get('url')
+        raw_filename = req_url.split('/')[-1][:-4]
+        connection_code = req_url.split('/')[-2]
+        
+        url_path = '/home/azureuser/24.7/BackEnd/nodejs/' + request.json.get('url') 
         ex_type = request.json.get('type')
         
-        output_video_file = f'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\public\\uploads\\video\\{raw_filename}_0.mp4'
+        output_video_file = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{connection_code}/{raw_filename}_0.mp4'
+        print()
+        print(request.json.get('url'))
+        print(connection_code, raw_filename)
+        print()
         # print(url_path, ex_type)
         # ------------------------------------------------------
         if url_path and ex_type :
 
             try:
-
+                
                 vf = cv2.VideoCapture(url_path)
 
                 # ---------------------  Write the processed video frame. --------------------
@@ -45,7 +52,7 @@ def test():
 
                 if ex_type == 'Squat':
                     thresholds = thresholds_squat()
-                    upload_process_frame = ProcessFrameSquat(thresholds=thresholds, fps=fps, frame_size=frame_size, file_name=raw_filename )
+                    upload_process_frame = ProcessFrameSquat(thresholds=thresholds, fps=fps, frame_size=frame_size, file_name=raw_filename, connection_code=connection_code )
                 elif ex_type == 'Lunge':
                     thresholds = thresholds_lunge()
                     upload_process_frame = ProcessFrameLunge(thresholds=thresholds,fps=fps, frame_size=frame_size, file_name=raw_filename)
@@ -56,6 +63,7 @@ def test():
 
                 # 영상이 끝날때까지 프레임을 반복해서 읽으며 분석
                 while vf.isOpened():
+
                     ret, frame = vf.read()
                     if not ret:
                         break

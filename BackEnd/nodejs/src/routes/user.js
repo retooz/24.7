@@ -6,8 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const userService = require('../services/userService.js');
 const axios = require('axios');
-require('dotenv').config({ path: '../../.env' });
-
 fs.readdir('./public/uploads', (error) => {
     if (error) {
         fs.mkdirSync('./public')
@@ -194,7 +192,7 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         /** 저장된 비디오를 커넥션 코드 파일로 옮기기 */
         const fileName = req.file.filename
         const newPath = path.join('public', 'uploads', 'video', `${connectionCode}`)
-        console.log('newPath', newPath)
+        console.log('newPath', newPath+'/'+fileName)
         fs.readdir(newPath, (error) => {
             if (error) {
                 fs.mkdirSync(newPath);
@@ -205,24 +203,24 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         if (checkAi == 'Ai') {
             switch (exerciseCategory) {
                 case '런지A':
-                    exerciseCategory = 'lunge'
+                    exerciseCategory = 'Lunge'
                     break;
                 case '푸쉬업A':
-                    exerciseCategory = 'push_up'
+                    exerciseCategory = 'Pushup'
                     break;
                 case '스쿼트A':
-                    exerciseCategory = 'squat'
+                    exerciseCategory = 'Squat'
                     break;
             }
-            console.log('AI exerciseCategory', exerciseCategory)
-            // const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: newPath, type: exerciseCategory });
-            // const accuracy = response.data.score
-            // const accuracyList = response.data.sep_score
-            // const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
-            // if (setFeedbackAi.affectedRows > 0) {
-            // }
-            console.log('Ai upload')
-            res.send({ result: 1 })
+            const response = await axios.post('http://127.0.0.1:5000/test', { url: newPath+'/'+fileName, type: exerciseCategory });
+            const accuracy = response.data.score
+            const accuracyList = '['+response.data.sep_score+']'
+            console.log(accuracyList)
+            const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
+            if (setFeedbackAi.affectedRows > 0) {
+                console.log('Ai upload')
+                res.send({ result: 1 })
+            }
         } else {
             console.log('NoAi upload')
             res.send({ result: 1 })

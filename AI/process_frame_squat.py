@@ -6,12 +6,12 @@ from utils import find_angle, get_landmark_features, draw_text, draw_dotted_line
 # get_landmark_features로 직접 스켈레톤을 만들면 원하는 구조로 쉽게 만들 수 있고, 계산량이 보다 적어 속도가 빠르다는 장점이 있다.
 
 class ProcessFrame:
-    def __init__(self, thresholds, fps, frame_size, file_name, flip_frame = False):
+    def __init__(self, thresholds, fps, frame_size, file_name, connection_code, flip_frame = False):
         self.file_name = file_name
         self.ex_count = 1
         # self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\test\\output{self.ex_count}.mp4'
-        
-        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\public\\uploads\\video\\{self.file_name}_{self.ex_count}.mp4'
+        self.connection_code = connection_code
+        self.file_directory = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{self.connection_code}/{self.file_name}_{self.ex_count}.mp4'
         # self.file_directory = os.path.join(__file__, '..', 'BackEnd', 'nodejs','public', 'uploads', 'video') + f'output{self.ex_count}.mp4'
 
         # 매개변수 값
@@ -281,7 +281,7 @@ class ProcessFrame:
                         self.state_tracker['rec'] = False
                         self.out.release()
                         self.ex_count += 1
-                        self.file_directory = f'C:\\Users\\gjaischool\\Desktop\\24.7\\BackEnd\\nodejs\\public\\uploads\\video\\{self.file_name}_{self.ex_count}.mp4'
+                        self.file_directory = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{self.connection_code}/{self.file_name}_{self.ex_count}.mp4'
                         self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, self.frame_size)
                         self.state_tracker['SEP_LIST'].append(self.file_directory)
 
@@ -332,22 +332,22 @@ class ProcessFrame:
                 cv2.putText(frame, str(int(knee_vertical_angle)), (knee_text_coord_x, knee_coord[1]+10), self.font, 0.4, self.COLORS['light_green'], 2, lineType=cv2.LINE_4)
                 cv2.putText(frame, str(int(ankle_vertical_angle)), (ankle_text_coord_x, ankle_coord[1]), self.font, 0.4, self.COLORS['light_green'], 2, lineType=cv2.LINE_4)
 
-                # 스쿼트 자세분석 점수 표시
-                frame = draw_text_kor(
-                    frame, 
-                    text="횟수별 AI분석 점수", 
-                    pos=(int(frame_width / 2)-250, 20),
-                    text_color=(255, 255, 230),
-                    text_color_bg=(0, 100, 0)
-                )     
-                for i in range(0, len(self.state_tracker['SCORE_LIST'])):
-                    frame = draw_text_kor(
-                    frame, 
-                    f"{i+1} 회: {self.state_tracker['SCORE_LIST'][i]}", 
-                    pos=(int(frame_width / 2)-250, 60+(40*i)),
-                    text_color=(255, 255, 230),
-                    text_color_bg=(0, 100, 0)
-                )  
+                # # 스쿼트 자세분석 점수 표시
+                # frame = draw_text_kor(
+                #     frame, 
+                #     text="횟수별 AI분석 점수", 
+                #     pos=(int(frame_width / 2)-250, 20),
+                #     text_color=(255, 255, 230),
+                #     text_color_bg=(0, 100, 0)
+                # )     
+                # for i in range(0, len(self.state_tracker['SCORE_LIST'])):
+                #     frame = draw_text_kor(
+                #     frame, 
+                #     f"{i+1} 회: {self.state_tracker['SCORE_LIST'][i]}", 
+                #     pos=(int(frame_width / 2)-250, 60+(40*i)),
+                #     text_color=(255, 255, 230),
+                #     text_color_bg=(0, 100, 0)
+                # )  
 
             
             return frame, self.state_tracker['SEP_LIST'], self.out, self.state_tracker['SCORE_LIST']

@@ -8,6 +8,7 @@ const fileStore = require('session-file-store')(session);
 
 const userRouter = require('./src/routes/user');
 const trainerRouter = require('./src/routes/trainer');
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json());

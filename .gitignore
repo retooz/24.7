@@ -1,26 +1,25 @@
-docs/
-Temp/
-.idea/
-.vscode/
+docs
+Temp
+.idea
+.vscode
 .DS_Store
-node_modules/
+node_modules
+.env
+sessions
+config
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
 # FE-Web Ignore List
 
 # Dependencies
-FrontEnd/web_24_7/.pnp
-FrontEnd/web_24_7/.pnp.js
+BackEnd/nodejs/react_247/.pnp
+BackEnd/nodejs/react_247/.pnp.js
 
 # testing, production
-FrontEnd/web_24_7/coverage
-FrontEnd/web_24_7/build
-
-# misc
-FrontEnd/web_24_7/.env
-FrontEnd/web_24_7/npm-debug.log*
-FrontEnd/web_24_7yarn-debug.log*
-FrontEnd/web_24_7/yarn-error.log*
-
+BackEnd/nodejs/react_247/coverage
+BackEnd/nodejs/react_247/build
 
 # FE-App Ignore List
 
@@ -53,10 +52,6 @@ FrontEnd/app_24_7/.cxx/
 FrontEnd/app_24_7/*.keystore
 FrontEnd/app_24_7/!debug.keystore
 
-# node.js
-/FrontEnd/app_24_7/npm-debug.log
-/FrontEnd/app_24_7/yarn-error.log
-
 # fastlane
 FrontEnd/app_24_7/**/fastlane/report.xml
 FrontEnd/app_24_7/**/fastlane/Preview.html
@@ -67,7 +62,7 @@ FrontEnd/app_24_7/**/fastlane/test_output
 FrontEnd/app_24_7/*.jsbundle
 
 # Ruby / CocoaPods
-FrontEnd/app_24_7/ios/Pods/
+FrontEnd/app_24_7/ios/Pods
 FrontEnd/app_24_7/vendor/bundle
 
 # Temp File by Metro
@@ -76,14 +71,9 @@ FrontEnd/app_24_7/.metro-health-check*
 # Testing
 FrontEnd/app_24_7/coverage
 
-
 # BE-node.js Ignore List
 
-BackEnd/nodejs/sessions
-BackEnd/nodejs/node_modules
 BackEnd/nodejs/public/uploads
-BackEnd/nodejs/config
-
 
 # AI Ignore
 AI/__pycache__

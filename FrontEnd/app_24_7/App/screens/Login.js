@@ -81,7 +81,8 @@ function Login({navigation}) {
         if (response.data.result === 1) {
           AsyncStorage.setItem('userEmail', email);
           setAlarmText('');
-
+          setEmail('');
+          setPw('');
           navigation.navigate('Main');
         }
         
@@ -134,7 +135,7 @@ function Login({navigation}) {
           style={{...styles.input, marginBottom: 5}}
           placeholderTextColor="#AB9EF4"
           ref={ref => (this.emailRef = ref)}
-          onChangeText={text => setEmail(text)}></TextInput>
+          onChangeText={text => setEmail(text)}>{email}</TextInput>
 
         <TextInput
           placeholder="Password"
@@ -144,7 +145,7 @@ function Login({navigation}) {
           keyboardType="email-address"
           placeholderTextColor="#AB9EF4"
           ref={ref => (this.pwRef = ref)}
-          onChangeText={text => setPw(text)}></TextInput>
+          onChangeText={text => setPw(text)}>{pw}</TextInput>
         <Text
           style={{
             display: 'none',

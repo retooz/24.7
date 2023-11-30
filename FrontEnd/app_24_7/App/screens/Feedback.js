@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState, useEffect} from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -14,10 +14,10 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Video from 'react-native-video';
 import LinearGradient from 'react-native-linear-gradient';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -26,7 +26,7 @@ import BottomSheet, {
   BottomSheetHandle,
 } from '@gorhom/bottom-sheet';
 
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
 import axios from 'axios';
@@ -38,13 +38,15 @@ const windowHeight = Dimensions.get('window').height;
 const Feedback = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {selectedDay, selectMonth, selectDay, code} = route.params;
+  const { selectedDay, selectMonth, selectDay, code } = route.params;
 
   const [ready, setReady] = useState(true);
+  const [boxuris, setBoxuris] = useState();
+  const [selectedRound, setSelectedRound] = useState(null);
 
   useEffect(() => {
-    //1초 뒤에 실행되는 코드들이 담겨 있는 함수
     getFeedBack()
+    //1초 뒤에 실행되는 코드들이 담겨 있는 함수
     setTimeout(() => {
       setReady(false);
     }, 1000);
@@ -56,21 +58,20 @@ const Feedback = () => {
   const [feedback, setFeedback] = useState(); // 트레이너 피드백
   const [link, setLink] = useState(); // 참고 링크
   const [value1, setValue] = useState(""); // 전체 정확도
-  const [roundValue1, setRoundValue] = useState(); // 회차별 정확도
-  const [trainerImg,setTrainerImg] = useState("") // 트레이너 사진
-  const[attachment,setAttachment] = useState("")
-  const[baseurl, setBaseUrl] = useState("")
-  const[feedbackContent, setFeedbackContent] = useState("")
-  const[category, setCategory] = useState("")
+  const [roundValue1, setRoundValue] = useState([]); // 회차별 정확도
+  const [trainerImg, setTrainerImg] = useState("") // 트레이너 사진
+  const [attachment, setAttachment] = useState("")
+  const [baseurl, setBaseUrl] = useState("")
+  const [feedbackContent, setFeedbackContent] = useState("")
+  const [category, setCategory] = useState("")
   const [showVideo, setShowVideo] = useState(false); // 회차별 영상
   const v = require('../assets/video/userLunge.mp4');
-
   const dots = Array(4).fill(0);
   const boxes = Array(10).fill(0);
 
-  console.log("@#@#@#@#@#", roundValue1)
+
   let value = value1; // 사용자 전체 정확도
-  let roundValue = [85,61,51,91,88]; // 사용자 회차별 정확도
+  let roundValue = roundValue1; // 사용자 회차별 정확도
 
   //let roundValue = [20, 98, 40, 60, 76, 80, 70, 55, 100, 88]; // 사용자 회차별 정확도
   const getResult = value => {
@@ -97,7 +98,7 @@ const Feedback = () => {
       color = '#969AFF';
       text = '정말 훌륭한 성과를 거두셨어요!👏👏👏👏👏';
     }
-    return {color, text};
+    return { color, text };
   };
   const result = getResult(value);
 
@@ -111,63 +112,76 @@ const Feedback = () => {
   /** 메모 저장하는 함수 */
   const handleSave = async () => {
     console.log("--------->", code)
-     try{
-       response = await axios.post("http://20.249.87.104:3000/user/saveMemo",{
-          code,
-          input
-       })
-       if (response.data.result === 1){
+    try {
+      response = await axios.post("http://20.249.87.104:3000/user/saveMemo", {
+        code,
+        input
+      })
+      if (response.data.result === 1) {
         console.log("메모 성공")
-       }
-     } catch(err){
-       console.log(err);
-     }
+      }
+    } catch (err) {
+      console.log(err);
+    }
 
   };
 
+
   // 피드백 데이터 받아오기
-  const getFeedBack = async () =>{
+  const getFeedBack = async () => {
     let base = "http://20.249.87.104:3000"
     try {
       const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
         code
       })
+      console.log("데이터 넘어오나", response.data)
       const feedData = response.data.result
       const trainerInfo = response.data.trainer
       const accuracyData = response.data.accuracyData
+      const updateRoundValue = response.data.accuracyData[0].accuracy_list
       let exerciseCategory = accuracyData[0].exercise_category
-
+      const trainerProfile = trainerInfo[0].profile_pic
+      const trainer_profile = `${base}/uploads/profile/${trainerProfile}`
+      console.log(trainer_profile)
       const myVideo = feedData[0].base_url
       const myUri = `${base}${myVideo}`
-      switch(exerciseCategory){
+      switch (exerciseCategory) {
         case exerciseCategory = '런지A':
           exerciseCategory = '런지'
           setCategory(exerciseCategory)
           break;
-      case exerciseCategory = '스쿼트A':
+        case exerciseCategory = '스쿼트A':
           exerciseCategory = '스쿼트'
           setCategory(exerciseCategory)
           break;
-      case exerciseCategory = '푸쉬업A':
+        case exerciseCategory = '푸쉬업A':
           exerciseCategory = '푸쉬업'
           setCategory(exerciseCategory)
           break;
-      default:
+        default:
           exerciseCategory = exerciseCategory
           break;
       }
+      const uri = myVideo.split(".")[0]
+      console.log("1", uri)
+      const boxBaseUri = `${base}${uri}`
+      console.log("2", boxBaseUri)
+      const boxuris = Array.from({ length: updateRoundValue.length }, (_, index) => `${boxBaseUri}_${index + 1}.mp4`);
+
       // ---------------------정보 저장----------------
       setMemo(feedData[0].memo)
       setAttachment(feedData[0].attachment)
       setBaseUrl(myUri)
       setFeedbackContent(feedData[0].feedback_content)
       setValue(accuracyData[0].accuracy)
-      setRoundValue(accuracyData[0].accuracy_list)
       setProfile(trainerInfo[0].trainer_name)
       setBottomText(trainerInfo[0].career)
-      setTrainerImg(trainerInfo[0].profile_pic)
-    } catch(err){
-      console.log(err)
+      setTrainerImg(trainer_profile)
+      setBoxuris(boxuris)
+      setRoundValue(updateRoundValue)
+      console.log("2",trainerImg)
+    } catch (err) {
+      console.log("????", err)
     }
   }
 
@@ -214,7 +228,7 @@ const Feedback = () => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: `${selectMonth}월 ${selectDay}일`,
-      headerLeft: ({onPress}) => (
+      headerLeft: ({ onPress }) => (
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Main');
@@ -222,7 +236,7 @@ const Feedback = () => {
           <Icon name="chevron-left" size={40} />
         </TouchableOpacity>
       ),
-      headerTitleStyle: {fontFamily: 'Pretendard-Light', fontSize: 20},
+      headerTitleStyle: { fontFamily: 'Pretendard-Light', fontSize: 20 },
       contentStyle: {
         backgroundColor: '#FAFAFA',
       },
@@ -232,7 +246,7 @@ const Feedback = () => {
   return ready ? (
     <LoadingScreen2 />
   ) : (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <View style={styles.FeedbackContainer}>
           <BottomSheetModal
@@ -247,13 +261,13 @@ const Feedback = () => {
               <View style={styles.trainerInfo}>
                 {/* 프로필 사진 */}
                 <View style={styles.trainerImg}>
-                  <Image source={require('../assets/image/user.png')}></Image>
+                  <Image source={{uri : trainerImg}} style = {{width : 35, height : 35}}></Image>
                 </View>
                 <View>
                   <Text style={styles.trainerName}>{profile}트레이너</Text>
                 </View>
               </View>
-              <Text style={{paddingLeft: 20}}>{bottomText}</Text>
+              <Text style={{ paddingLeft: 20 }}>{bottomText}</Text>
             </View>
           </BottomSheetModal>
 
@@ -274,8 +288,8 @@ const Feedback = () => {
                 {/* 프로필 사진 */}
                 {/* <View style={styles.trainerImg}> */}
                 <Image
-                  source={require('../assets/image/trainer.png')}
-                  style={{width: 35, height: 35}}
+                  source={{uri : trainerImg}}
+                  style={{ width: 35, height: 35 }}
                 />
                 {/* </View> */}
                 <View>
@@ -285,14 +299,14 @@ const Feedback = () => {
 
               {/* 운동영상 */}
               <View style={styles.exerciseVideo}>
-                 <Video
-                  source={{uri : baseurl}}
+                <Video
+                  source={{ uri: baseurl }}
                   style={styles.videoPlayer}
                   controls={true}
                   volume={0.0}
                   paused={false}
                   resizeMode={'cover'}
-                /> 
+                />
               </View>
 
               {/* 피드백 */}
@@ -332,7 +346,7 @@ const Feedback = () => {
               {/* 분석 결과 */}
               <View style={styles.analysisResult}>
                 {/* 모달 */}
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <Modal
                     animationType="fade"
                     transparent={true}
@@ -365,14 +379,14 @@ const Feedback = () => {
                     </View>
                   </Modal>
                   <Text
-                    style={{fontSize: 23, fontFamily: 'Pretendard-SemiBold'}}>
+                    style={{ fontSize: 23, fontFamily: 'Pretendard-SemiBold' }}>
                     분석결과
                   </Text>
                   <Pressable onPress={() => setModalVisible(true)}>
                     <Icon
                       name="question"
                       size={25}
-                      style={{marginTop: 2}}
+                      style={{ marginTop: 2 }}
                       color="#939393"
                     />
                   </Pressable>
@@ -390,8 +404,8 @@ const Feedback = () => {
                     전체 정확도
                   </Text>
                   <LinearGradient
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 0}}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
                     locations={[0.1, 0.2, 0.5, 0.8, 1]}
                     colors={[
                       '#FF939C',
@@ -404,7 +418,7 @@ const Feedback = () => {
                     <View
                       style={[
                         styles.innerBar,
-                        {width: `${100 - value}%`},
+                        { width: `${100 - value}%` },
                       ]}></View>
                     <View style={styles.dotsContainer}>
                       {dots.map((_, index) => (
@@ -417,7 +431,7 @@ const Feedback = () => {
                 {/* 회차별 정확도 */}
                 <View style={styles.roundAccuracy}>
                   <Text
-                    style={{fontSize: 15, fontFamily: 'Pretendard-SemiBold'}}>
+                    style={{ fontSize: 15, fontFamily: 'Pretendard-SemiBold' }}>
                     회차별 정확도
                   </Text>
                   <View style={styles.boxContainer}>
@@ -427,6 +441,7 @@ const Feedback = () => {
                         style={styles.box}
                         onPress={() => {
                           setShowVideo(!showVideo);
+                          setSelectedRound(index)
                         }}>
                         <View
                           style={[
@@ -441,15 +456,16 @@ const Feedback = () => {
                       </TouchableOpacity>
                     ))}
                   </View>
-                  {showVideo && (
-                    <View>
+                  {showVideo && selectedRound !== null && (
+                    <View key={selectedRound}>
                       <Text></Text>
                       <Video
-                        source={v}
+                        source={{ uri: boxuris[selectedRound] }}
                         style={styles.roundVideoPlayer}
                         controls={true}
                         volume={0.0}
                         resizeMode={'cover'}
+                        repeat={true}
                       />
                     </View>
                   )}
@@ -457,7 +473,7 @@ const Feedback = () => {
               </View>
 
               {/* 메모 */}
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <Text
                   style={{
                     fontFamily: 'Pretendard-Regular',
@@ -472,7 +488,7 @@ const Feedback = () => {
                   onChangeText={(text) => setInput(text)}
                   placeholder="메모를 작성해주세요"
                   multiline={true}
-                  style={{...styles.memo, lineHeight: 30}}
+                  style={{ ...styles.memo, lineHeight: 30 }}
                   placeholderTextColor="#AFAFB5"
                 >{memo}</TextInput>
                 <View style={styles.btn}>

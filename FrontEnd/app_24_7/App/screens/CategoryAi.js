@@ -33,6 +33,7 @@ const categoriesData = [
 ];
 
 const CategoryAi = ({navigation}) => {
+
   // 뒤로가기 (CategoryAi -> Category)
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,7 +70,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)
@@ -96,7 +98,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)
@@ -122,7 +125,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)

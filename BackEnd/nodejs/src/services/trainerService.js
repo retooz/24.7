@@ -85,7 +85,24 @@ const trainerService = {
         } catch (err) {
             throw err;
         }
-    }
+    },
+
+    /** 회원 데이터 변경 */
+    updateProfile : async (profile_pic, career, trainer_code) => {
+        try {
+            const [profileResults] = await conn.query(trainerQueries.updateProfilePic, [profile_pic, trainer_code]);
+            if (profileResults.affectedRows > 0) {
+                const [careerResults] = await conn.query(trainerQueries.updateCareer, [career, trainer_code]);
+                if (careerResults.affectedRows > 0) {
+                    return 1;
+                }
+            }
+            return 0;
+        } catch (err) {
+            throw err;
+        }
+    },
+    
 }
 
 module.exports = trainerService;

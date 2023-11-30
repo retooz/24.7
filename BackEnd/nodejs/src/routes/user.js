@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
         }
         return res.json({ result: 0 })
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -108,7 +108,7 @@ router.post('/findPassword', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -127,7 +127,7 @@ router.post('/passwordCheck', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -215,18 +215,15 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
             const response = await axios.post('http://127.0.0.1:5000/test', { url: newPath+'/'+fileName, type: exerciseCategory });
             const accuracy = response.data.score
             const accuracyList = '['+response.data.sep_score+']'
-            console.log(accuracyList)
             const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
             if (setFeedbackAi.affectedRows > 0) {
-                console.log('Ai upload')
                 res.send({ result: 1 })
             }
         } else {
-            console.log('NoAi upload')
             res.send({ result: 1 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -243,7 +240,7 @@ router.post('/getFeedback', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -305,7 +302,7 @@ router.post('/saveMemo', async (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 

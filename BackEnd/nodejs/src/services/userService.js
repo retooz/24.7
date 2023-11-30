@@ -10,7 +10,6 @@ const userService = {
             const [results] = await conn.query(userQueries.signUp, [data.email, cryptedPW, data.nick]);
             return results
         } catch (err) {
-            console.log(err);
             throw err;
         }
     },

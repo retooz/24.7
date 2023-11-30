@@ -10,7 +10,6 @@ const userService = {
             const [results] = await conn.query(userQueries.signUp, [data.email, cryptedPW, data.nick]);
             return results
         } catch (err) {
-            console.log(err);
             throw err;
         }
     },
@@ -138,7 +137,7 @@ const userService = {
         try {
             const [result] = await conn.query(userQueries.searchTrainerCode, [connectionCode])
             if (result.length > 0) {
-                const [trainerInfo] = await conn.query(userQueries.getTrainerInfo, [result[0]])
+                const [trainerInfo] = await conn.query(userQueries.getTrainerInfo, [result[0].trainer_code])
                 if (trainerInfo.length > 0) {
                     return trainerInfo;
                 }

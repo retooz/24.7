@@ -6,8 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const userService = require('../services/userService.js');
 const axios = require('axios');
-require('dotenv').config({ path: '../../.env' });
-
 fs.readdir('./public/uploads', (error) => {
     if (error) {
         fs.mkdirSync('./public')
@@ -63,7 +61,7 @@ router.post('/login', async (req, res) => {
         }
         return res.json({ result: 0 })
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -110,7 +108,7 @@ router.post('/findPassword', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (error) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -129,7 +127,7 @@ router.post('/passwordCheck', async (req, res) => {
             res.json({ result: 0 });
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -205,30 +203,27 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         if (checkAi == 'Ai') {
             switch (exerciseCategory) {
                 case '런지A':
-                    exerciseCategory = 'lunge'
+                    exerciseCategory = 'Lunge'
                     break;
                 case '푸쉬업A':
-                    exerciseCategory = 'push_up'
+                    exerciseCategory = 'Pushup'
                     break;
                 case '스쿼트A':
-                    exerciseCategory = 'squat'
+                    exerciseCategory = 'Squat'
                     break;
             }
-            console.log('AI exerciseCategory', exerciseCategory)
-            // const response = await axios.post(`${process.env.FLASK_IP}/test`, { url: newPath, type: exerciseCategory });
-            // const accuracy = response.data.score
-            // const accuracyList = response.data.sep_score
-            // const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
-            // if (setFeedbackAi.affectedRows > 0) {
-            // }
-            console.log('Ai upload')
-            res.send({ result: 1 })
+            const response = await axios.post('http://127.0.0.1:5000/test', { url: newPath+'/'+fileName, type: exerciseCategory });
+            const accuracy = response.data.score
+            const accuracyList = '['+response.data.sep_score+']'
+            const setFeedbackAi = await userService.sendFeedback(accuracy, accuracyList, connectionCode)
+            if (setFeedbackAi.affectedRows > 0) {
+                res.send({ result: 1 })
+            }
         } else {
-            console.log('NoAi upload')
             res.send({ result: 1 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -245,7 +240,7 @@ router.post('/getFeedback', async (req, res) => {
             res.json({ result: null })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 
@@ -307,7 +302,7 @@ router.post('/saveMemo', async (req, res) => {
             res.json({ result: 0 })
         }
     } catch (err) {
-        console.log(err)
+        // console.log(err)
     }
 })
 

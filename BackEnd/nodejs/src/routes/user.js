@@ -180,6 +180,7 @@ const uploadVideo = multer({
 /** 비디오 업로드, 트레이너에게 보내기 */
 router.post('/sendTrainer', upLoadVideo, async (req, res) => {
     try {
+        console.log('안드로이드용', req.file)
         const userCode = req.session.user.code;
         const trainerCodeList = await userService.searchTrainer();
         const trainerCode = trainerCodeList[Math.floor(Math.random() * trainerCodeList.length)].trainer_code
@@ -191,6 +192,7 @@ router.post('/sendTrainer', upLoadVideo, async (req, res) => {
         /** 저장된 비디오를 커넥션 코드 파일로 옮기기 */
         const fileName = req.file.filename
         const newPath = path.join('public', 'uploads', 'video', `${connectionCode}`)
+        console.log('newPath', newPath)
         fs.readdir(newPath, (error) => {
             if (error) {
                 fs.mkdirSync(newPath);
@@ -290,6 +292,7 @@ router.post('/getVideo', async (req, res) => {
 /** 메모 저장 */
 router.post('/saveMemo', async (req, res) => {
     try {
+        console.log('memo', req.body)
         const connectionCode = req.body.code
         const memo = req.body.input
         const result = await userService.updateMemo(connectionCode, memo);

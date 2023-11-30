@@ -29,6 +29,8 @@ import BottomSheet, {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
+import axios from 'axios';
+import LoadingScreen2 from './LoadingScreen2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,25 +38,41 @@ const windowHeight = Dimensions.get('window').height;
 const Feedback = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {selectedDay, selectMonth, selectDay} = route.params;
-  // console.log(selectedDay, selectMonth, selectDay);
+  const {selectedDay, selectMonth, selectDay, code} = route.params;
+
+  const [ready, setReady] = useState(true);
+
+  useEffect(() => {
+    //1초 뒤에 실행되는 코드들이 담겨 있는 함수
+    getFeedBack()
+    setTimeout(() => {
+      setReady(false);
+    }, 1000);
+  }, []);
 
   // DB 정보 가져오기
   const [profile, setProfile] = useState(); // 트레이너 프로필
   const [videoPath, setVideoPath] = useState(); // 사용자 녹화 영상
   const [feedback, setFeedback] = useState(); // 트레이너 피드백
   const [link, setLink] = useState(); // 참고 링크
-  // const [value, setValue] = useState(); // 전체 정확도
-  // const [roundValue, setRoundValue] = useState(); // 회차별 정확도
-
+  const [value1, setValue] = useState(""); // 전체 정확도
+  const [roundValue1, setRoundValue] = useState(); // 회차별 정확도
+  const [trainerImg,setTrainerImg] = useState("") // 트레이너 사진
+  const[attachment,setAttachment] = useState("")
+  const[baseurl, setBaseUrl] = useState("")
+  const[feedbackContent, setFeedbackContent] = useState("")
+  const[category, setCategory] = useState("")
   const [showVideo, setShowVideo] = useState(false); // 회차별 영상
   const v = require('../assets/video/userLunge.mp4');
 
   const dots = Array(4).fill(0);
   const boxes = Array(10).fill(0);
 
-  let value = 40; // 사용자 전체 정확도
-  let roundValue = [20, 98, 40, 60, 76, 80, 70, 55, 100, 88]; // 사용자 회차별 정확도
+  console.log("@#@#@#@#@#", roundValue1)
+  let value = value1; // 사용자 전체 정확도
+  let roundValue = [85,61,51,91,88]; // 사용자 회차별 정확도
+
+  //let roundValue = [20, 98, 40, 60, 76, 80, 70, 55, 100, 88]; // 사용자 회차별 정확도
   const getResult = value => {
     let color;
     let text;
@@ -67,7 +85,7 @@ const Feedback = () => {
     } else if (value <= 54) {
       color = '#FFC692';
       text =
-        '아직은 미숙하지만, 꾸준한 노력으로 더 나아질 수 있어요. 계속해서 발전해 나가세요!';
+        '아직은 미숙하지만, 꾸준한 노력으로 더 나아질 수 있어요!';
     } else if (value <= 69) {
       color = '#FFE86D';
       text = '지금처럼 계속 하시면 더욱 더 좋은 결과를 얻을 수 있을 거예요.';
@@ -91,10 +109,67 @@ const Feedback = () => {
   const [memo, setMemo] = useState('');
 
   /** 메모 저장하는 함수 */
-  const handleSave = () => {
-    console.log('save memo');
-    setMemo(input);
+  const handleSave = async () => {
+    console.log("--------->", code)
+     try{
+       response = await axios.post("http://20.249.87.104:3000/user/saveMemo",{
+          code,
+          input
+       })
+       if (response.data.result === 1){
+        console.log("메모 성공")
+       }
+     } catch(err){
+       console.log(err);
+     }
+
   };
+
+  // 피드백 데이터 받아오기
+  const getFeedBack = async () =>{
+    let base = "http://20.249.87.104:3000"
+    try {
+      const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
+        code
+      })
+      const feedData = response.data.result
+      const trainerInfo = response.data.trainer
+      const accuracyData = response.data.accuracyData
+      let exerciseCategory = accuracyData[0].exercise_category
+
+      const myVideo = feedData[0].base_url
+      const myUri = `${base}${myVideo}`
+      switch(exerciseCategory){
+        case exerciseCategory = '런지A':
+          exerciseCategory = '런지'
+          setCategory(exerciseCategory)
+          break;
+      case exerciseCategory = '스쿼트A':
+          exerciseCategory = '스쿼트'
+          setCategory(exerciseCategory)
+          break;
+      case exerciseCategory = '푸쉬업A':
+          exerciseCategory = '푸쉬업'
+          setCategory(exerciseCategory)
+          break;
+      default:
+          exerciseCategory = exerciseCategory
+          break;
+      }
+      // ---------------------정보 저장----------------
+      setMemo(feedData[0].memo)
+      setAttachment(feedData[0].attachment)
+      setBaseUrl(myUri)
+      setFeedbackContent(feedData[0].feedback_content)
+      setValue(accuracyData[0].accuracy)
+      setRoundValue(accuracyData[0].accuracy_list)
+      setProfile(trainerInfo[0].trainer_name)
+      setBottomText(trainerInfo[0].career)
+      setTrainerImg(trainerInfo[0].profile_pic)
+    } catch(err){
+      console.log(err)
+    }
+  }
 
   // 바텀시트 ---------------------------------------------------
   const [bottomText, setBottomText] = useState(
@@ -154,7 +229,9 @@ const Feedback = () => {
     });
   }, [navigation]);
 
-  return (
+  return ready ? (
+    <LoadingScreen2 />
+  ) : (
     <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>
         <View style={styles.FeedbackContainer}>
@@ -170,10 +247,10 @@ const Feedback = () => {
               <View style={styles.trainerInfo}>
                 {/* 프로필 사진 */}
                 <View style={styles.trainerImg}>
-                  {/* <Image source={require('../assets/image/user.png')}></Image> */}
+                  <Image source={require('../assets/image/user.png')}></Image>
                 </View>
                 <View>
-                  <Text style={styles.trainerName}>김이름 트레이너</Text>
+                  <Text style={styles.trainerName}>{profile}트레이너</Text>
                 </View>
               </View>
               <Text style={{paddingLeft: 20}}>{bottomText}</Text>
@@ -186,7 +263,7 @@ const Feedback = () => {
               <View style={styles.dateAndExercise}>
                 {/* 운동 종목 */}
                 <View>
-                  <Text style={styles.exerciseInfo}>런지 피드백</Text>
+                  <Text style={styles.exerciseInfo}>{category} 피드백</Text>
                 </View>
               </View>
 
@@ -202,20 +279,20 @@ const Feedback = () => {
                 />
                 {/* </View> */}
                 <View>
-                  <Text style={styles.trainerName}>김이름 트레이너</Text>
+                  <Text style={styles.trainerName}>{profile}트레이너</Text>
                 </View>
               </TouchableOpacity>
 
               {/* 운동영상 */}
               <View style={styles.exerciseVideo}>
-                <Video
-                  source={v}
+                 <Video
+                  source={{uri : baseurl}}
                   style={styles.videoPlayer}
                   controls={true}
                   volume={0.0}
-                  paused={true}
+                  paused={false}
                   resizeMode={'cover'}
-                />
+                /> 
               </View>
 
               {/* 피드백 */}
@@ -227,10 +304,7 @@ const Feedback = () => {
                     marginBottom: 10,
                     lineHeight: 23,
                   }}>
-                  안녕하세요 김형진 트레이너 입니다. 회원님의 경우, 스쿼트
-                  자세에서 무릎이 다소 앞으로 나오는 경향이 있어 중심이 앞으로
-                  쏠릴 수 있으니, 엉덩이 근육에 신경을 써주시면 좋을 거
-                  같습니다.
+                  {feedbackContent}
                 </Text>
                 <Text
                   style={{
@@ -248,9 +322,8 @@ const Feedback = () => {
                     color: 'grey',
                   }}
                   onPress={() =>
-                    Linking.openURL(
-                      `https://youtu.be/CaT6kHxngJE?si=H2gxLZllYcC0wjBP`,
-                    )
+                    Linking.openURL(attachment)
+                    // Linking.openURL('https://youtu.be/CaT6kHxngJE?si=rcdKOjDcKK_AxE17')
                   }>
                   Youtube 바로가기
                 </Text>
@@ -395,13 +468,13 @@ const Feedback = () => {
                   MEMO
                 </Text>
                 <TextInput
-                  value={input}
-                  onChangeText={setInput}
+                  // value={memo}
+                  onChangeText={(text) => setInput(text)}
                   placeholder="메모를 작성해주세요"
                   multiline={true}
                   style={{...styles.memo, lineHeight: 30}}
                   placeholderTextColor="#AFAFB5"
-                />
+                >{memo}</TextInput>
                 <View style={styles.btn}>
                   <TouchableOpacity
                     style={styles.saveButton}
@@ -508,7 +581,7 @@ const styles = StyleSheet.create({
   },
   resText: {
     marginTop: 10,
-    fontSize: 14,
+    fontSize: 13,
   },
   roundAccuracy: {
     // flex: 1,

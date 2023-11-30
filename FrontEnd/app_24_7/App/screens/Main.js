@@ -7,6 +7,7 @@ import {
   Dimensions,
   Image,
   Text,
+  Alert,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Calendar} from 'react-native-calendars';
@@ -18,14 +19,13 @@ import LoadingScreen2 from './LoadingScreen2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-console.log(windowWidth);
-console.log(windowHeight);
 
 const Main = ({navigation}) => {
   const [ready, setReady] = useState(true);
 
   const [selectedDay, setSelectedDay] = useState(null);
-  const [markedDates, setMarkedDates] = useState({});
+  const [markedDates, setMarkedDates] = useState(markedDates);
+  const [feedbackDay, setFeedbackDay] = useState([]);
   const [connectionCodes, setConnectionCodes] = useState({});
 
   const [data, setData] = useState();
@@ -37,21 +37,15 @@ const Main = ({navigation}) => {
   // const markedDate = {
   //   '2023-11-20': {
   //     marked: true,
-  //     dotColor: '#AB9EF4',
+  //     dotColor: 'red',
   //   },
   //   '2023-11-17': {
   //     marked: true,
-  //     dotColor: '#AB9EF4',
+  //     dotColor: 'red',
   //   },
   //   '2023-11-18': {
   //     marked: true,
-  //     dotColor: '#AB9EF4',
-  //   },
-  //   [todayString]: {
-  //     selected: true,
-  //     marked: true,
-  //     selectedColor: '#7254F5',
-  //     height: 8,
+  //     dotColor: 'red',
   //   },
   // };
 
@@ -77,41 +71,68 @@ const Main = ({navigation}) => {
     }
   };
 
-
   const getFeedbackConfirm = async () => {
     try {
       const response = await axios.get(
         'http://20.249.87.104:3000/user/feedbackConfirm',
       );
       console.log('feedbackConfirm -----', response.data.result);
-      setAlarm(response.data.result)
+      setAlarm(response.data.result);
       console.log('------------------------알림', alarm);
-      setAlarmText(response.data.result.length)
-      console.log('알림 텍스트 ---------', alarmText)
+      setAlarmText(response.data.result.length);
+      console.log('알림 텍스트 ---------', alarmText);
     } catch (error) {
       console.error('feedbackConfirm ----- ', error);
     }
   };
 
   useEffect(() => {
+    // 전체 데이터
     if (data) {
-      // selectedDay가 정의되었는지 확인
       let connectionDates = data.map(item => item.connection_date);
       setSelectedDay(connectionDates);
     }
-  }, [data]);
+
+    // 피드백 데이터
+    if (alarm) {
+      let feedbackDates = alarm.map(item => item.connection_date);
+      setFeedbackDay(feedbackDates);
+    }
+  }, [data, alarm]);
+
+
 
   // 선택한 날짜, connection code 각 state에 저장
   useEffect(() => {
+    const select = {key: 'select', color: '#AB9EF4', selectedDotColor: '#AB9EF4'};
+    const feedback = {key: 'feedback', color: '#060320', selectedColor: '#F9F7FE'};
+    
     if (selectedDay) {
       let newMarkedDates = selectedDay.reduce((acc, date) => {
         let dateKey = date.split(' ')[0];
         acc[dateKey] = {
           marked: true,
-          dotColor: '#AB9EF4',
+          // dotColor: '#AB9EF4',
+          dots:[select],
         };
         return acc;
       }, {});
+
+      if (feedbackDay) {
+        newMarkedDates = feedbackDay.reduce((acc, date) => {
+          let dateKey = date.split(' ')[0];
+          if (acc[dateKey]) {
+            acc[dateKey].dots.push(feedback);
+          } else {
+            acc[dateKey] = {
+              marked: true,
+              select: true,
+              selectedColor: 'red'
+            };
+          }
+          return acc;
+        }, newMarkedDates);
+      }
 
       // 오늘 날짜 표시
       newMarkedDates[todayString] = {
@@ -128,7 +149,8 @@ const Main = ({navigation}) => {
       }, {});
       setConnectionCodes(newConnectionCodes);
     }
-  }, [selectedDay]);
+  }, [selectedDay, feedbackDay]);
+
 
   /** 서버로 유저 코드 보내주는 함수 */
   const sendConnectionCode = day => {
@@ -138,19 +160,23 @@ const Main = ({navigation}) => {
     axios.post('http://20.249.87.104:3000/user/getFeedback', {
       code: connectionCode,
     });
+
+    return connectionCode;
   };
+
+
 
   // 밑으로는 달력 스타일 조정하는 곳
   const theme = {
     arrowColor: 'black',
     textDayFontSize: 16,
     textMonthFontSize: 16,
-    textDayHeaderFontSize: 16,
+    textDayHeaderFontSize: 13,
   };
 
   const headerStyle = {
-    textMonthFontSize: 85, // 월 폰트 크기 설정
-    textYearFontSize: 80, // 년도 폰트 크기 설정
+    textMonthFontSize: 100, // 월 폰트 크기 설정
+    textYearFontSize: 100, // 년도 폰트 크기 설정
   };
 
   return ready ? (
@@ -193,16 +219,26 @@ const Main = ({navigation}) => {
           style={styles.calendar}
           theme={theme}
           markedDates={markedDates}
+          markingType={'multi-dot'}
           headerStyle={headerStyle}
           onDayPress={day => {
             console.log('Selected day:', day.month, day.day);
-            if (markedDates[day.dateString]) {
-              sendConnectionCode(day);
+            // if (markedDates[day.dateString]) {
+            //   sendConnectionCode(day);
+            //   navigation.navigate('Feedback', {
+            //     selectMonth: day.month,
+            //     selectDay: day.day,
+            //   });
+
+            if (feedbackDay.includes(day.dateString)) {
+              const code = sendConnectionCode(day);
               navigation.navigate('Feedback', {
                 selectMonth: day.month,
                 selectDay: day.day,
+                code: code, // code 전달
               });
-              // navigation.navigate('Feedback', {selectedDay: day});
+            } else {
+              Alert.alert('피드백이 도착하지 않았습니다.\n조금만 기다려주세요.')
             }
           }}
         />

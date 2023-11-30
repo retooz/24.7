@@ -33,6 +33,7 @@ const categoriesData = [
 ];
 
 const CategoryAi = ({navigation}) => {
+
   // 뒤로가기 (CategoryAi -> Category)
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -59,7 +60,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "스쿼트"
+            let category = "스쿼트A"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{
@@ -69,7 +70,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)
@@ -86,7 +88,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "런지"
+            let category = "런지A"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{
@@ -96,7 +98,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)
@@ -112,7 +115,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "푸쉬업"
+            let category = "푸쉬업A"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{
@@ -122,7 +125,8 @@ const CategoryAi = ({navigation}) => {
             const video_path = `${base}${videoPath}`
             navigation.navigate('RecordVideo', {
               category,
-              path: video_path
+              path: video_path,
+              group: 'Ai'
             });
           } catch (err){
             console.log(err)

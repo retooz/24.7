@@ -1,0 +1,97 @@
+#edit-profile {
+    width: 100%;
+    height: 100%;
+    padding: 3vh;
+}
+
+#edit-profile-heading {
+    font-size: 2em;
+    font-weight: 500;
+}
+
+#edit-profile-form {
+    margin-top: 10%;
+    height: 55%;
+    width: 94%;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: space-around;
+}
+
+.edit-profile-form-left,
+.edit-profile-form-right {
+    display: flex;
+    align-items: center;
+}
+
+.edit-profile-form-left {
+    width: 30%;
+    height: 10%;
+    justify-content: center;
+}
+
+.edit-profile-form-left p {
+    font-size: 1.2em;
+}
+
+.edit-profile-form-right {
+    width: 55%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.edit-profile-form-right input[type=text]{
+    width: 75%;
+    border: 1px solid #7254f5;
+    background-color: white;
+    border-radius: 0.5em;
+    padding: 0.5em;
+}
+
+.edit-profile-form-right label {
+    width: 15%;
+    padding: 0.8em;
+    border: 1px solid #7254f5;
+    background-color: #7254f5;
+    border-radius: 0.5em;
+    color: white;
+    text-align: center;
+}
+
+#update-file {
+    display: none;
+}
+
+.form-large {
+    height: 60%;
+}
+
+#career-area {
+    width: 75%;
+    height: 90%;
+    font-size: 1em;
+    border: 1px solid #7254f5;
+    border-radius: 0.5em;
+    padding: 0.5em;
+}
+
+#submit-button-section {
+    display: flex;
+    height: 10%;
+    justify-content: flex-end;
+    align-items: end;
+}
+
+#submit-button {
+    background-color: #7254f5;
+    border: 1px solid #7254f5;
+    color: white;
+    width: 13%;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    margin-right: 6%;
+}

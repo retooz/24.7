@@ -28,13 +28,14 @@ router.post('/login', async (req,res) => {
     try {
         const [userRows] = await trainerService.signIn(data.email)
         const trainer = userRows
-
         const compare = bcrypt.compareSync(data.pw, trainer.pw)
         if (compare) {
             const trainerObj = {email: trainer.email, trainer_name: trainer.trainer_name, trainer_code: trainer.trainer_code,
             profile_pic : trainer.profile_pic}
             req.session.trainer = trainerObj
             res.json({ result: 1, trainer : req.session.trainer })
+        } else {
+            res.json({ result: 0 })
         }
     } catch (err) {
         console.log(err)
@@ -125,6 +126,22 @@ router.post('/sendFeedback', async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: 'error occured during send feedback'})
+    }
+})
+
+router.post('/modify', async (req,res) => {
+    const data = req.body;
+    const profile_pic = req.file.filename;
+    
+    try {
+        const result = await trainerService.updateProfile(profile_pic, data.career, data.trainer_code);
+        if (result == 1) {
+            res.json({ result: 1 })
+        } else {
+            res.status(500).json({ message: 'error occured during update'})
+        }
+    } catch (err) {
+        res.status(500).json({ message: 'error occured during update'})
     }
 })
 

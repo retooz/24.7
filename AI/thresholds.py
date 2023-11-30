@@ -1,5 +1,3 @@
-
-
 # 스쿼트 자세 범위
 def thresholds_squat():
 
@@ -7,36 +5,41 @@ def thresholds_squat():
                             'NORMAL' : (165, 180),
                             'TRANS'  : (120, 160),
                             'PASS'   : (0, 120)
-                           }    
+                        }    
+
     thresholds = {
-                    'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT
+                    'HIP_KNEE_VERT': _ANGLE_HIP_KNEE_VERT,
+                    'OFFSET_THRESH'    : 35.0
                 }
+
     return thresholds
-
-
 
 # 런지 자세 범위
 def thresholds_lunge():
 
-    _ANGLE_HIP_FRONT_KNEE = {
+    _ANGLE_HIP_BACK_KNEE = {
                             'NORMAL' : (115, 180),
-                            'PASS'   : (0, 110)
+                            'PASS'   : (0, 114)
                         }     
+        
     thresholds = {
-                    'HIP_FRONT_KNEE_VERT': _ANGLE_HIP_FRONT_KNEE
-                }
+                    'HIP_BACK_KNEE_VERT': _ANGLE_HIP_BACK_KNEE,
+                    'OFFSET_THRESH'    : 35.0,
+                } 
+                
     return thresholds
-
-
 
 # 푸쉬업 자세 범위
 def thresholds_pushup():
 
     _ANGLE_SHLDR_ELBOW_VERT = {
-                            'NORMAL' : (0,  35),
-                            'PASS'  : (40, 120)
+                            'NORMAL' : (0,  30),
+                            'PASS'  : (31, 120)
                         }    
+        
     thresholds = {
-                    'SHLDR_ELBOW_VERT': _ANGLE_SHLDR_ELBOW_VERT
+                    'SHLDR_ELBOW_VERT': _ANGLE_SHLDR_ELBOW_VERT,
+                    'OFFSET_THRESH'    : 35.0
                 }
+                
     return thresholds

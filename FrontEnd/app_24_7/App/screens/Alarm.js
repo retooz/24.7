@@ -30,7 +30,6 @@ const Alarm = () => {
   const [month, setMonth] = useState();
   const [day, setDay] = useState();
 
-
   useEffect(() => {
     //1초 뒤에 실행되는 코드들이 담겨 있는 함수
     setTimeout(() => {
@@ -54,13 +53,14 @@ const Alarm = () => {
 
 
     /** 서버로 유저 코드 보내주는 함수 */
-    const sendConnectionCode = (dateString) => {
+    const sendConnectionCode = async (dateString) => {
       const connectionCode = selectedDay.find(item => item.connection_date === dateString)?.connection_code;
       console.log('Selected connection code:', connectionCode);
   
-      axios.post('http://20.249.87.104:3000/user/getFeedback', {
+      const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
         code: connectionCode,
       });
+      
     };
 
 
@@ -95,16 +95,18 @@ const Alarm = () => {
             return (
               <View key={index} style={styles.alarmBox}>
                 <View style={styles.alarmText}>
-                  <Text style={{fontSize: 20, fontFamily: 'Pretendard-Light'}}>
+                  <Text style={{fontSize: 18, fontFamily: 'Pretendard-Light'}}>
                     {month}월 {day}일 운동 피드백이 도착했습니다.
                   </Text>
                 </View>
 
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('Feedback', {selectMonth: month, selectDay : day})
                     let dateString = `${year}-${month}-${day}`
                     sendConnectionCode(dateString);
+                    let connectionCode = selectedDay.find(item => item.connection_date === dateString)?.connection_code;
+                    navigation.navigate('Feedback', {selectMonth: month, selectDay : day, code : connectionCode})
+                    
                   }}>
                   <View style={styles.alarmBtn}>
                     <Icon name="chevron-right" size={45} color="#AB9EF4" />

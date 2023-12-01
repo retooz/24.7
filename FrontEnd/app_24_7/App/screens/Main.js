@@ -55,7 +55,7 @@ const Main = ({navigation}) => {
       getData();
       getFeedbackConfirm();
       setReady(false);
-    }, 1000);
+    }, 2000);
   }, []);
 
   // connection date 정보 가져오기

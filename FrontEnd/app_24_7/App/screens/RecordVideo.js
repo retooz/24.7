@@ -154,7 +154,7 @@ const RecordVideo = ({navigation}) => {
   const format = useCameraFormat(device, [
     {videoResolution: {width: 480, height: 640}}, // 480p 해상도 설정
   ]);
-
+// 녹화가 완료되었을 때 실행되는 함수 -> 녹화를 중지하는 기능은 없음
   // 녹화
   const [isRecording, setIsRecording] = useState(false);
   const [videoPath, setVideoPath] = useState('');
@@ -169,13 +169,13 @@ const RecordVideo = ({navigation}) => {
       camera.current.startRecording({
         flash: 'off',
         videoBitRate: 'low',
-        // 녹화가 완료되었을 때 실행되는 함수 -> 녹화를 중지하는 기능은 없음
+        
         onRecordingFinished: video => {
           console.log(
             'RecordVideo_startRecording ------- video path :',
             video.path,
           );
-          setVideoPath(video.path); // videoPath 업데이트
+          setVideoPath(video.path);
           navigation.navigate('VideoSubmit', {
             category,
             videoPath: `${video.path}`,

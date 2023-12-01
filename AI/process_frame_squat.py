@@ -282,7 +282,7 @@ class ProcessFrame:
                         self.out.release()
                         self.ex_count += 1
                         self.file_directory = f'/home/azureuser/24.7/BackEnd/nodejs/public/uploads/video/{self.connection_code}/{self.file_name}_{self.ex_count}.mp4'
-                        self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps, self.frame_size)
+                        self.out = cv2.VideoWriter(self.file_directory, cv2.VideoWriter_fourcc(*'mp4v'), self.fps//2, self.frame_size)
                         self.state_tracker['SEP_LIST'].append(self.file_directory)
 
                     if len(self.state_tracker['HIP_ANGLE_LIST']) > 3:

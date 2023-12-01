@@ -539,6 +539,7 @@
 				DEVELOPMENT_TEAM = M47H7U45K7;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = app_24_7/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = 24.7;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,6 +567,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M47H7U45K7;
 				INFOPLIST_FILE = app_24_7/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = 24.7;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

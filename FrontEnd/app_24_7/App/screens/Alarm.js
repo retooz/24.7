@@ -46,7 +46,7 @@ const Alarm = () => {
 
       let connectionCodes = selectedDay.map(item => item.connection_code);
       setCodes(connectionCodes);
-      console.log('코드 저장', connectionDates)
+      console.log('코드 저장', connectionCodes)
     }
 
   }, [selectedDay]);
@@ -54,7 +54,7 @@ const Alarm = () => {
 
     /** 서버로 유저 코드 보내주는 함수 */
     const sendConnectionCode = async (dateString) => {
-      const connectionCode = selectedDay.find(item => item.connection_date === dateString)?.connection_code;
+      const connectionCode = selectedDay.find(item => item.connection_date.split(' ')[0] === dateString)?.connection_code;
       console.log('Selected connection code:', connectionCode);
   
       const response = await axios.post('http://20.249.87.104:3000/user/getFeedback', {
@@ -103,8 +103,10 @@ const Alarm = () => {
                 <TouchableOpacity
                   onPress={() => {
                     let dateString = `${year}-${month}-${day}`
+                    console.log('확인용', dateString)
                     sendConnectionCode(dateString);
-                    let connectionCode = selectedDay.find(item => item.connection_date === dateString)?.connection_code;
+                    let connectionCode = selectedDay.find(item => item.connection_date.split(' ')[0] === dateString)?.connection_code;
+                    console.log('확인용 코드', connectionCode)
                     navigation.navigate('Feedback', {selectMonth: month, selectDay : day, code : connectionCode})
                     
                   }}>

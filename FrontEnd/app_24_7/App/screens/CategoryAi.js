@@ -60,7 +60,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "스쿼트A"
+            let category = "스쿼트AI"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{
@@ -88,7 +88,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "런지A"
+            let category = "런지AI"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{
@@ -115,7 +115,7 @@ const CategoryAi = ({navigation}) => {
         style={styles.touchContainer}
         onPress={async () => {
           try {
-            let category = "푸쉬업A"
+            let category = "푸쉬업AI"
             let base = "http://20.249.87.104:3000"
 
             const response = await axios.post("http://20.249.87.104:3000/user/getVideo",{

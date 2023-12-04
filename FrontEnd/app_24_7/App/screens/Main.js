@@ -89,13 +89,13 @@ const Main = ({navigation}) => {
   useEffect(() => {
     // 전체 데이터
     if (data) {
-      let connectionDates = data.map(item => item.connection_date);
+      let connectionDates = data.map(item => item.connection_date.split(' ')[0]);
       setSelectedDay(connectionDates);
     }
 
     // 피드백 데이터
     if (alarm) {
-      let feedbackDates = alarm.map(item => item.connection_date);
+      let feedbackDates = alarm.map(item => item.connection_date.split(' ')[0]);
       setFeedbackDay(feedbackDates);
     }
   }, [data, alarm]);
@@ -232,6 +232,8 @@ const Main = ({navigation}) => {
 
             if (feedbackDay.includes(day.dateString)) {
               const code = sendConnectionCode(day);
+              console.log('확인용 코드', code)
+              console.log('확인용 날짜', day.month, day.day)
               navigation.navigate('Feedback', {
                 selectMonth: day.month,
                 selectDay: day.day,

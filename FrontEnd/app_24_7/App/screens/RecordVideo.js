@@ -46,7 +46,7 @@ const RecordVideo = ({navigation}) => {
     const newCameraPermission = await Camera.requestCameraPermission();
     // 권한 가져오기
     const cameraPermission = await Camera.getCameraPermissionStatus();
-    // console.log(cameraPermission, 'camera');
+    console.log(cameraPermission, 'camera');
   };
 
   // 마이크 권한 설정

@@ -4,13 +4,15 @@ import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
 # 이미지에 둥근 사각형을 그리는 함수
+
+
 def draw_rounded_rect(img, rect_start, rect_end, corner_width, box_color):
 
     x1, y1 = rect_start
     x2, y2 = rect_end
     w = corner_width
 
-    # draw filled rectangles 
+    # draw filled rectangles
     cv2.rectangle(img, (x1 + w, y1), (x2 - w, y1 + w), box_color, -1)
     cv2.rectangle(img, (x1 + w, y2 - w), (x2 - w, y2), box_color, -1)
     cv2.rectangle(img, (x1, y1 + w), (x1 + w, y2 - w), box_color, -1)
@@ -39,11 +41,13 @@ def draw_dotted_line(frame, lm_coord, start, end, line_color):
 
     for i in range(start, end+1, 8):
         cv2.circle(frame, (lm_coord[0], i+pix_step),
-                1, line_color, -1, lineType=cv2.LINE_AA)
+                   1, line_color, -1, lineType=cv2.LINE_AA)
 
     return frame
 
 # 이미지에 텍스트를 그리는 함수
+
+
 def draw_text(
     img,
     msg,
@@ -80,14 +84,15 @@ def draw_text(
 
     return text_size
 
+
 def draw_text_kor(frame, text, pos, text_color, text_color_bg):
-    
+
     # `frame` 배열을 `uint8` 형식으로 변환합니다.
     frame = frame.astype('uint8')
     pil_image = Image.fromarray(frame)
     draw = ImageDraw.Draw(pil_image)
     # `NanumGothic.ttf` 폰트를 사용하여 폰트 객체를 생성합니다.
-    font = ImageFont.truetype('AI/fonts/NanumGothic.ttf', size=30)
+    font = ImageFont.truetype('fonts/NanumGothic.ttf', size=30)
     draw.text(pos, text, fill=(255, 255, 230), font=font)
     return np.array(pil_image)
 
@@ -105,13 +110,15 @@ def find_angle(p1, p2, ref_pt=np.array([0, 0])):
 
     return int(degree)
 
+
 def hip_find_angle(pt1, pt2, pt3):
     # pt1에서 pt2로, pt1에서 pt3로 향하는 벡터를 계산합니다.
     vector12 = np.array([pt1[0]-pt2[0], pt1[1]-pt2[1]])
     vector13 = np.array([pt1[0]-pt3[0], pt1[1]-pt3[1]])
 
     # 이 두 벡터 사이의 각도의 코사인 값을 계산합니다.
-    cos_angle = np.dot(vector12, vector13) / (np.linalg.norm(vector12) * np.linalg.norm(vector13))
+    cos_angle = np.dot(vector12, vector13) / \
+        (np.linalg.norm(vector12) * np.linalg.norm(vector13))
 
     # 이 값을 각도로 변환합니다(단위: 도).
     angle = np.degrees(np.arccos(cos_angle))
@@ -119,6 +126,8 @@ def hip_find_angle(pt1, pt2, pt3):
     return angle
 
 # 미디어파이프에서 반환된 랜드마크 좌표를 이미지의 실제 좌표로 변환하는 함수
+
+
 def get_landmark_array(pose_landmark, key, frame_width, frame_height):
 
     denorm_x = int(pose_landmark[key].x * frame_width)
@@ -155,6 +164,8 @@ def get_landmark_features(kp_results, dict_features, feature, frame_width, frame
         raise ValueError("feature needs to be either 'nose', 'left' or 'right")
 
 # 미디어파이프의 포즈 모듈 생성 함수
+
+
 def get_mediapipe_pose(
     static_image_mode=False,
     model_complexity=1,

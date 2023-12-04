@@ -17,7 +17,7 @@ const userService = {
     /** 이메일 체크 */
     duplicateCheck: async (userEmail) => {
         try {
-            const [results] = await conn.query(userQueries.duplicateCheck, userEmail);
+            const [results] = await conn.query(userQueries.duplicateCheck, [userEmail]);
             return results
         } catch (err) {
             throw err;
@@ -193,7 +193,7 @@ const userService = {
         } catch (err) {
             throw err
         }
-    }
+    },
 
 }
 

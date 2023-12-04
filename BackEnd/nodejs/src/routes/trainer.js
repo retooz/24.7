@@ -24,6 +24,7 @@ router.get('/',(req,res) => {
 })
 
 router.post('/login', async (req,res) => {
+    console.log('login')
     const data = req.body;
     try {
         const [userRows] = await trainerService.signIn(data.email)
@@ -44,7 +45,7 @@ router.post('/login', async (req,res) => {
 })
 
 router.post('/join', uploadImg.single('profilePic'), async (req,res) => {
-    
+    console.log('join')
     const data = req.body;
     const profilePic = req.file.filename;
     try {
@@ -63,6 +64,7 @@ router.post('/emailCheck', async (req, res) => {
     try {
         const trainerEmail = req.body.email;
         const result = await trainerService.duplicateCheck(trainerEmail);
+        console.log(result)
         if (result.length > 0) {
             res.json({ result: 0 })
         } else {
@@ -74,6 +76,7 @@ router.post('/emailCheck', async (req, res) => {
 })
 
 router.post('/getMemberList', async (req, res) => {
+    console.log('getMemberList')
     try {
         const { trainer_code } = req.body;
         const result = await trainerService.getMemberList(trainer_code);
@@ -97,6 +100,7 @@ router.post('/getMemberInfo', async (req, res) => {
     try {
         const { user_code } = req.body;
         const result = await trainerService.getMemberInfo(user_code);
+        console.log('result'+ result)
         res.json({ info: result[0] })
     } catch (err) {
         res.status(500).json({ message: 'error occured' })

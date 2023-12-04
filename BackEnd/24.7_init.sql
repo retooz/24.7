@@ -1,4 +1,4 @@
-use Insa4_JSB_final_4;
+use 24_7;
 
 DROP SEQUENCE user_code;
 DROP SEQUENCE trainer_code;

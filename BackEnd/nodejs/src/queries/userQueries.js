@@ -32,7 +32,7 @@ module.exports = {
     getFeedback: `select feedback_content, attachment, base_url, memo from feedback_list_user where connection_code = ?`,
 
     /** 피드백 보낸 건수 검색 */
-    getFeedbackDate: `select connection_code, date_format(connection_date,'%Y-%m-%d') as connection_date from connection where user_code = ? order by connection_date DESC`,
+    getFeedbackDate: `select connection_code, date_format(connection_date,'%Y-%m-%d %H:%i') as connection_date from connection where user_code = ? order by connection_date DESC`,
 
     /** 피드백 보낸 트레이너 확인 */
     getTrainerInfo: `select trainer_name, profile_pic, career from trainer where trainer_code = ?`,
@@ -44,7 +44,7 @@ module.exports = {
     getDataFeedback: `select accuracy, accuracy_list, exercise_category from connection where connection_code = ?`,
 
     /** 트레이너의 피드백 여부 확인 */
-    getAlarm: `select a.connection_code, date_format(a.connection_date,'%Y-%m-%d') as connection_date from connection as a inner join feedback_list_user as b on ( a.connection_code = b.connection_code) where a.user_code = ? and b.confirm_user = 0 order by connection_date DESC`,
+    getAlarm: `select a.connection_code, date_format(a.connection_date,'%Y-%m-%d %H:%i') as connection_date from connection as a inner join feedback_list_user as b on ( a.connection_code = b.connection_code) where a.user_code = ? and b.confirm_user = 0 order by connection_date DESC`,
 
     /** 참고 운동 영상 */
     getReference: `select video_url from reference_video where exercise_category = ?`,

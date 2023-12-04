@@ -35,7 +35,7 @@ const Join = () => {
           email: inputEmail,
         })
         .then((res) => {
-          if (res.data.result === 'ok') {
+          if (res.data.result === 1) {
             setEmailCheckRes(true);
             setEmailCheckText('사용 가능한 이메일입니다.');
             emailCheckRef.current.style.display = 'block';
@@ -99,7 +99,7 @@ const Join = () => {
           },
         })
         .then((res) => {
-          if (res.data.result === 0) {
+          if (res.data.result === 1) {
             navigate('/')
           }
         })

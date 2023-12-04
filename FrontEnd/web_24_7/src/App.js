@@ -3,7 +3,7 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import Index from './pages/Index';
 import { Route, Routes } from 'react-router-dom';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import axios from './axios';
 
 export const Data = createContext();
@@ -18,16 +18,9 @@ function App() {
   const [selectedConnCode, setSelectedConnCode] = useState(0);
   const [detailData, setDetailData] = useState({});
 
-  const getMemberList = () => {
-    axios
-      .post('/getMemberList', {
-        trainer_code: trainerInfo.trainer_code,
-      })
-      .then((res) => {
-        setMemberList(res.data.list);
-        setFilteredMemberList(res.data.list);
-      });
-  };
+  useEffect(() => {
+    setTrainerInfo(JSON.parse(sessionStorage.getItem('trainer')))
+  }, [])
 
   const getHistory = () => {
     axios
@@ -64,6 +57,7 @@ function App() {
     setSelectedMember(0);
     setSelectedConnCode(0);
     setDetailData({});
+    setMemberList([]);
   };
 
   return (
@@ -86,7 +80,6 @@ function App() {
           setSelectedConnCode,
           detailData,
           setDetailData,
-          getMemberList,
           getHistory,
           getMemberInfo,
           getDetail,
@@ -94,7 +87,7 @@ function App() {
         }}
       >
         <Routes>
-          {!trainerInfo.email ? (
+          {!trainerInfo ? (
             <Route path='/' element={<Login />} />
           ) : (
             <Route path='/' element={<Index />} />

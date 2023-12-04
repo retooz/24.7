@@ -4,11 +4,13 @@ import { Data } from '../App';
 import './Index.css';
 import EditProfile from '../components/EditProfile';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from '../axios'
 
 const Index = ({ edit }) => {
   const {
     trainerInfo,
     memberList,
+    setMemberList,
     filteredMemberList,
     setFilteredMemberList,
     selectedMember,
@@ -18,13 +20,12 @@ const Index = ({ edit }) => {
     selectedConnCode,
     setSelectedConnCode,
     setDetailData,
-    getMemberList,
     getHistory,
     getMemberInfo,
     getDetail,
     reset,
   } = useContext(Data);
-
+  const base = process.env.REACT_APP_SRC_BASE
   const location = useLocation();
   const currentPath = location.pathname;
   const navigate = useNavigate();
@@ -32,6 +33,27 @@ const Index = ({ edit }) => {
 
   const conectionChangeHandle = (connection_code) => {
     setSelectedConnCode(connection_code);
+  };
+
+  const logoClickHandle = () => {
+    reset();
+    getMemberList1();
+  }
+
+  const getMemberList1 = () => {
+    console.log(trainerInfo)
+    axios
+      .post('http://20.249.87.104:3000/getMemberList', {
+        trainer_code: trainerInfo.trainer_code,
+      })
+      .then((res) => {
+        console.log(res.data)
+        setMemberList(res.data.list);
+        setFilteredMemberList(res.data.list);
+      })
+      .catch((err) => {
+        console.error(err)
+      });
   };
 
   const filterMember = () => {
@@ -52,7 +74,8 @@ const Index = ({ edit }) => {
   };
 
   useEffect(() => {
-    getMemberList();
+    getMemberList1();
+    console.log(trainerInfo)
     //eslint-disable-next-line
   }, []);
 
@@ -82,11 +105,11 @@ const Index = ({ edit }) => {
           src='./pageLogo.png'
           alt=''
           id='main-logo'
-          onClick={() => reset()}
+          onClick={() => logoClickHandle()}
         />
         <div id='trainer-info'>
           <div id='profile-img'>
-            <img src={'./' + trainerInfo.profile_pic} alt='' />
+            <img src={base+'uploads/profile/'+trainerInfo.profile_pic} alt='' />
           </div>
           <p>{trainerInfo.trainer_name} 트레이너님</p>
           <div id='hamburger-icon'>

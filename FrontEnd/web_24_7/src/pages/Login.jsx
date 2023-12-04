@@ -32,6 +32,7 @@ const Login = () => {
         .then((res) => {
           if (res.data.result === 1) {
             setTrainerInfo(res.data.trainer);
+            sessionStorage.setItem('trainer', JSON.stringify(res.data.trainer))
           }
         })
         .catch((err) => {

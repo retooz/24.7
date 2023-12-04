@@ -5,12 +5,24 @@ import './Detail.css';
 
 const Detail = () => {
   const { selectedMemberData, detailData, reset } = useContext(Data);
-  console.log(selectedMemberData)
-  const accuracy_list = detailData.accuracy_list
-    .replace('[', '')
-    .replace(']', '')
-    .split(',');
-  const score = detailData.accuracy;
+  console.log(detailData);
+  const base = process.env.REACT_APP_SRC_BASE;
+  let videoPath = '';
+  if (detailData.exercise_category.includes('AI')) {
+    videoPath = `${base}${detailData.user_video_url}_0.mp4`;
+  } else {
+    videoPath = `${base}${detailData.user_video_url}.mp4`;
+  }
+  console.log(videoPath);
+  let accuracy_list = [];
+  let score;
+  if (detailData.accuracy_list) {
+    accuracy_list = detailData.accuracy_list
+      .replace('[', '')
+      .replace(']', '')
+      .split(',');
+    score = detailData.accuracy;
+  }
   const blank_width = 100 - score;
   const feedbackContentRef = useRef();
   const alertMessage = useRef();
@@ -47,7 +59,7 @@ const Detail = () => {
           base: base,
         })
         .then((res) => {
-          if (res.data.result === 'success') {
+          if (res.data.result === 1) {
             reset();
           }
         });
@@ -62,8 +74,10 @@ const Detail = () => {
             <span className='member-name'>
               {selectedMemberData.nickname} 회원
             </span>
-            <p className='member-info'>가입 일자: {selectedMemberData.join_date}</p>
-            <p className="member-info">운동한 횟수: {selectedMemberData.cnt}</p>
+            <p className='member-info'>
+              가입 일자: {selectedMemberData.join_date}
+            </p>
+            <p className='member-info'>운동한 횟수: {selectedMemberData.cnt}</p>
           </div>
           <div id='hamburger-icon'>
             <img src='./hamburger.png' alt='' />
@@ -74,14 +88,14 @@ const Detail = () => {
             <p className='detail-heading'>스쿼트</p>
             <hr />
             <div id='video-section'>
-              <video muted>
-                {/* <source src={detail.user_video_url} type='video/mp4'/> */}
-                <source src='./squat.mp4' type='video/mp4' />
+              <video muted controls>
+                <source src={videoPath} type='video/mp4' />
+                {/* <source src='./squat.mp4' type='video/mp4' /> */}
               </video>
             </div>
             <hr />
             <div id='user-comment'>
-              <p>{selectedMemberData.user_comment}</p>
+              <p>{detailData.user_comment}</p>
             </div>
           </div>
         </div>
@@ -102,17 +116,21 @@ const Detail = () => {
             </div>
           </div>
           <div id='score-list'>
-            {accuracy_list.map((score, index) => {
-              return (
-                <div className='per-score' key={index}>
-                  {index + 1}회 점수: {score}점
-                  <div
-                    className='score-dot'
-                    style={{ backgroundColor: getColor(score) }}
-                  />
-                </div>
-              );
-            })}
+            {accuracy_list.length > 0 ? (
+              accuracy_list.map((score, index) => {
+                return (
+                  <div className='per-score' key={index}>
+                    {index + 1}회 점수: {score}점
+                    <div
+                      className='score-dot'
+                      style={{ backgroundColor: getColor(score) }}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
         <div id='comment-write-form'>
